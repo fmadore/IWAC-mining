@@ -24,7 +24,7 @@ df['date'] = df['dcterms:date'].apply(parse_date)
 df['has_integrisme'] = df['dcterms:subject'].fillna('').str.contains('Intégrisme', case=False)
 
 # Group by date and count articles with "Intégrisme"
-monthly_counts = df[df['has_integrisme']].groupby(pd.Grouper(key='date', freq='M')).size().reset_index()
+monthly_counts = df[df['has_integrisme']].groupby(pd.Grouper(key='date', freq='ME')).size().reset_index()
 monthly_counts.columns = ['date', 'count']
 
 # Create the visualization
