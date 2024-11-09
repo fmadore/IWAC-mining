@@ -92,6 +92,16 @@ def load_and_prepare_data(url):
 
 def prepare_combined_yearly_counts(df):
     """Prepare combined yearly counts data for visualization."""
+    # Define the range of years
+    min_year = int(df['year'].min())
+    max_year = int(df['year'].max())
+    
+    # Create a DataFrame with all years and keywords
+    all_years = pd.DataFrame([(year, keyword) 
+                             for year in range(min_year, max_year + 1)
+                             for keyword in ['Intégrisme', 'Fondamentalisme islamique', 'Islamisme']],
+                            columns=['year', 'keyword'])
+    
     # Group by year and keyword, summing counts across countries
     yearly_counts = pd.concat([
         df[df[f'has_{keyword.lower().replace(" ", "_")}']]
@@ -101,6 +111,10 @@ def prepare_combined_yearly_counts(df):
         .assign(keyword=keyword)
         for keyword in ['Intégrisme', 'Fondamentalisme islamique', 'Islamisme']
     ])
+    
+    # Merge with all years to fill missing years with zero counts
+    yearly_counts = pd.merge(all_years, yearly_counts, on=['year', 'keyword'], how='left')
+    yearly_counts['count'] = yearly_counts['count'].fillna(0)
     
     return yearly_counts
 
