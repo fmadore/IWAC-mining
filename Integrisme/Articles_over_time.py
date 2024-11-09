@@ -84,15 +84,6 @@ def load_and_prepare_data(url):
     print("\nRows with unmapped countries:")
     print(df[df['country'].isna()]['dcterms:publisher'].unique())
     
-    # Print total number of articles with "Intégrisme"
-    total_integrisme = df['has_integrisme'].sum()
-    print(f"\nTotal number of articles containing 'Intégrisme': {total_integrisme}")
-    
-    # Print breakdown by country
-    country_counts = df[df['has_integrisme']].groupby('country')['has_integrisme'].count()
-    print("\nBreakdown by country:")
-    print(country_counts)
-    
     return df
 
 def prepare_yearly_counts(df):
@@ -106,7 +97,7 @@ def prepare_yearly_counts(df):
                              for country in df['country'].unique() if pd.notna(country)],
                             columns=['year', 'country'])
     
-    # Group by year and country
+    # Group by year and country for "Intégrisme" articles
     yearly_counts = df[df['has_integrisme'] & df['country'].notna()].groupby(['year', 'country']).size().reset_index()
     yearly_counts.columns = ['year', 'country', 'count']
     
@@ -114,9 +105,12 @@ def prepare_yearly_counts(df):
     yearly_counts = pd.merge(all_years, yearly_counts, on=['year', 'country'], how='left')
     yearly_counts['count'] = yearly_counts['count'].fillna(0)
     
-    return yearly_counts
+    # Calculate total articles per year
+    total_articles_per_year = df.groupby('year').size().reset_index(name='total_count')
+    
+    return yearly_counts, total_articles_per_year
 
-def create_visualization(yearly_counts, total_articles):
+def create_visualization(yearly_counts, total_articles_per_year, total_articles, with_line=True):
     """Create and return the visualization."""
     fig = px.bar(yearly_counts, 
                  x='year',
@@ -128,6 +122,11 @@ def create_visualization(yearly_counts, total_articles):
                         'country': 'Country'},
                  template='plotly_white',
                  barmode='stack')
+    
+    if with_line:
+        # Add line for total articles per year
+        fig.add_scatter(x=total_articles_per_year['year'], y=total_articles_per_year['total_count'], 
+                        mode='lines+markers', name='Total Articles', line=dict(color='red'))
     
     fig.update_layout(
         barmode='stack',
@@ -161,20 +160,27 @@ def main():
     total_articles = int(df['has_integrisme'].sum())
     
     # Prepare yearly counts
-    yearly_counts = prepare_yearly_counts(df)
+    yearly_counts, total_articles_per_year = prepare_yearly_counts(df)
     
-    # Create visualization
-    fig = create_visualization(yearly_counts, total_articles)
+    # Create visualization with line
+    fig_with_line = create_visualization(yearly_counts, total_articles_per_year, total_articles, with_line=True)
+    
+    # Create visualization without line
+    fig_without_line = create_visualization(yearly_counts, total_articles_per_year, total_articles, with_line=False)
     
     # Get the directory of the current script
     script_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # Create the output path in the same directory as the script
-    output_path = os.path.join(script_dir, "integrisme_by_country_over_time.html")
+    # Create the output paths in the same directory as the script
+    output_path_with_line = os.path.join(script_dir, "integrisme_with_line.html")
+    output_path_without_line = os.path.join(script_dir, "integrisme_without_line.html")
     
-    # Show and save the plot
-    fig.show()
-    fig.write_html(output_path)
+    # Show and save the plots
+    fig_with_line.show()
+    fig_with_line.write_html(output_path_with_line)
+    
+    fig_without_line.show()
+    fig_without_line.write_html(output_path_without_line)
 
 if __name__ == "__main__":
     main()
