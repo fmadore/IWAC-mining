@@ -85,9 +85,23 @@ print(df[df['country'].isna()]['dcterms:publisher'].unique())
 
 df['has_integrisme'] = df['dcterms:subject'].fillna('').str.contains('Intégrisme', case=False)
 
+# Get the full range of years from the dataset
+min_year = int(df['year'].min())
+max_year = int(df['year'].max())
+
+# Create a complete range of years
+all_years = pd.DataFrame([(year, country) 
+                         for year in range(min_year, max_year + 1)
+                         for country in df['country'].unique() if pd.notna(country)],
+                        columns=['year', 'country'])
+
 # Group by year and country only for rows with mapped countries
 yearly_counts = df[df['has_integrisme'] & df['country'].notna()].groupby(['year', 'country']).size().reset_index()
 yearly_counts.columns = ['year', 'country', 'count']
+
+# Merge with the complete year range and fill missing values with 0
+yearly_counts = pd.merge(all_years, yearly_counts, on=['year', 'country'], how='left')
+yearly_counts['count'] = yearly_counts['count'].fillna(0)
 
 # Create the visualization
 fig = px.bar(yearly_counts, 
@@ -111,7 +125,8 @@ fig.update_layout(
     legend_title_text='Country',
     xaxis=dict(
         type='category',
-        tickmode='linear'
+        tickmode='linear',
+        dtick=1  # Show every year
     )
 )
 
