@@ -84,6 +84,15 @@ def load_and_prepare_data(url):
     print("\nRows with unmapped countries:")
     print(df[df['country'].isna()]['dcterms:publisher'].unique())
     
+    # Print total number of articles with "Intégrisme"
+    total_integrisme = df['has_integrisme'].sum()
+    print(f"\nTotal number of articles containing 'Intégrisme': {total_integrisme}")
+    
+    # Print breakdown by country
+    country_counts = df[df['has_integrisme']].groupby('country')['has_integrisme'].count()
+    print("\nBreakdown by country:")
+    print(country_counts)
+    
     return df
 
 def prepare_yearly_counts(df):
@@ -107,13 +116,13 @@ def prepare_yearly_counts(df):
     
     return yearly_counts
 
-def create_visualization(yearly_counts):
+def create_visualization(yearly_counts, total_articles):
     """Create and return the visualization."""
     fig = px.bar(yearly_counts, 
                  x='year',
                  y='count',
                  color='country',
-                 title='Number of Articles Mentioning "Intégrisme" by Country Over Time',
+                 title=f'Number of Articles Mentioning "Intégrisme" by Country Over Time<br><sup>Total articles: {total_articles}</sup>',
                  labels={'year': 'Year', 
                         'count': 'Number of Articles',
                         'country': 'Country'},
@@ -126,6 +135,10 @@ def create_visualization(yearly_counts):
         xaxis_title='Year',
         yaxis_title='Number of Articles',
         title_x=0.5,
+        title=dict(
+            font=dict(size=20),  # Main title size
+            y=0.95,  # Adjust title position
+        ),
         legend_title_text='Country',
         xaxis=dict(
             type='category',
@@ -144,11 +157,14 @@ def main():
     # Load and prepare data
     df = load_and_prepare_data(url)
     
+    # Get total number of articles with "Intégrisme"
+    total_articles = int(df['has_integrisme'].sum())
+    
     # Prepare yearly counts
     yearly_counts = prepare_yearly_counts(df)
     
     # Create visualization
-    fig = create_visualization(yearly_counts)
+    fig = create_visualization(yearly_counts, total_articles)
     
     # Get the directory of the current script
     script_dir = os.path.dirname(os.path.abspath(__file__))
