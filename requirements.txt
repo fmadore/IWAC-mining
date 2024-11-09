@@ -1,2 +1,4 @@
 pandas>=2.0.0
-plotly>=5.13.0 
+plotly>=5.13.0
+spacy>=3.0.0
+fr-core-news-lg @ https://github.com/explosion/spacy-models/releases/download/fr_core_news_lg-3.5.0/fr_core_news_lg-3.5.0.tar.gz 
