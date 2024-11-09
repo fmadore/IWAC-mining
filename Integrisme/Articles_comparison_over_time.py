@@ -78,7 +78,7 @@ def load_and_prepare_data(url):
     df['country'] = df['dcterms:publisher'].map(get_newspaper_country_mapping())
     
     # Check for multiple keywords
-    keywords = ['Intégrisme', 'Fondamentalisme islamique', 'Islamisme']
+    keywords = ['Intégrisme', 'Fondamentalisme islamique', 'Islamisme', 'Radicalisation', 'Extrémisme']
     for keyword in keywords:
         df[f'has_{keyword.lower().replace(" ", "_")}'] = df['dcterms:subject'].fillna('').str.contains(keyword, case=False)
     
@@ -99,7 +99,7 @@ def prepare_combined_yearly_counts(df):
     # Create a DataFrame with all years and keywords
     all_years = pd.DataFrame([(year, keyword) 
                              for year in range(min_year, max_year + 1)
-                             for keyword in ['Intégrisme', 'Fondamentalisme islamique', 'Islamisme']],
+                             for keyword in ['Intégrisme', 'Fondamentalisme islamique', 'Islamisme', 'Radicalisation']],
                             columns=['year', 'keyword'])
     
     # Group by year and keyword, summing counts across countries
@@ -109,7 +109,7 @@ def prepare_combined_yearly_counts(df):
         .size()
         .reset_index(name='count')
         .assign(keyword=keyword)
-        for keyword in ['Intégrisme', 'Fondamentalisme islamique', 'Islamisme']
+        for keyword in ['Intégrisme', 'Fondamentalisme islamique', 'Islamisme', 'Radicalisation']
     ])
     
     # Merge with all years to fill missing years with zero counts
