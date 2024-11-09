@@ -2,10 +2,17 @@ import pandas as pd
 import stanza
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+from tqdm import tqdm
+import nltk
+from nltk.corpus import stopwords
 
-# Download the French model for Stanza
+# Download necessary resources
+nltk.download('stopwords')
 stanza.download('fr')
 nlp = stanza.Pipeline('fr')
+
+# Use NLTK's French stopwords
+french_stopwords = set(stopwords.words('french'))
 
 def load_data(url):
     """Load data from URL."""
@@ -18,7 +25,7 @@ def filter_integrisme_articles(df):
 def preprocess_text(text):
     """Preprocess text: tokenize, remove stopwords, and lemmatize using Stanza."""
     doc = nlp(text)
-    tokens = [word.lemma.lower() for sentence in doc.sentences for word in sentence.words if word.text.isalpha()]
+    tokens = [word.lemma.lower() for sentence in doc.sentences for word in sentence.words if word.text.isalpha() and word.lemma.lower() not in french_stopwords]
     return ' '.join(tokens)
 
 def generate_wordcloud(text):
@@ -41,8 +48,9 @@ def main():
     # Filter articles mentioning "intégrisme"
     integrisme_articles = filter_integrisme_articles(df)
     
-    # Preprocess text in "bibo:content"
-    integrisme_articles['processed_content'] = integrisme_articles['bibo:content'].fillna('').apply(preprocess_text)
+    # Preprocess text in "bibo:content" with progress tracking
+    tqdm.pandas(desc="Processing articles")
+    integrisme_articles['processed_content'] = integrisme_articles['bibo:content'].fillna('').progress_apply(preprocess_text)
     
     # Concatenate all processed content
     all_text = ' '.join(integrisme_articles['processed_content'])
