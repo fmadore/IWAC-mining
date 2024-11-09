@@ -124,7 +124,7 @@ def create_combined_visualization(yearly_counts):
                   x='year',
                   y='count',
                   color='keyword',
-                  title='Number of Articles Mentioning Keywords Over Time',
+                  title='Number of Articles Mentioning Selected Keywords Over Time',
                   labels={'year': 'Year', 
                           'count': 'Number of Articles',
                           'keyword': 'Keyword'},
