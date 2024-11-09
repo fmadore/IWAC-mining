@@ -1,6 +1,7 @@
 import pandas as pd
 import plotly.express as px
 from datetime import datetime
+import os
 
 def parse_date(date_str):
     """Convert string date to datetime, handling both YYYY-MM-DD and YYYY-MM formats."""
@@ -149,9 +150,15 @@ def main():
     # Create visualization
     fig = create_visualization(yearly_counts)
     
+    # Get the directory of the current script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Create the output path in the same directory as the script
+    output_path = os.path.join(script_dir, "integrisme_by_country_over_time.html")
+    
     # Show and save the plot
     fig.show()
-    fig.write_html("integrisme_by_country_over_time.html")
+    fig.write_html(output_path)
 
 if __name__ == "__main__":
     main()
