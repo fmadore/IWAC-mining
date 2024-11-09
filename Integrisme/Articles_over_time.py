@@ -17,51 +17,106 @@ def parse_date(date_str):
     except:
         return None
 
-# Convert dates and handle missing values
+# Define newspaper-country mapping
+newspaper_country = {
+    # Benin newspapers
+    '24h au Bénin': 'Benin',
+    'Agence Bénin Presse': 'Benin',
+    'Banouto': 'Benin',
+    'Bénin Intelligent': 'Benin',
+    'Boulevard des Infos': 'Benin',
+    'Daho-Express': 'Benin',
+    'Ehuzu': 'Benin',
+    'Fraternité': 'Benin',
+    "L'Evénement Précis": 'Benin',
+    'La Nation': 'Benin',
+    'La Nouvelle Tribune': 'Benin',
+    'Le Matinal': 'Benin',
+    'Les Pharaons': 'Benin',
+    'Matin Libre': 'Benin',
+    
+    # Burkina Faso newspapers
+    'Burkina 24': 'Burkina Faso',
+    'Carrefour africain': 'Burkina Faso',
+    'FasoZine': 'Burkina Faso',
+    "L'Evénement": 'Burkina Faso',
+    "L'Observateur": 'Burkina Faso',
+    "L'Observateur Paalga": 'Burkina Faso',
+    'La Preuve': 'Burkina Faso',
+    'Le Pays': 'Burkina Faso',
+    'LeFaso.net': 'Burkina Faso',
+    'Mutations': 'Burkina Faso',
+    'San Finna': 'Burkina Faso',
+    'Sidwaya': 'Burkina Faso',
+    
+    # Côte d'Ivoire newspapers
+    'Agence Ivoirienne de Presse': 'Côte d\'Ivoire',
+    'Fraternité Hebdo': 'Côte d\'Ivoire',
+    'Fraternité Matin': 'Côte d\'Ivoire',
+    'Ivoire Dimanche': 'Côte d\'Ivoire',
+    "L'Intelligent d'Abidjan": 'Côte d\'Ivoire',
+    'La Voie': 'Côte d\'Ivoire',
+    'Le Jour': 'Côte d\'Ivoire',
+    'Le Jour Plus': 'Côte d\'Ivoire',
+    'Le Nouvel Horizon': 'Côte d\'Ivoire',
+    'Le Patriote': 'Côte d\'Ivoire',
+    'Notre Temps': 'Côte d\'Ivoire',
+    'Notre Voie': 'Côte d\'Ivoire',
+    
+    # Togo newspapers
+    'Agence Togolaise de Presse': 'Togo',
+    'Courrier du Golfe': 'Togo',
+    'La Nouvelle Marche': 'Togo',
+    'Togo-Presse': 'Togo'
+}
+
+# Print unique newspaper names to check for mismatches
+print("Newspapers in data but not in mapping:")
+print(set(df['dcterms:publisher'].unique()) - set(newspaper_country.keys()))
+
+# Convert dates and add country information
 df['date'] = df['dcterms:date'].apply(parse_date)
+df['year'] = df['date'].dt.year
+df['country'] = df['dcterms:publisher'].map(newspaper_country)
 
-# Get the earliest and latest dates
-min_date = df['date'].min()
-max_date = df['date'].max()
+# Print rows where country is None
+print("\nRows with unmapped countries:")
+print(df[df['country'].isna()]['dcterms:publisher'].unique())
 
-# Filter for articles containing "Intégrisme"
 df['has_integrisme'] = df['dcterms:subject'].fillna('').str.contains('Intégrisme', case=False)
 
-# Create a date range covering all articles by year
-date_range = pd.date_range(start=min_date, end=max_date, freq='YE')
-date_df = pd.DataFrame({'date': date_range})
-
-# Group by date and count articles with "Intégrisme"
-yearly_counts = df[df['has_integrisme']].groupby(pd.Grouper(key='date', freq='YE')).size().reset_index()
-yearly_counts.columns = ['date', 'count']
-
-# Merge with full date range to include zeros
-yearly_counts = pd.merge(date_df, yearly_counts, on='date', how='left')
-yearly_counts['count'] = yearly_counts['count'].fillna(0)
+# Group by year and country only for rows with mapped countries
+yearly_counts = df[df['has_integrisme'] & df['country'].notna()].groupby(['year', 'country']).size().reset_index()
+yearly_counts.columns = ['year', 'country', 'count']
 
 # Create the visualization
-fig = px.line(yearly_counts, 
-              x='date', 
-              y='count',
-              title='Number of Articles Mentioning "Intégrisme" Over Time',
-              labels={'date': 'Year', 'count': 'Number of Articles'},
-              template='plotly_white')
+fig = px.bar(yearly_counts, 
+             x='year',
+             y='count',
+             color='country',
+             title='Number of Articles Mentioning "Intégrisme" by Country Over Time',
+             labels={'year': 'Year', 
+                    'count': 'Number of Articles',
+                    'country': 'Country'},
+             template='plotly_white',
+             barmode='stack')
 
 # Customize the layout
 fig.update_layout(
-    showlegend=False,
-    hovermode='x unified',
+    barmode='stack',
     plot_bgcolor='white',
     xaxis_title='Year',
     yaxis_title='Number of Articles',
     title_x=0.5,
+    legend_title_text='Country',
+    xaxis=dict(
+        type='category',
+        tickmode='linear'
+    )
 )
-
-# Add markers to the line
-fig.update_traces(mode='lines+markers')
 
 # Show the plot
 fig.show()
 
 # Save the plot as HTML file
-fig.write_html("integrisme_over_time.html")
+fig.write_html("integrisme_by_country_over_time.html")
