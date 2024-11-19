@@ -21,12 +21,21 @@
         .legend-item.disabled {
             opacity: 0.3;
         }
+        .axis-label {
+            font-family: sans-serif;
+            font-size: 12px;
+        }
+        .legend-title {
+            font-family: sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 <script>
     // Set the dimensions and margins of the graph
-    const margin = {top: 40, right: 160, bottom: 60, left: 50},
+    const margin = {top: 40, right: 160, bottom: 60, left: 70},
         width = 1000 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
@@ -73,7 +82,7 @@
         // Keep track of enabled/disabled states
         const enabledGroups = new Set(subgroups);
 
-        // Add X axis
+        // Add X axis and label
         const x = d3.scaleBand()
             .domain(processedData.map(d => d.year))
             .range([0, width])
@@ -86,13 +95,30 @@
             .attr("transform", "rotate(-45)")
             .style("text-anchor", "end");
 
-        // Add Y axis
+        // X axis label
+        svg.append("text")
+            .attr("class", "axis-label")
+            .attr("text-anchor", "middle")
+            .attr("x", width/2)
+            .attr("y", height + margin.bottom - 6)
+            .text("Year");
+
+        // Add Y axis and label
         const y = d3.scaleLinear()
             .domain([0, 20])
             .range([height, 0]);
 
         const yAxis = svg.append("g")
             .call(d3.axisLeft(y));
+
+        // Y axis label
+        svg.append("text")
+            .attr("class", "axis-label")
+            .attr("text-anchor", "middle")
+            .attr("transform", "rotate(-90)")
+            .attr("y", -margin.left + 20)
+            .attr("x", -height/2)
+            .text("Number of Articles");
 
         // Color palette
         const color = d3.scaleOrdinal()
@@ -174,20 +200,26 @@
             .style("font-size", "16px")
             .text("Number of Articles Mentioning \"Intégrisme\" by Country Over Time");
 
-        // Add interactive legend
-        const legend = svg.append("g")
-            .attr("font-family", "sans-serif")
-            .attr("font-size", 10)
-            .attr("text-anchor", "start")
-            .selectAll("g")
+        // Add legend title and move legend items down
+        const legendGroup = svg.append("g")
+            .attr("transform", `translate(${width + 10}, 0)`);
+
+        legendGroup.append("text")
+            .attr("class", "legend-title")
+            .attr("x", 0)
+            .attr("y", 0)
+            .text("Country");
+
+        // Update legend position to start below the title
+        const legend = legendGroup.selectAll(".legend-item")
             .data(subgroups.slice().reverse())
             .join("g")
             .attr("class", "legend-item")
-            .attr("transform", (d, i) => `translate(${width + 10},${i * 20})`)
+            .attr("transform", (d, i) => `translate(0,${i * 20 + 20})`) // Added 20px offset for title
             .on("click", function(event, d) {
                 // Toggle the enabled state
                 if (enabledGroups.has(d)) {
-                    if (enabledGroups.size > 1) { // Prevent removing all groups
+                    if (enabledGroups.size > 1) {
                         enabledGroups.delete(d);
                         d3.select(this).classed("disabled", true);
                     }
