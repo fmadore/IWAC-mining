@@ -2,12 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Number of Articles Mentioning Selected Keywords Over Time</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 60%; /* Aspect ratio */
+        }
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
         .line {
             fill: none;
@@ -26,6 +47,7 @@
             pointer-events: none;
             font-size: 12px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 200px;
         }
         .tooltip strong {
             font-weight: 600;
@@ -50,220 +72,294 @@
             font-weight: 600;
             text-anchor: middle;
         }
+        @media (max-width: 768px) {
+            .chart-container {
+                padding-bottom: 100%; /* Taller aspect ratio for mobile */
+            }
+            .title {
+                font-size: 14px;
+            }
+            .axis-label {
+                font-size: 10px;
+            }
+            .tooltip {
+                font-size: 10px;
+                padding: 8px;
+            }
+        }
     </style>
 </head>
 <body>
-    <svg width="1200" height="650"></svg>
+    <div class="container">
+        <div class="chart-container">
+            <svg></svg>
+        </div>
+    </div>
     <script>
-        const svg = d3.select("svg"),
-              margin = {top: 50, right: 150, bottom: 50, left: 60},
-              width = +svg.attr("width") - margin.left - margin.right,
-              height = +svg.attr("height") - margin.top - margin.bottom,
-              g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+        function createChart() {
+            // Clear previous chart if any
+            d3.select("svg").selectAll("*").remove();
 
-        svg.append("text")
-            .attr("class", "title")
-            .attr("x", width / 2 + margin.left)
-            .attr("y", margin.top / 2)
-            .text("Number of Articles Mentioning Selected Keywords Over Time");
+            const container = document.querySelector('.chart-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            
+            const margin = {
+                top: height * 0.08,
+                right: width * 0.15,
+                bottom: height * 0.15,
+                left: width * 0.1
+            };
 
-        const tooltip = d3.select("body").append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
+            const chartWidth = width - margin.left - margin.right;
+            const chartHeight = height - margin.top - margin.bottom;
 
-        const parseYear = d3.timeParse("%Y");
+            const svg = d3.select("svg")
+                .attr("width", width)
+                .attr("height", height);
 
-        const x = d3.scaleTime().range([0, width]);
-        const y = d3.scaleLinear().range([height, 0]);
-        const z = d3.scaleOrdinal(d3.schemeCategory10);
+            const g = svg.append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        const line = d3.line()
-            .x(d => x(d.year))
-            .y(d => y(d.total_count));
+            // Add title
+            svg.append("text")
+                .attr("class", "title")
+                .attr("x", width / 2)
+                .attr("y", margin.top / 2)
+                .text("Number of Articles Mentioning Selected Keywords Over Time");
 
-        d3.json("yearly_counts.json").then(data => {
-            // Transform the data structure
-            const transformedData = [];
-            data.forEach(yearData => {
-                yearData.keywords.forEach(keywordData => {
-                    transformedData.push({
-                        year: parseYear(yearData.year),
-                        keyword: keywordData.keyword,
-                        total_count: keywordData.total_count,
-                        countries: keywordData.countries
+            const tooltip = d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
+
+            const parseYear = d3.timeParse("%Y");
+            const x = d3.scaleTime().range([0, chartWidth]);
+            const y = d3.scaleLinear().range([chartHeight, 0]);
+            const z = d3.scaleOrdinal(d3.schemeCategory10);
+
+            const line = d3.line()
+                .x(d => x(d.year))
+                .y(d => y(d.total_count));
+
+            // Load and process data
+            d3.json("yearly_counts.json").then(data => {
+                // Transform data (same as before)
+                const transformedData = [];
+                data.forEach(yearData => {
+                    yearData.keywords.forEach(keywordData => {
+                        transformedData.push({
+                            year: parseYear(yearData.year),
+                            keyword: keywordData.keyword,
+                            total_count: keywordData.total_count,
+                            countries: keywordData.countries
+                        });
                     });
                 });
-            });
 
-            const keywords = Array.from(new Set(transformedData.map(d => d.keyword)));
-            const dataNest = d3.groups(transformedData, d => d.keyword);
+                const keywords = Array.from(new Set(transformedData.map(d => d.keyword)));
+                const dataNest = d3.groups(transformedData, d => d.keyword);
 
-            x.domain(d3.extent(transformedData, d => d.year));
-            y.domain([0, d3.max(transformedData, d => d.total_count)]);
+                x.domain(d3.extent(transformedData, d => d.year));
+                y.domain([0, d3.max(transformedData, d => d.total_count)]);
 
-            // Function to update the visualization
-            function updateChart(activeKeywords) {
-                // Filter data based on active keywords
-                const activeData = transformedData.filter(d => activeKeywords.includes(d.keyword));
-                
-                // Update y scale domain based on active data
-                const maxY = d3.max(activeData, d => d.total_count) || 0;
-                y.domain([0, maxY]);
+                // Update function
+                function updateChart(activeKeywords) {
+                    const activeData = transformedData.filter(d => activeKeywords.includes(d.keyword));
+                    const maxY = d3.max(activeData, d => d.total_count) || 0;
+                    y.domain([0, maxY]);
 
-                // Update y-axis with transition
-                g.select(".axis--y")
-                    .transition()
-                    .duration(750)
-                    .call(d3.axisLeft(y));
-
-                // Update lines with transition
-                dataNest.forEach(([keyword, values]) => {
-                    const isActive = activeKeywords.includes(keyword);
-                    const lineId = `line-${keyword.replace(/\s+/g, '-')}`;
-                    const dotsClass = `dots-${keyword.replace(/\s+/g, '-')}`;
-
-                    // Update line
-                    d3.select(`#${lineId}`)
-                        .classed("hidden", !isActive)
+                    g.select(".axis--y")
                         .transition()
                         .duration(750)
-                        .attr("d", line(values));
+                        .call(d3.axisLeft(y));
 
-                    // Update dots
-                    d3.selectAll(`.${dotsClass}`)
-                        .classed("hidden", !isActive)
-                        .transition()
-                        .duration(750)
-                        .attr("cy", d => y(d.total_count));
+                    dataNest.forEach(([keyword, values]) => {
+                        const isActive = activeKeywords.includes(keyword);
+                        const lineId = `line-${keyword.replace(/\s+/g, '-')}`;
+                        const dotsClass = `dots-${keyword.replace(/\s+/g, '-')}`;
+
+                        d3.select(`#${lineId}`)
+                            .classed("hidden", !isActive)
+                            .transition()
+                            .duration(750)
+                            .attr("d", line(values));
+
+                        d3.selectAll(`.${dotsClass}`)
+                            .classed("hidden", !isActive)
+                            .transition()
+                            .duration(750)
+                            .attr("cy", d => y(d.total_count));
+                    });
+                }
+
+                // Add axes
+                g.append("g")
+                    .attr("class", "axis axis--x")
+                    .attr("transform", `translate(0,${chartHeight})`)
+                    .call(d3.axisBottom(x)
+                        .ticks(width < 600 ? d3.timeYear.every(5) : d3.timeYear.every(2)))
+                    .selectAll("text")
+                    .attr("transform", "rotate(-45)")
+                    .style("text-anchor", "end");
+
+                g.append("text")
+                    .attr("class", "axis-label")
+                    .attr("text-anchor", "middle")
+                    .attr("x", chartWidth/2)
+                    .attr("y", chartHeight + margin.bottom * 0.8)
+                    .text("Year");
+
+                g.append("g")
+                    .attr("class", "axis axis--y")
+                    .call(d3.axisLeft(y))
+                    .append("text")
+                    .attr("class", "axis-label")
+                    .attr("fill", "#000")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", -margin.left * 0.7)
+                    .attr("x", -chartHeight/2)
+                    .attr("text-anchor", "middle")
+                    .text("Number of Articles");
+
+                // Add lines and dots (similar to before)
+                const keyword = g.selectAll(".keyword")
+                    .data(dataNest)
+                    .enter().append("g")
+                    .attr("class", "keyword");
+
+                keyword.append("path")
+                    .attr("class", "line")
+                    .attr("id", d => `line-${d[0].replace(/\s+/g, '-')}`)
+                    .attr("d", d => line(d[1]))
+                    .style("stroke", d => z(d[0]));
+
+                // Add dots with tooltips
+                dataNest.forEach(keywordGroup => {
+                    const keywordClass = `dots-${keywordGroup[0].replace(/\s+/g, '-')}`;
+                    g.selectAll(`.${keywordClass}`)
+                        .data(keywordGroup[1].filter(d => d.total_count > 0))
+                        .enter().append("circle")
+                        .attr("class", `dot ${keywordClass}`)
+                        .attr("r", width < 600 ? 3 : 4)
+                        .attr("cx", d => x(d.year))
+                        .attr("cy", d => y(d.total_count))
+                        .style("fill", z(keywordGroup[0]))
+                        .on("mouseover", function(event, d) {
+                            tooltip.transition()
+                                .duration(200)
+                                .style("opacity", .9);
+                            
+                            let tooltipContent = `<strong>${d.keyword}</strong><br/>`;
+                            tooltipContent += `Year: ${d.year.getFullYear()}<br/>`;
+                            tooltipContent += `Total: ${d.total_count}<br/><br/>`;
+                            
+                            if (d.countries.length > 0) {
+                                tooltipContent += "<strong>By Country:</strong><br/>";
+                                d.countries.forEach(country => {
+                                    tooltipContent += `${country.name}: ${country.count}<br/>`;
+                                });
+                            }
+                            
+                            tooltip.html(tooltipContent)
+                                .style("left", `${event.pageX + 10}px`)
+                                .style("top", `${event.pageY - 28}px`);
+                        })
+                        .on("mouseout", function() {
+                            tooltip.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                        });
                 });
-            }
 
-            // Add X axis
-            g.append("g")
-                .attr("class", "axis axis--x")
-                .attr("transform", `translate(0,${height})`)
-                .call(d3.axisBottom(x).ticks(d3.timeYear.every(2)))
-                .selectAll("text")
-                .attr("transform", "rotate(-45)")
-                .style("text-anchor", "end");
+                // Add legend with improved positioning
+                const isDesktop = width >= 768;
+                
+                // Desktop: right side, vertically aligned
+                // Mobile: bottom center, horizontally aligned
+                const legendConfig = isDesktop ? {
+                    x: chartWidth + margin.left,
+                    y: margin.top,
+                    layout: 'vertical',
+                    itemsPerRow: 1,
+                    spacing: 20,
+                    textOffset: 15
+                } : {
+                    x: width / 2,
+                    y: height - margin.bottom / 2,
+                    layout: 'horizontal',
+                    itemsPerRow: 3,
+                    spacing: width / 6,
+                    textOffset: 10
+                };
 
-            // Add X axis label
-            g.append("text")
-                .attr("class", "axis-label")
-                .attr("text-anchor", "middle")
-                .attr("x", width/2)
-                .attr("y", height + margin.bottom - 5)
-                .text("Year");
+                const legend = svg.append("g")
+                    .attr("class", "legend")
+                    .attr("transform", `translate(${legendConfig.x},${legendConfig.y})`);
 
-            // Add Y axis
-            g.append("g")
-                .attr("class", "axis axis--y")
-                .call(d3.axisLeft(y))
-                .append("text")
-                .attr("class", "axis-label")
-                .attr("fill", "#000")
-                .attr("transform", "rotate(-90)")
-                .attr("y", -margin.left + 15)
-                .attr("x", -height/2)
-                .attr("text-anchor", "middle")
-                .text("Number of Articles");
+                const activeKeywords = new Set(keywords);
+                const legendItems = keywords.map(keyword => ({
+                    keyword: keyword,
+                    active: true
+                }));
 
-            // Add lines with unique IDs
-            const keyword = g.selectAll(".keyword")
-                .data(dataNest)
-                .enter().append("g")
-                .attr("class", "keyword");
-
-            keyword.append("path")
-                .attr("class", "line")
-                .attr("id", d => `line-${d[0].replace(/\s+/g, '-')}`)
-                .attr("d", d => line(d[1]))
-                .style("stroke", d => z(d[0]));
-
-            // Add dots with unique classes
-            dataNest.forEach(keywordGroup => {
-                const keywordClass = `dots-${keywordGroup[0].replace(/\s+/g, '-')}`;
-                g.selectAll(`.${keywordClass}`)
-                    .data(keywordGroup[1].filter(d => d.total_count > 0))
-                    .enter().append("circle")
-                    .attr("class", `dot ${keywordClass}`)
-                    .attr("r", 4)
-                    .attr("cx", d => x(d.year))
-                    .attr("cy", d => y(d.total_count))
-                    .style("fill", z(keywordGroup[0]))
-                    .on("mouseover", function(event, d) {
-                        tooltip.transition()
-                            .duration(200)
-                            .style("opacity", .9);
+                const legendItem = legend.selectAll(".legend-item")
+                    .data(legendItems)
+                    .enter().append("g")
+                    .attr("class", "legend-item")
+                    .attr("transform", (d, i) => {
+                        if (legendConfig.layout === 'vertical') {
+                            return `translate(0,${i * legendConfig.spacing})`;
+                        } else {
+                            const row = Math.floor(i / legendConfig.itemsPerRow);
+                            const col = i % legendConfig.itemsPerRow;
+                            return `translate(${(col - 1) * legendConfig.spacing},${row * 20})`;
+                        }
+                    })
+                    .on("click", function(event, d) {
+                        d.active = !d.active;
+                        d3.select(this).classed("inactive", !d.active);
                         
-                        let tooltipContent = `<strong>${d.keyword}</strong><br/>`;
-                        tooltipContent += `Year: ${d.year.getFullYear()}<br/>`;
-                        tooltipContent += `Total: ${d.total_count}<br/><br/>`;
-                        
-                        if (d.countries.length > 0) {
-                            tooltipContent += "<strong>By Country:</strong><br/>";
-                            d.countries.forEach(country => {
-                                tooltipContent += `${country.name}: ${country.count}<br/>`;
-                            });
+                        if (d.active) {
+                            activeKeywords.add(d.keyword);
+                        } else {
+                            activeKeywords.delete(d.keyword);
                         }
                         
-                        tooltip.html(tooltipContent)
-                            .style("left", (event.pageX + 10) + "px")
-                            .style("top", (event.pageY - 28) + "px");
-                    })
-                    .on("mouseout", function(d) {
-                        tooltip.transition()
-                            .duration(500)
-                            .style("opacity", 0);
+                        updateChart(Array.from(activeKeywords));
                     });
+
+                legendItem.append("rect")
+                    .attr("width", isDesktop ? 10 : 8)
+                    .attr("height", isDesktop ? 10 : 8)
+                    .style("fill", d => z(d.keyword));
+
+                legendItem.append("text")
+                    .attr("x", legendConfig.textOffset)
+                    .attr("y", isDesktop ? 9 : 7)
+                    .style("font-size", isDesktop ? "12px" : "10px")
+                    .style("text-anchor", isDesktop ? "start" : "middle")
+                    .text(d => d.keyword);
             });
+        }
 
-            // Track active keywords
-            const activeKeywords = new Set(keywords);
+        // Initial creation
+        createChart();
 
-            // Add interactive legend
-            const legend = svg.append("g")
-                .attr("transform", `translate(${width + margin.right - 100},${margin.top})`);
+        // Redraw on window resize
+        window.addEventListener('resize', debounce(createChart, 250));
 
-            const legendItems = keywords.map(keyword => ({
-                keyword: keyword,
-                active: true
-            }));
-
-            const legendItem = legend.selectAll(".legend-item")
-                .data(legendItems)
-                .enter().append("g")
-                .attr("class", "legend-item")
-                .attr("transform", (d, i) => `translate(0,${i * 20})`)
-                .on("click", function(event, d) {
-                    // Toggle active state
-                    d.active = !d.active;
-                    
-                    // Update legend item appearance
-                    d3.select(this)
-                        .classed("inactive", !d.active);
-                    
-                    // Update active keywords set
-                    if (d.active) {
-                        activeKeywords.add(d.keyword);
-                    } else {
-                        activeKeywords.delete(d.keyword);
-                    }
-                    
-                    // Update chart with active keywords
-                    updateChart(Array.from(activeKeywords));
-                });
-
-            legendItem.append("rect")
-                .attr("width", 10)
-                .attr("height", 10)
-                .style("fill", d => z(d.keyword));
-
-            legendItem.append("text")
-                .attr("x", 20)
-                .attr("y", 9)
-                .text(d => d.keyword);
-        });
+        // Debounce function to prevent too many redraws
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
     </script>
 </body>
 </html>
