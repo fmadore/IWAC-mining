@@ -19,8 +19,9 @@
         }
         
         .title {
-            font-size: 16px;
+            font-size: 24px;
             font-weight: bold;
+            fill: #333;
         }
         
         .year {
@@ -35,11 +36,10 @@
             display: none;
         }
 
-        /* Style for the play/pause button */
-        #playButton {
+        /* Style for both buttons */
+        .control-button {
             position: absolute;
             top: 20px;
-            left: 20px;
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
@@ -49,13 +49,23 @@
             border-radius: 4px;
         }
 
-        #playButton:hover {
+        #playButton {
+            left: 20px;
+        }
+
+        #replayButton {
+            left: 120px;
+            display: none; /* Hidden initially */
+        }
+
+        .control-button:hover {
             background-color: #45a049;
         }
     </style>
 </head>
 <body>
-    <button id="playButton">Pause</button>
+    <button id="playButton" class="control-button">Pause</button>
+    <button id="replayButton" class="control-button">Replay</button>
     <div id="chart"></div>
 
 <script>
@@ -125,12 +135,13 @@ d3.json("yearly_counts.json").then(data => {
         .attr("y", height - margin.bottom)
         .style("text-anchor", "end");
 
-    // Title
+    // Title - updated position and text
     svg.append("text")
         .attr("class", "title")
-        .attr("x", margin.left)
-        .attr("y", margin.top - 20)
-        .text("Evolution des occurrences de mots-clés dans le temps");
+        .attr("x", width / 2)                    // Center horizontally
+        .attr("y", margin.top / 2)               // Position higher up
+        .attr("text-anchor", "middle")           // Center align text
+        .text("Evolution of Keywords Frequency Over Time");
 
     function updateBars(frame) {
         // Update scale
@@ -197,29 +208,53 @@ d3.json("yearly_counts.json").then(data => {
     let interval = null;
     let playing = true;
 
-    // Function to start/stop animation
+    // Function to reset animation
+    function replay() {
+        frame = 0;
+        playing = true;
+        d3.select("#playButton").text("Pause");
+        d3.select("#replayButton").style("display", "none");
+        startAnimation();
+    }
+
+    // Function to start animation
+    function startAnimation() {
+        interval = setInterval(() => {
+            updateBars(frames[frame]);
+            frame++;
+            
+            // Check if animation should stop
+            if (frame >= frames.length) {
+                clearInterval(interval);
+                playing = false;
+                d3.select("#playButton").text("Play");
+                d3.select("#replayButton").style("display", "block");
+                frame = frames.length - 1; // Keep last frame displayed
+            }
+        }, duration + 500);
+    }
+
+    // Function to toggle play/pause
     function togglePlay() {
         if (playing) {
             clearInterval(interval);
             d3.select("#playButton").text("Play");
         } else {
-            interval = setInterval(() => {
-                updateBars(frames[frame]);
-                frame = (frame + 1) % frames.length;
-            }, duration + 500);
-            d3.select("#playButton").text("Pause");
+            // Only restart if not at the end
+            if (frame < frames.length - 1) {
+                startAnimation();
+                d3.select("#playButton").text("Pause");
+            }
         }
         playing = !playing;
     }
 
     // Initialize animation
-    interval = setInterval(() => {
-        updateBars(frames[frame]);
-        frame = (frame + 1) % frames.length;
-    }, duration + 500);
+    startAnimation();
 
-    // Add button click handler
+    // Add button click handlers
     d3.select("#playButton").on("click", togglePlay);
+    d3.select("#replayButton").on("click", replay);
 });
 </script>
 </body>
