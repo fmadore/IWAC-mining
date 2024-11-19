@@ -4,16 +4,23 @@
     <meta charset="utf-8">
     <title>Intégrisme Mentions by Country Over Time</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
         .tooltip {
             position: absolute;
-            padding: 8px;
+            padding: 12px;
             background: white;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 8px;
             pointer-events: none;
-            font-family: sans-serif;
             font-size: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .legend-item {
             cursor: pointer;
@@ -22,13 +29,33 @@
             opacity: 0.3;
         }
         .axis-label {
-            font-family: sans-serif;
             font-size: 12px;
+            font-weight: 500;
         }
         .legend-title {
-            font-family: sans-serif;
-            font-size: 12px;
-            font-weight: bold;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+        .title {
+            font-size: 16px;
+            font-weight: 600;
+            text-anchor: middle;
+        }
+        text {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        @media (max-width: 768px) {
+            .title {
+                font-size: 14px;
+            }
+            .axis-label {
+                font-size: 10px;
+            }
+            .tooltip {
+                font-size: 10px;
+                padding: 8px;
+            }
         }
     </style>
 </head>
