@@ -92,28 +92,60 @@
             max-width: 800px;
             margin: 20px auto;
             padding: 0 20px;
+            background: #f5f5f7;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
 
         .year-labels {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .year-labels span {
+            background: #fff;
+            padding: 4px 12px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .range-slider {
             position: relative;
             width: 100%;
             height: 30px;
+            margin-top: 20px;
+        }
+
+        .range-slider::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: #ddd;
+            border-radius: 2px;
+            top: 50%;
+            transform: translateY(-50%);
         }
 
         .range {
             position: absolute;
             width: 100%;
-            height: 5px;
+            height: 4px;
             background: none;
             pointer-events: none;
             -webkit-appearance: none;
+            margin: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .range:focus {
+            outline: none;
         }
 
         .range::-webkit-slider-thumb {
@@ -124,6 +156,14 @@
             cursor: pointer;
             pointer-events: auto;
             -webkit-appearance: none;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+
+        .range::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            background: #357abd;
         }
 
         .range::-moz-range-thumb {
@@ -133,10 +173,39 @@
             background: #4a90e2;
             cursor: pointer;
             pointer-events: auto;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+
+        .range::-moz-range-thumb:hover {
+            transform: scale(1.1);
+            background: #357abd;
+        }
+
+        .range::-webkit-slider-runnable-track,
+        .range::-moz-range-track {
+            background: transparent;
+            border: none;
         }
 
         #year-start {
-            z-index: 1;
+            z-index: 2;
+        }
+
+        @media (max-width: 768px) {
+            .slider-container {
+                padding: 15px;
+                margin: 15px auto;
+            }
+
+            .year-labels {
+                font-size: 12px;
+            }
+
+            .year-labels span {
+                padding: 3px 8px;
+            }
         }
     </style>
 </head>
