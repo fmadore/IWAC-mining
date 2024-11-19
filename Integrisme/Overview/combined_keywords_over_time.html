@@ -96,10 +96,10 @@
             width: 100%;
             max-width: 800px;
             margin: 20px auto;
-            padding: 0 20px;
             background: #f5f5f7;
             border-radius: 12px;
             padding: 20px;
+            box-sizing: border-box;
             box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
 
@@ -107,6 +107,7 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 15px;
+            padding: 0 10px;
             font-size: 14px;
             font-weight: 500;
             color: #333;
@@ -121,9 +122,10 @@
 
         .range-slider {
             position: relative;
-            width: 100%;
+            width: calc(100% - 20px);
             height: 30px;
-            margin-top: 20px;
+            margin: 20px auto;
+            margin-bottom: 0;
         }
 
         .range-slider::before {
