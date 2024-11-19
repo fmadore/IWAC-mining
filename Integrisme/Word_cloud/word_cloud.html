@@ -22,12 +22,7 @@
         .word {
             font-family: Arial, sans-serif;
             cursor: pointer;
-            transition: transform 0.2s;
             pointer-events: all;
-        }
-        .word:hover {
-            transform: scale(1.1);
-            z-index: 100;
         }
         #controls {
             width: 80%;
@@ -64,6 +59,7 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             max-width: 200px;
             white-space: nowrap;
+            transition: opacity 0.2s ease;
         }
         svg {
             max-width: 100%;
@@ -234,10 +230,6 @@
                 .attr('transform', d => `translate(${d.x},${d.y})`)
                 .text(d => d.text)
                 .on('mouseover', function(event, d) {
-                    // Stop any ongoing transitions
-                    tooltip.interrupt();
-                    
-                    // Get mouse position instead of word position
                     const mouseX = event.pageX;
                     const mouseY = event.pageY;
                     
@@ -253,9 +245,16 @@
                         .style("top", `${mouseY - 10}px`)
                         .style("transform", "translate(-50%, -100%)");
                 })
-                .on('mouseout', function() {
+                .on('mousemove', function(event) {
+                    const mouseX = event.pageX;
+                    const mouseY = event.pageY;
+                    
                     tooltip
-                        .style("opacity", 0);
+                        .style("left", `${mouseX}px`)
+                        .style("top", `${mouseY - 10}px`);
+                })
+                .on('mouseout', function() {
+                    tooltip.style("opacity", 0);
                 });
         }
 
