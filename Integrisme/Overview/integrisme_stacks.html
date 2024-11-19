@@ -184,16 +184,17 @@
         svg.append("text")
             .attr("class", "title")
             .attr("x", width / 2)
-            .attr("y", -margin.top / 2)
+            .attr("y", -margin.top + 20)
             .attr("text-anchor", "middle")
             .text("Number of Articles Mentioning \"Intégrisme\" or \"Intégriste(s)\"by Country Over Time");
 
         svg.append("text")
             .attr("class", "total-count")
             .attr("x", width / 2)
-            .attr("y", -margin.top / 2 + 25)
+            .attr("y", -margin.top + 45)
             .attr("text-anchor", "middle")
-            .style("font-size", "12px");
+            .style("font-size", "12px")
+            .style("margin-bottom", "20px");
 
         svg.append("text")
             .attr("class", "axis-label")
