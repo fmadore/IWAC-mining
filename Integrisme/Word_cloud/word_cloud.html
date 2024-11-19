@@ -221,25 +221,15 @@
             svg.attr('role', 'img')
                .attr('aria-label', 'Word cloud visualization');
 
-            const texts = svg.selectAll('text')
+            svg.selectAll('text')
                 .data(words)
                 .enter()
                 .append('text')
                 .attr('class', 'word')
-                .style('font-size', '0px')
+                .style('font-size', d => `${d.size}px`)
                 .style('font-family', 'Arial')
                 .style('fill', d => d.color)
-                .style('font-weight', 'bold') // Make text more visible
-                .attr('text-anchor', 'middle')
-                .attr('transform', d => `translate(${d.x},${d.y})`)
-                .text(d => d.text);
-
-            // Add entrance animation
-            texts.transition()
-                .duration(CONFIG.transitionDuration)
-                .style('font-size', d => `${d.size}px`);
-
-            svg.selectAll('text')
+                .style('font-weight', 'bold')
                 .attr('text-anchor', 'middle')
                 .attr('transform', d => `translate(${d.x},${d.y})`)
                 .text(d => d.text)
@@ -247,22 +237,21 @@
                     // Stop any ongoing transitions
                     tooltip.interrupt();
                     
-                    // Calculate position relative to viewport
-                    const bounds = this.getBoundingClientRect();
-                    const tooltipX = bounds.left + bounds.width/2;
-                    const tooltipY = bounds.top - 10;
+                    // Get mouse position instead of word position
+                    const mouseX = event.pageX;
+                    const mouseY = event.pageY;
                     
                     tooltip
-                        .style("opacity", 1) // Immediate opacity change
+                        .style("opacity", 1)
                         .html(`
                             <strong>Word:</strong> ${d.text}<br/>
                             <strong>Frequency:</strong> ${formatNumber(d.frequency)}<br/>
                             <strong>Percentage:</strong> ${d.percentage}%<br/>
                             <strong>Rank:</strong> ${currentWords.findIndex(w => w.text === d.text) + 1}/${currentWords.length}
                         `)
-                        .style("left", `${tooltipX}px`)
-                        .style("top", `${tooltipY}px`)
-                        .style("transform", "translate(-50%, -100%)"); // Center the tooltip
+                        .style("left", `${mouseX}px`)
+                        .style("top", `${mouseY - 10}px`)
+                        .style("transform", "translate(-50%, -100%)");
                 })
                 .on('mouseout', function() {
                     tooltip
