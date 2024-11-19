@@ -15,6 +15,12 @@
             font-family: sans-serif;
             font-size: 12px;
         }
+        .legend-item {
+            cursor: pointer;
+        }
+        .legend-item.disabled {
+            opacity: 0.3;
+        }
     </style>
 </head>
 <body>
@@ -63,6 +69,9 @@
 
         // List of subgroups = countries
         const subgroups = ["Burkina Faso", "Benin", "Togo", "Côte d'Ivoire"];
+        
+        // Keep track of enabled/disabled states
+        const enabledGroups = new Set(subgroups);
 
         // Add X axis
         const x = d3.scaleBand()
@@ -82,7 +91,7 @@
             .domain([0, 20])
             .range([height, 0]);
 
-        svg.append("g")
+        const yAxis = svg.append("g")
             .call(d3.axisLeft(y));
 
         // Color palette
@@ -90,38 +99,72 @@
             .domain(subgroups)
             .range(['#4e79a7', '#f28e2c', '#76b7b2', '#9c755f']);
 
-        // Stack the data
-        const stackedData = d3.stack()
-            .keys(subgroups)(processedData);
+        // Function to update the chart
+        function updateChart() {
+            // Filter the data based on enabled groups
+            const filteredGroups = subgroups.filter(group => enabledGroups.has(group));
+            
+            // Stack the data with only enabled groups
+            const stackedData = d3.stack()
+                .keys(filteredGroups)(processedData);
 
-        // Create the stacked bars
-        svg.append("g")
-            .selectAll("g")
-            .data(stackedData)
-            .join("g")
-            .attr("fill", d => color(d.key))
-            .selectAll("rect")
-            .data(d => d)
-            .join("rect")
-            .attr("x", d => x(d.data.year))
-            .attr("y", d => y(d[1]))
-            .attr("height", d => y(d[0]) - y(d[1]))
-            .attr("width", x.bandwidth())
-            .on("mouseover", function(event, d) {
-                const countryName = d3.select(this.parentNode).datum().key;
-                const value = d[1] - d[0];
-                tooltip.transition()
-                    .duration(200)
-                    .style("opacity", .9);
-                tooltip.html(`${countryName}: ${value}`)
-                    .style("left", (event.pageX) + "px")
-                    .style("top", (event.pageY - 28) + "px");
-            })
-            .on("mouseout", function(d) {
-                tooltip.transition()
-                    .duration(500)
-                    .style("opacity", 0);
-            });
+            // Update the y-axis based on the current maximum value
+            const maxY = d3.max(stackedData, d => d3.max(d, d => d[1]));
+            y.domain([0, maxY || 20]);
+            yAxis.transition().duration(500).call(d3.axisLeft(y));
+
+            // Update/create the stacked bars
+            const barGroups = svg.selectAll(".bar-group")
+                .data(stackedData, d => d.key);
+
+            // Remove groups that are no longer needed
+            barGroups.exit().remove();
+
+            // Add new groups
+            const newBarGroups = barGroups.enter()
+                .append("g")
+                .attr("class", "bar-group");
+
+            // Update existing and new groups
+            const allBarGroups = barGroups.merge(newBarGroups)
+                .attr("fill", d => color(d.key));
+
+            // Update the rectangles
+            const bars = allBarGroups.selectAll("rect")
+                .data(d => d);
+
+            // Remove old bars
+            bars.exit().remove();
+
+            // Add new bars
+            bars.enter()
+                .append("rect")
+                .merge(bars)
+                .transition()
+                .duration(500)
+                .attr("x", d => x(d.data.year))
+                .attr("y", d => y(d[1]))
+                .attr("height", d => y(d[0]) - y(d[1]))
+                .attr("width", x.bandwidth());
+
+            // Reapply event listeners
+            allBarGroups.selectAll("rect")
+                .on("mouseover", function(event, d) {
+                    const countryName = d3.select(this.parentNode).datum().key;
+                    const value = d[1] - d[0];
+                    tooltip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    tooltip.html(`${countryName}: ${value}`)
+                        .style("left", (event.pageX) + "px")
+                        .style("top", (event.pageY - 28) + "px");
+                })
+                .on("mouseout", function(d) {
+                    tooltip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                });
+        }
 
         // Add title
         svg.append("text")
@@ -131,7 +174,7 @@
             .style("font-size", "16px")
             .text("Number of Articles Mentioning \"Intégrisme\" by Country Over Time");
 
-        // Add legend
+        // Add interactive legend
         const legend = svg.append("g")
             .attr("font-family", "sans-serif")
             .attr("font-size", 10)
@@ -139,7 +182,21 @@
             .selectAll("g")
             .data(subgroups.slice().reverse())
             .join("g")
-            .attr("transform", (d, i) => `translate(${width + 10},${i * 20})`);
+            .attr("class", "legend-item")
+            .attr("transform", (d, i) => `translate(${width + 10},${i * 20})`)
+            .on("click", function(event, d) {
+                // Toggle the enabled state
+                if (enabledGroups.has(d)) {
+                    if (enabledGroups.size > 1) { // Prevent removing all groups
+                        enabledGroups.delete(d);
+                        d3.select(this).classed("disabled", true);
+                    }
+                } else {
+                    enabledGroups.add(d);
+                    d3.select(this).classed("disabled", false);
+                }
+                updateChart();
+            });
 
         legend.append("rect")
             .attr("x", 0)
@@ -165,6 +222,9 @@
             .attr("text-anchor", "middle")
             .style("font-size", "12px")
             .text(`Total articles: ${totalArticles}`);
+
+        // Initial chart render
+        updateChart();
     });
 </script>
 </body>
