@@ -79,7 +79,7 @@ def load_and_prepare_data(url):
     
     # Check for multiple keywords
     keywords = ['Intégrisme', 'Fondamentalisme islamique', 'Islamisme', 'Radicalisation', 
-               'Extrémisme', 'Obscurantisme', 'Terrorisme', 'Djihadisme']
+               'Extrémisme', 'Obscurantisme', 'Terrorisme', 'Djihadisme', 'Salafisme']
     for keyword in keywords:
         df[f'has_{keyword.lower().replace(" ", "_")}'] = df['dcterms:subject'].fillna('').str.contains(keyword, case=False)
     
@@ -97,7 +97,7 @@ def prepare_combined_yearly_counts(df):
     min_year = int(df['year'].min())
     max_year = int(df['year'].max())
     keywords = ['Intégrisme', 'Fondamentalisme islamique', 'Islamisme', 
-                'Radicalisation', 'Extrémisme', 'Obscurantisme', 'Terrorisme', 'Djihadisme']
+                'Radicalisation', 'Extrémisme', 'Obscurantisme', 'Terrorisme', 'Djihadisme', 'Salafisme']
     
     # Initialize list to store results
     results = []
