@@ -203,8 +203,9 @@
             .attr("y", 0)
             .text("Country");
 
+        // Add legend items with alphabetically sorted countries
         const legendItems = legend.selectAll(".legend-item")
-            .data(subgroups.slice().reverse())
+            .data(subgroups.slice().sort((a, b) => a.localeCompare(b)))  // Sort alphabetically
             .enter()
             .append("g")
             .attr("class", "legend-item")
