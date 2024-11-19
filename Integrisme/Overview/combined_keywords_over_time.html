@@ -21,7 +21,7 @@
         .chart-container {
             position: relative;
             width: 100%;
-            padding-bottom: 60%; /* Aspect ratio */
+            padding-bottom: 50%;
         }
         svg {
             position: absolute;
@@ -74,7 +74,7 @@
         }
         @media (max-width: 768px) {
             .chart-container {
-                padding-bottom: 100%; /* Taller aspect ratio for mobile */
+                padding-bottom: 75%;
             }
             .title {
                 font-size: 14px;
@@ -275,7 +275,7 @@
                 const isDesktop = width >= 768;
                 
                 // Desktop: right side, vertically aligned
-                // Mobile: bottom center, horizontally aligned
+                // Mobile: below the graph, in rows
                 const legendConfig = isDesktop ? {
                     x: chartWidth + margin.left,
                     y: margin.top,
@@ -284,13 +284,21 @@
                     spacing: 20,
                     textOffset: 15
                 } : {
-                    x: width / 2,
-                    y: height - margin.bottom / 2,
+                    x: margin.left,  // Start from left margin
+                    y: height + 20,  // Position below graph
                     layout: 'horizontal',
-                    itemsPerRow: 3,
-                    spacing: width / 6,
-                    textOffset: 10
+                    itemsPerRow: width < 500 ? 2 : 3,  // 2 items per row for very small screens
+                    spacing: width < 500 ? width / 2.5 : width / 3.5,
+                    textOffset: 15
                 };
+
+                // Adjust container height for mobile to accommodate legend
+                if (!isDesktop) {
+                    const legendRows = Math.ceil(keywords.length / legendConfig.itemsPerRow);
+                    const totalLegendHeight = legendRows * 25; // Height per row
+                    const extraPadding = 40; // Additional padding
+                    container.style.paddingBottom = `calc(75% + ${totalLegendHeight + extraPadding}px)`;
+                }
 
                 const legend = svg.append("g")
                     .attr("class", "legend")
@@ -312,7 +320,7 @@
                         } else {
                             const row = Math.floor(i / legendConfig.itemsPerRow);
                             const col = i % legendConfig.itemsPerRow;
-                            return `translate(${(col - 1) * legendConfig.spacing},${row * 20})`;
+                            return `translate(${col * legendConfig.spacing},${row * 25})`;
                         }
                     })
                     .on("click", function(event, d) {
@@ -329,15 +337,15 @@
                     });
 
                 legendItem.append("rect")
-                    .attr("width", isDesktop ? 10 : 8)
-                    .attr("height", isDesktop ? 10 : 8)
+                    .attr("width", 10)
+                    .attr("height", 10)
                     .style("fill", d => z(d.keyword));
 
                 legendItem.append("text")
                     .attr("x", legendConfig.textOffset)
-                    .attr("y", isDesktop ? 9 : 7)
+                    .attr("y", 9)
                     .style("font-size", isDesktop ? "12px" : "10px")
-                    .style("text-anchor", isDesktop ? "start" : "middle")
+                    .style("text-anchor", "start")  // Always left-aligned
                     .text(d => d.keyword);
             });
         }
