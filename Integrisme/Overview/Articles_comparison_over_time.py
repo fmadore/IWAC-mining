@@ -78,7 +78,8 @@ def load_and_prepare_data(url):
     df['country'] = df['dcterms:publisher'].map(get_newspaper_country_mapping())
     
     # Check for multiple keywords
-    keywords = ['Intégrisme', 'Fondamentalisme islamique', 'Islamisme', 'Radicalisation', 'Extrémisme', 'Obscurantisme']
+    keywords = ['Intégrisme', 'Fondamentalisme islamique', 'Islamisme', 'Radicalisation', 
+               'Extrémisme', 'Obscurantisme', 'Terrorisme', 'Djihadisme']
     for keyword in keywords:
         df[f'has_{keyword.lower().replace(" ", "_")}'] = df['dcterms:subject'].fillna('').str.contains(keyword, case=False)
     
@@ -96,7 +97,7 @@ def prepare_combined_yearly_counts(df):
     min_year = int(df['year'].min())
     max_year = int(df['year'].max())
     keywords = ['Intégrisme', 'Fondamentalisme islamique', 'Islamisme', 
-                'Radicalisation', 'Extrémisme', 'Obscurantisme']
+                'Radicalisation', 'Extrémisme', 'Obscurantisme', 'Terrorisme', 'Djihadisme']
     
     # Initialize list to store results
     results = []
