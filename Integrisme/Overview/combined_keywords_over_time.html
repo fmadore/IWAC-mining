@@ -33,6 +33,18 @@
         text {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
+        .legend-item {
+            cursor: pointer;
+        }
+        .legend-item.inactive text {
+            opacity: 0.5;
+        }
+        .legend-item.inactive rect {
+            opacity: 0.5;
+        }
+        .hidden {
+            opacity: 0;
+        }
     </style>
 </head>
 <body>
@@ -44,7 +56,6 @@
               height = +svg.attr("height") - margin.top - margin.bottom,
               g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
-        // Create tooltip div
         const tooltip = d3.select("body").append("div")
             .attr("class", "tooltip")
             .style("opacity", 0);
@@ -78,7 +89,43 @@
 
             x.domain(d3.extent(transformedData, d => d.year));
             y.domain([0, d3.max(transformedData, d => d.total_count)]);
-            z.domain(keywords);
+
+            // Function to update the visualization
+            function updateChart(activeKeywords) {
+                // Filter data based on active keywords
+                const activeData = transformedData.filter(d => activeKeywords.includes(d.keyword));
+                
+                // Update y scale domain based on active data
+                const maxY = d3.max(activeData, d => d.total_count) || 0;
+                y.domain([0, maxY]);
+
+                // Update y-axis with transition
+                g.select(".axis--y")
+                    .transition()
+                    .duration(750)
+                    .call(d3.axisLeft(y));
+
+                // Update lines with transition
+                dataNest.forEach(([keyword, values]) => {
+                    const isActive = activeKeywords.includes(keyword);
+                    const lineId = `line-${keyword.replace(/\s+/g, '-')}`;
+                    const dotsClass = `dots-${keyword.replace(/\s+/g, '-')}`;
+
+                    // Update line
+                    d3.select(`#${lineId}`)
+                        .classed("hidden", !isActive)
+                        .transition()
+                        .duration(750)
+                        .attr("d", line(values));
+
+                    // Update dots
+                    d3.selectAll(`.${dotsClass}`)
+                        .classed("hidden", !isActive)
+                        .transition()
+                        .duration(750)
+                        .attr("cy", d => y(d.total_count));
+                });
+            }
 
             // Add X axis
             g.append("g")
@@ -110,7 +157,7 @@
                 .attr("text-anchor", "middle")
                 .text("Number of Articles");
 
-            // Add lines
+            // Add lines with unique IDs
             const keyword = g.selectAll(".keyword")
                 .data(dataNest)
                 .enter().append("g")
@@ -118,15 +165,17 @@
 
             keyword.append("path")
                 .attr("class", "line")
+                .attr("id", d => `line-${d[0].replace(/\s+/g, '-')}`)
                 .attr("d", d => line(d[1]))
                 .style("stroke", d => z(d[0]));
 
-            // Add dots with tooltips
+            // Add dots with unique classes
             dataNest.forEach(keywordGroup => {
-                g.selectAll(".dot-" + keywordGroup[0].replace(/\s+/g, '-'))
+                const keywordClass = `dots-${keywordGroup[0].replace(/\s+/g, '-')}`;
+                g.selectAll(`.${keywordClass}`)
                     .data(keywordGroup[1].filter(d => d.total_count > 0))
                     .enter().append("circle")
-                    .attr("class", "dot")
+                    .attr("class", `dot ${keywordClass}`)
                     .attr("r", 4)
                     .attr("cx", d => x(d.year))
                     .attr("cy", d => y(d.total_count))
@@ -158,24 +207,51 @@
                     });
             });
 
-            // Add legend
+            // Track active keywords
+            const activeKeywords = new Set(keywords);
+
+            // Add interactive legend
             const legend = svg.append("g")
                 .attr("transform", `translate(${width + margin.right - 100},${margin.top})`);
 
-            keywords.forEach((keyword, i) => {
-                const legendItem = legend.append("g")
-                    .attr("transform", `translate(0,${i * 20})`);
+            const legendItems = keywords.map(keyword => ({
+                keyword: keyword,
+                active: true
+            }));
 
-                legendItem.append("rect")
-                    .attr("width", 10)
-                    .attr("height", 10)
-                    .style("fill", z(keyword));
+            const legendItem = legend.selectAll(".legend-item")
+                .data(legendItems)
+                .enter().append("g")
+                .attr("class", "legend-item")
+                .attr("transform", (d, i) => `translate(0,${i * 20})`)
+                .on("click", function(event, d) {
+                    // Toggle active state
+                    d.active = !d.active;
+                    
+                    // Update legend item appearance
+                    d3.select(this)
+                        .classed("inactive", !d.active);
+                    
+                    // Update active keywords set
+                    if (d.active) {
+                        activeKeywords.add(d.keyword);
+                    } else {
+                        activeKeywords.delete(d.keyword);
+                    }
+                    
+                    // Update chart with active keywords
+                    updateChart(Array.from(activeKeywords));
+                });
 
-                legendItem.append("text")
-                    .attr("x", 20)
-                    .attr("y", 9)
-                    .text(keyword);
-            });
+            legendItem.append("rect")
+                .attr("width", 10)
+                .attr("height", 10)
+                .style("fill", d => z(d.keyword));
+
+            legendItem.append("text")
+                .attr("x", 20)
+                .attr("y", 9)
+                .text(d => d.keyword);
         });
     </script>
 </body>
