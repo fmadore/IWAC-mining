@@ -278,30 +278,81 @@
                 .attr("transform", "rotate(-45)")
                 .style("text-anchor", "end");
 
-            // Update bars
+            // Update bars with smoother transitions
             const bars = svg.selectAll(".stack")
                 .data(stackedData, d => d.key);
 
-            // Exit
-            bars.exit().remove();
+            // Exit with transition
+            bars.exit()
+                .transition()
+                .duration(500)
+                .style("opacity", 0)
+                .remove();
 
             // Enter
             const barsEnter = bars.enter()
                 .append("g")
-                .attr("class", "stack");
+                .attr("class", "stack")
+                .style("opacity", 0); // Start with opacity 0
 
             // Update + Enter
             bars.merge(barsEnter)
-                .attr("fill", d => color(d.key))
+                .transition() // Add transition for the groups
+                .duration(500)
+                .style("opacity", 1) // Fade in
+                .attr("fill", d => color(d.key));
+
+            // Update the rectangles with smoother transitions
+            bars.merge(barsEnter)
                 .selectAll("rect")
                 .data(d => d)
-                .join("rect")
+                .join(
+                    enter => enter.append("rect")
+                        .attr("x", d => x(d.data.year))
+                        .attr("y", height) // Start from bottom
+                        .attr("height", 0)
+                        .attr("width", x.bandwidth()),
+                    update => update,
+                    exit => exit.transition()
+                        .duration(500)
+                        .attr("y", height)
+                        .attr("height", 0)
+                        .remove()
+                )
                 .transition()
                 .duration(500)
                 .attr("x", d => x(d.data.year))
                 .attr("y", d => y(d[1]))
                 .attr("height", d => y(d[0]) - y(d[1]))
                 .attr("width", x.bandwidth());
+
+            // Update y-axis with transition
+            yAxis.transition()
+                .duration(500)
+                .call(d3.axisLeft(y)
+                    .ticks(Math.min(maxY, 20))
+                    .tickFormat(d3.format("d")));
+
+            // Update legend items with visual feedback
+            legend.selectAll(".legend-item")
+                .transition()
+                .duration(500)
+                .style("opacity", d => enabledGroups.has(d) ? 1 : 0.3);
+
+            // Update total count with transition
+            svg.select(".total-count")
+                .transition()
+                .duration(500)
+                .tween("text", function() {
+                    const currentTotal = parseInt(this.textContent.match(/\d+/) || [0]);
+                    const newTotal = filteredData.reduce((acc, year) => {
+                        return acc + activeGroups.reduce((sum, country) => sum + (year[country] || 0), 0);
+                    }, 0);
+                    const i = d3.interpolateNumber(currentTotal, newTotal);
+                    return function(t) {
+                        this.textContent = `Total articles: ${Math.round(i(t))}`;
+                    };
+                });
 
             // Update year totals
             const yearTotals = svg.selectAll(".year-total")
@@ -326,14 +377,6 @@
                     const total = activeGroups.reduce((sum, country) => sum + (d[country] || 0), 0);
                     return total > 0 ? total : ''; // Only show if total > 0
                 });
-
-            // Update total
-            const total = filteredData.reduce((acc, year) => {
-                return acc + activeGroups.reduce((sum, country) => sum + (year[country] || 0), 0);
-            }, 0);
-
-            svg.select(".total-count")
-                .text(`Total articles: ${total}`);
 
             // Add event listeners
             svg.selectAll(".stack rect")
