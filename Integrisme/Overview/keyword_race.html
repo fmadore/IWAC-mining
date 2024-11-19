@@ -34,9 +34,28 @@
         .domain, .tick line {
             display: none;
         }
+
+        /* Style for the play/pause button */
+        #playButton {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        #playButton:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
+    <button id="playButton">Pause</button>
     <div id="chart"></div>
 
 <script>
@@ -173,12 +192,34 @@ d3.json("yearly_counts.json").then(data => {
             });
     }
 
-    // Animation
+    // Animation control variables
     let frame = 0;
-    const interval = setInterval(() => {
+    let interval = null;
+    let playing = true;
+
+    // Function to start/stop animation
+    function togglePlay() {
+        if (playing) {
+            clearInterval(interval);
+            d3.select("#playButton").text("Play");
+        } else {
+            interval = setInterval(() => {
+                updateBars(frames[frame]);
+                frame = (frame + 1) % frames.length;
+            }, duration + 500);
+            d3.select("#playButton").text("Pause");
+        }
+        playing = !playing;
+    }
+
+    // Initialize animation
+    interval = setInterval(() => {
         updateBars(frames[frame]);
         frame = (frame + 1) % frames.length;
     }, duration + 500);
+
+    // Add button click handler
+    d3.select("#playButton").on("click", togglePlay);
 });
 </script>
 </body>
