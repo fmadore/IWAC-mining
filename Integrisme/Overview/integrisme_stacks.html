@@ -241,7 +241,7 @@
             // Create stack generator
             const stack = d3.stack()
                 .keys(activeGroups)
-                .order(d3.stackOrderDescending); // Simple descending order
+                .order(d3.stackOrderDescending);
 
             const stackedData = stack(filteredData);
             
@@ -285,6 +285,30 @@
                 .attr("y", d => y(d[1]))
                 .attr("height", d => y(d[0]) - y(d[1]))
                 .attr("width", x.bandwidth());
+
+            // Update year totals
+            const yearTotals = svg.selectAll(".year-total")
+                .data(filteredData);
+
+            yearTotals.exit().remove();
+
+            yearTotals.enter()
+                .append("text")
+                .attr("class", "year-total")
+                .merge(yearTotals)
+                .transition()
+                .duration(500)
+                .attr("x", d => x(d.year) + x.bandwidth() / 2)
+                .attr("y", d => {
+                    const total = activeGroups.reduce((sum, country) => sum + (d[country] || 0), 0);
+                    return y(total) - 5; // Position slightly above the bar
+                })
+                .attr("text-anchor", "middle")
+                .attr("font-size", "10px")
+                .text(d => {
+                    const total = activeGroups.reduce((sum, country) => sum + (d[country] || 0), 0);
+                    return total > 0 ? total : ''; // Only show if total > 0
+                });
 
             // Update total
             const total = filteredData.reduce((acc, year) => {
