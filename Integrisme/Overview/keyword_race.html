@@ -29,6 +29,11 @@
             opacity: 0.2;
             fill: #ccc;
         }
+
+        /* Hide axis lines and ticks */
+        .domain, .tick line {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -51,6 +56,9 @@ const svg = d3.select("#chart")
 
 // Load the data
 d3.json("yearly_counts.json").then(data => {
+    // Filter data to start from 1972
+    data = data.filter(d => d.year >= 1972);
+    
     // Process data to create cumulative totals
     let keywords = data[0].keywords.map(k => k.keyword);
     let cumulative = {};
@@ -87,7 +95,7 @@ d3.json("yearly_counts.json").then(data => {
         .domain(d3.range(n))
         .range([margin.top, margin.top + barSize * n]);
 
-    // Axis
+    // Axis (now hidden through CSS)
     const xAxis = svg.append("g")
         .attr("transform", `translate(0,${margin.top})`);
 
@@ -109,7 +117,7 @@ d3.json("yearly_counts.json").then(data => {
         // Update scale
         x.domain([0, d3.max(frame.counts, d => d.value)]);
 
-        // Update axis
+        // Update axis (still needed for scale but hidden via CSS)
         xAxis.call(d3.axisTop(x).ticks(width / 80));
 
         // Update bars
