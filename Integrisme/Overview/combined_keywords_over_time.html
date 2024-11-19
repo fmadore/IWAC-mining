@@ -394,15 +394,25 @@
                                 .attr("cy", d => y(d.total_count))
                                 .style("fill", z(keyword))
                                 .on("mouseover", function(event, d) {
+                                    // Dim all lines and dots
+                                    d3.selectAll(".line").classed("dimmed", true);
+                                    d3.selectAll(".dot").classed("dimmed", true);
+                                    
+                                    // Highlight the corresponding line and dots
+                                    const lineId = `line-${keyword.replace(/\s+/g, '-')}`;
+                                    d3.select(`#${lineId}`).classed("dimmed", false);
+                                    d3.selectAll(`.${dotsClass}`).classed("dimmed", false);
+                                    
+                                    // Show tooltip
                                     tooltip.transition()
                                         .duration(200)
                                         .style("opacity", .9);
                                     
-                                    let tooltipContent = `<strong>${d.keyword}</strong><br/>`;
+                                    let tooltipContent = `<strong>${keyword}</strong><br/>`;
                                     tooltipContent += `Year: ${d.year.getFullYear()}<br/>`;
                                     tooltipContent += `Total: ${d.total_count}<br/><br/>`;
                                     
-                                    if (d.countries.length > 0) {
+                                    if (d.countries && d.countries.length > 0) {
                                         tooltipContent += "<strong>By Country:</strong><br/>";
                                         d.countries.forEach(country => {
                                             tooltipContent += `${country.name}: ${country.count}<br/>`;
@@ -414,6 +424,11 @@
                                         .style("top", `${event.pageY - 28}px`);
                                 })
                                 .on("mouseout", function() {
+                                    // Restore all lines and dots to full opacity
+                                    d3.selectAll(".line").classed("dimmed", false);
+                                    d3.selectAll(".dot").classed("dimmed", false);
+                                    
+                                    // Hide tooltip
                                     tooltip.transition()
                                         .duration(500)
                                         .style("opacity", 0);
