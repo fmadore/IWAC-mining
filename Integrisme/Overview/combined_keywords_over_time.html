@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Number of Articles Mentioning Selected Keywords Over Time</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .line {
+            fill: none;
+            stroke-width: 2px;
+        }
+        .axis-label {
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <svg width="1200" height="600"></svg>
+    <script>
+        const svg = d3.select("svg"),
+              margin = {top: 20, right: 150, bottom: 50, left: 50},
+              width = +svg.attr("width") - margin.left - margin.right,
+              height = +svg.attr("height") - margin.top - margin.bottom,
+              g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+        const parseYear = d3.timeParse("%Y");
+
+        const x = d3.scaleTime().range([0, width]);
+        const y = d3.scaleLinear().range([height, 0]);
+        const z = d3.scaleOrdinal(d3.schemeCategory10);
+
+        const line = d3.line()
+            .x(d => x(d.year))
+            .y(d => y(d.count));
+
+        d3.json("yearly_counts.json").then(data => {
+            data.forEach(d => {
+                d.year = parseYear(d.year);
+                d.count = +d.count;
+            });
+
+            const keywords = Array.from(new Set(data.map(d => d.keyword)));
+
+            const dataNest = d3.groups(data, d => d.keyword);
+
+            x.domain(d3.extent(data, d => d.year));
+            y.domain([0, d3.max(data, d => d.count)]);
+            z.domain(keywords);
+
+            g.append("g")
+                .attr("class", "axis axis--x")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(x).ticks(d3.timeYear.every(1)))
+                .selectAll("text")
+                .attr("transform", "rotate(-45)")
+                .style("text-anchor", "end");
+
+            g.append("g")
+                .attr("class", "axis axis--y")
+                .call(d3.axisLeft(y))
+                .append("text")
+                .attr("class", "axis-label")
+                .attr("fill", "#000")
+                .attr("transform", "rotate(-90)")
+                .attr("y", -40)
+                .attr("dy", "0.71em")
+                .attr("text-anchor", "end")
+                .text("Number of Articles");
+
+            const keyword = g.selectAll(".keyword")
+                .data(dataNest)
+                .enter().append("g")
+                .attr("class", "keyword");
+
+            keyword.append("path")
+                .attr("class", "line")
+                .attr("d", d => line(d[1]))
+                .style("stroke", d => z(d[0]));
+
+            const legend = svg.append("g")
+                .attr("transform", `translate(${width + margin.right - 100},${margin.top})`);
+
+            keywords.forEach((keyword, i) => {
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", i * 20)
+                    .attr("width", 10)
+                    .attr("height", 10)
+                    .style("fill", z(keyword));
+
+                legend.append("text")
+                    .attr("x", 20)
+                    .attr("y", i * 20 + 9)
+                    .text(keyword);
+            });
+        });
+    </script>
+</body>
+</html>
