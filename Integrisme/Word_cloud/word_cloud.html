@@ -69,6 +69,36 @@
             max-width: 100%;
             height: auto;
         }
+        /* Add responsive design improvements */
+        @media (max-width: 768px) {
+            #word-slider {
+                width: 200px;
+            }
+            #controls {
+                width: 95%;
+                margin: 10px;
+                padding: 10px;
+            }
+        }
+        
+        /* Add loading and error states */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            font-size: 1.2em;
+            color: #666;
+        }
+        
+        .error-message {
+            color: #d32f2f;
+            text-align: center;
+            padding: 20px;
+            background: #ffebee;
+            border-radius: 4px;
+            margin: 20px;
+        }
     </style>
 </head>
 <body>
@@ -76,7 +106,7 @@
         <div id="controls">
             <div id="slider-container">
                 <label for="word-slider">Number of words:</label>
-                <input type="range" id="word-slider" min="10" max="100" value="50" step="1">
+                <input type="range" id="word-slider" min="20" max="100" value="50" step="1">
                 <span id="word-count">50</span>
             </div>
         </div>
@@ -84,10 +114,17 @@
     </div>
 
     <script>
+        // Add constants at the top
+        const CONFIG = {
+            width: 1000,
+            height: 600,
+            minFontSize: 12,
+            maxFontSize: 80,
+            transitionDuration: 200
+        };
+
         let allWords = [];
         let currentWords = [];
-        let width = 1000;
-        let height = 600;
         
         // Create tooltip div
         const tooltip = d3.select("body")
@@ -101,53 +138,108 @@
             return ((count / total) * 100).toFixed(2);
         };
 
+        // Add better error handling
+        function showError(message) {
+            const container = document.getElementById('word-cloud');
+            container.innerHTML = `
+                <div class="error-message">
+                    <h3>Error</h3>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        // Improve word cloud update with transitions
         function updateWordCloud(numWords) {
             d3.select('#word-cloud').selectAll("*").remove();
             
-            currentWords = allWords.slice(0, numWords).map(([text, size]) => ({
-                text,
-                size: Math.sqrt(size) * 5,
-                frequency: size
-            }));
+            if (!allWords.length) {
+                showError("No words data available");
+                return;
+            }
+            
+            try {
+                // Get the maximum frequency for scaling
+                const maxFreq = Math.max(...allWords.map(([_, freq]) => freq));
+                const minFreq = Math.min(...allWords.map(([_, freq]) => freq));
+                
+                // Create a linear scale for sizing
+                const sizeScale = d3.scaleLinear()
+                    .domain([minFreq, maxFreq])
+                    .range([CONFIG.minFontSize, CONFIG.maxFontSize]);
 
-            const totalFrequency = allWords.reduce((sum, [_, freq]) => sum + freq, 0);
+                currentWords = allWords
+                    .slice(0, numWords)
+                    .map(([text, size]) => ({
+                        text,
+                        size: sizeScale(size), // Use the scale for size calculation
+                        frequency: size,
+                        color: getWordColor(text)
+                    }));
 
-            currentWords.forEach(word => {
-                word.percentage = calculatePercentage(word.frequency, totalFrequency);
-            });
+                const totalFrequency = allWords.reduce((sum, [_, freq]) => sum + freq, 0);
 
-            const layout = d3.layout.cloud()
-                .size([width, height])
-                .words(currentWords)
-                .padding(5)
-                .rotate(() => 0)
-                .font('Arial')
-                .fontSize(d => d.size)
-                .on('end', draw);
+                currentWords.forEach(word => {
+                    word.percentage = calculatePercentage(word.frequency, totalFrequency);
+                });
 
-            layout.start();
+                const layout = d3.layout.cloud()
+                    .size([CONFIG.width, CONFIG.height])
+                    .words(currentWords)
+                    .padding(3)
+                    .rotate(() => 0)
+                    .font('Arial')
+                    .fontSize(d => d.size)
+                    .spiral('archimedean')  // Changed spiral type for better distribution
+                    .on('end', draw);
+
+                layout.start();
+            } catch (error) {
+                console.error('Error updating word cloud:', error);
+                showError("Failed to update word cloud");
+            }
         }
 
-        function draw(words) {
-            const color = d3.scaleOrdinal(d3.schemeCategory10);
+        // Add color consistency
+        const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+        const getWordColor = (word) => {
+            return colorScale(word);
+        };
 
+        // Improve draw function with transitions
+        function draw(words) {
             const svg = d3.select('#word-cloud')
                 .append('svg')
-                .attr('width', width)
-                .attr('height', height)
-                .attr('viewBox', `0 0 ${width} ${height}`)
+                .attr('width', CONFIG.width)
+                .attr('height', CONFIG.height)
+                .attr('viewBox', `0 0 ${CONFIG.width} ${CONFIG.height}`)
                 .attr('preserveAspectRatio', 'xMidYMid meet')
                 .append('g')
-                .attr('transform', `translate(${width/2},${height/2})`);
+                .attr('transform', `translate(${CONFIG.width/2},${CONFIG.height/2})`);
 
-            svg.selectAll('text')
+            // Add ARIA labels for accessibility
+            svg.attr('role', 'img')
+               .attr('aria-label', 'Word cloud visualization');
+
+            const texts = svg.selectAll('text')
                 .data(words)
                 .enter()
                 .append('text')
                 .attr('class', 'word')
-                .style('font-size', d => `${d.size}px`)
+                .style('font-size', '0px')
                 .style('font-family', 'Arial')
-                .style('fill', (d, i) => color(i))
+                .style('fill', d => d.color)
+                .style('font-weight', 'bold') // Make text more visible
+                .attr('text-anchor', 'middle')
+                .attr('transform', d => `translate(${d.x},${d.y})`)
+                .text(d => d.text);
+
+            // Add entrance animation
+            texts.transition()
+                .duration(CONFIG.transitionDuration)
+                .style('font-size', d => `${d.size}px`);
+
+            svg.selectAll('text')
                 .attr('text-anchor', 'middle')
                 .attr('transform', d => `translate(${d.x},${d.y})`)
                 .text(d => d.text)
@@ -178,25 +270,41 @@
                 });
         }
 
-        // Load and initialize
-        d3.json('word_frequencies.json').then(function(data) {
-            allWords = Object.entries(data);
-            
+        // Improve data loading with loading state
+        function loadData() {
+            const container = document.getElementById('word-cloud');
+            container.innerHTML = '<div class="loading">Loading word cloud data...</div>';
+
+            d3.json('word_frequencies.json')
+                .then(function(data) {
+                    if (!data || Object.keys(data).length === 0) {
+                        throw new Error('No data available');
+                    }
+                    allWords = Object.entries(data);
+                    initializeWordCloud();
+                })
+                .catch(function(error) {
+                    console.error('Error loading the JSON file:', error);
+                    showError("Failed to load word cloud data. Please try again later.");
+                });
+        }
+
+        // Initialize word cloud
+        function initializeWordCloud() {
             const slider = document.getElementById('word-slider');
             const wordCount = document.getElementById('word-count');
             
-            // Update the display when slider changes
             slider.addEventListener('input', function() {
                 const numWords = parseInt(this.value);
                 wordCount.textContent = numWords;
                 updateWordCloud(numWords);
             });
 
-            // Initial render
             updateWordCloud(parseInt(slider.value));
-        }).catch(function(error) {
-            console.error('Error loading the JSON file:', error);
-        });
+        }
+
+        // Start loading when document is ready
+        document.addEventListener('DOMContentLoaded', loadData);
     </script>
 </body>
 </html> 
