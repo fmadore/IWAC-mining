@@ -99,6 +99,14 @@
 
     // Define subgroups first
     const subgroups = ["Burkina Faso", "Benin", "Togo", "Côte d'Ivoire"];
+    
+    // Keep track of enabled/disabled states
+    const enabledGroups = new Set(subgroups);
+
+    // Color palette
+    const color = d3.scaleOrdinal()
+        .domain(subgroups)
+        .range(['#4e79a7', '#f28e2c', '#76b7b2', '#9c755f']);
 
     // Load and process the data
     d3.json("yearly_counts.json").then(function(data) {
@@ -138,78 +146,24 @@
             d.year >= firstYear && d.year <= lastYear
         );
 
-        // Calculate total articles
-        const totalArticles = filteredData.reduce((acc, year) => {
-            const yearTotal = subgroups.reduce((sum, country) => {
-                return sum + (year[country] || 0);
-            }, 0);
-            return acc + yearTotal;
-        }, 0);
-
-        // Add X axis with filtered domain
+        // Set up scales
         const x = d3.scaleBand()
             .domain(filteredData.map(d => d.year))
             .range([0, width])
             .padding([0.2]);
 
-        svg.append("g")
-            .attr("transform", `translate(0,${height})`)
-            .call(d3.axisBottom(x))
-            .selectAll("text")
-            .attr("transform", "rotate(-45)")
-            .style("text-anchor", "end");
-
-        // Add Y axis
-        const maxY = d3.max(filteredData, d => {
-            return subgroups.reduce((sum, country) => sum + (d[country] || 0), 0);
-        });
-
         const y = d3.scaleLinear()
-            .domain([0, maxY])
             .range([height, 0]);
 
-        svg.append("g")
-            .call(d3.axisLeft(y));
+        // Add axes
+        const xAxis = svg.append("g")
+            .attr("class", "x-axis")
+            .attr("transform", `translate(0,${height})`);
 
-        // Color palette
-        const color = d3.scaleOrdinal()
-            .domain(subgroups)
-            .range(['#4e79a7', '#f28e2c', '#76b7b2', '#9c755f']);
+        const yAxis = svg.append("g")
+            .attr("class", "y-axis");
 
-        // Stack the data
-        const stackedData = d3.stack()
-            .keys(subgroups)(filteredData);
-
-        // Show the bars
-        svg.append("g")
-            .selectAll("g")
-            .data(stackedData)
-            .join("g")
-            .attr("fill", d => color(d.key))
-            .selectAll("rect")
-            .data(d => d)
-            .join("rect")
-            .attr("x", d => x(d.data.year))
-            .attr("y", d => y(d[1]))
-            .attr("height", d => y(d[0]) - y(d[1]))
-            .attr("width", x.bandwidth())
-            .on("mouseover", function(event, d) {
-                const countryName = d3.select(this.parentNode).datum().key;
-                const value = d[1] - d[0];
-                tooltip.transition()
-                    .duration(200)
-                    .style("opacity", .9);
-                tooltip.html(`${countryName}: ${value}`)
-                    .style("left", (event.pageX + 10) + "px")
-                    .style("top", (event.pageY - 28) + "px");
-            })
-            .on("mouseout", function() {
-                tooltip.transition()
-                    .duration(500)
-                    .style("opacity", 0);
-            });
-
-        // Add title
+        // Add labels
         svg.append("text")
             .attr("class", "title")
             .attr("x", width / 2)
@@ -217,57 +171,13 @@
             .attr("text-anchor", "middle")
             .text("Number of Articles Mentioning \"Intégrisme\" by Country Over Time");
 
-        // Function to calculate total articles for enabled groups
-        function calculateTotal(data, enabledCountries) {
-            return data.reduce((acc, year) => {
-                const yearTotal = enabledCountries.reduce((sum, country) => {
-                    return sum + (year[country] || 0);
-                }, 0);
-                return acc + yearTotal;
-            }, 0);
-        }
-
-        // Function to update the chart
-        function updateChart() {
-            // Filter the data based on enabled groups
-            const filteredGroups = subgroups.filter(group => enabledGroups.has(group));
-            
-            // Update total articles count
-            const currentTotal = calculateTotal(filteredData, filteredGroups);
-            svg.select(".total-count")
-                .transition()
-                .duration(500)
-                .tween("text", function() {
-                    const i = d3.interpolate(parseInt(this.textContent.split(": ")[1]) || 0, currentTotal);
-                    return function(t) {
-                        this.textContent = `Total articles: ${Math.round(i(t))}`;
-                    };
-                });
-
-            // Rest of the updateChart function remains the same...
-            const updatedStackedData = d3.stack()
-                .keys(filteredGroups)(filteredData);
-
-            // Update the y-axis based on the current maximum value
-            const maxY = d3.max(filteredData, d => {
-                return filteredGroups.reduce((sum, country) => sum + (d[country] || 0), 0);
-            });
-            y.domain([0, maxY || 0]);
-            svg.select(".axis--y").transition().duration(500).call(d3.axisLeft(y));
-
-            // Update bars code remains the same...
-        }
-
-        // Add total articles count with a class for updating
         svg.append("text")
-            .attr("class", "total-count")  // Add this class
+            .attr("class", "total-count")
             .attr("x", width / 2)
             .attr("y", -margin.top / 2 + 25)
             .attr("text-anchor", "middle")
-            .style("font-size", "12px")
-            .text(`Total articles: ${calculateTotal(filteredData, subgroups)}`);
+            .style("font-size", "12px");
 
-        // Add X axis label
         svg.append("text")
             .attr("class", "axis-label")
             .attr("text-anchor", "middle")
@@ -275,7 +185,6 @@
             .attr("y", height + margin.bottom - 10)
             .text("Year");
 
-        // Add Y axis label
         svg.append("text")
             .attr("class", "axis-label")
             .attr("text-anchor", "middle")
@@ -288,17 +197,12 @@
         const legend = svg.append("g")
             .attr("transform", `translate(${width + 30}, 0)`);
 
-        // Add legend title
         legend.append("text")
             .attr("class", "legend-title")
             .attr("x", 0)
             .attr("y", 0)
             .text("Country");
 
-        // Keep track of enabled/disabled states
-        const enabledGroups = new Set(subgroups);
-
-        // Add legend items with interactivity
         const legendItems = legend.selectAll(".legend-item")
             .data(subgroups.slice().reverse())
             .enter()
@@ -306,9 +210,8 @@
             .attr("class", "legend-item")
             .attr("transform", (d, i) => `translate(0,${i * 20 + 20})`)
             .on("click", function(event, d) {
-                // Toggle the enabled state
                 if (enabledGroups.has(d)) {
-                    if (enabledGroups.size > 1) { // Prevent removing all groups
+                    if (enabledGroups.size > 1) {
                         enabledGroups.delete(d);
                         d3.select(this).classed("disabled", true);
                     }
@@ -330,7 +233,78 @@
             .attr("dy", "0.32em")
             .text(d => d);
 
-        // Initial chart render with all groups
+        // Update function
+        function updateChart() {
+            const activeGroups = Array.from(enabledGroups);
+            
+            // Update stacks
+            const stack = d3.stack().keys(activeGroups);
+            const stackedData = stack(filteredData);
+            
+            // Update y scale
+            const maxY = d3.max(stackedData, layer => d3.max(layer, d => d[1]));
+            y.domain([0, maxY || 0]);
+            
+            // Update axes
+            yAxis.transition().duration(500).call(d3.axisLeft(y));
+            xAxis.call(d3.axisBottom(x))
+                .selectAll("text")
+                .attr("transform", "rotate(-45)")
+                .style("text-anchor", "end");
+
+            // Update bars
+            const bars = svg.selectAll(".stack")
+                .data(stackedData, d => d.key);
+
+            // Exit
+            bars.exit().remove();
+
+            // Enter
+            const barsEnter = bars.enter()
+                .append("g")
+                .attr("class", "stack");
+
+            // Update + Enter
+            bars.merge(barsEnter)
+                .attr("fill", d => color(d.key))
+                .selectAll("rect")
+                .data(d => d)
+                .join("rect")
+                .transition()
+                .duration(500)
+                .attr("x", d => x(d.data.year))
+                .attr("y", d => y(d[1]))
+                .attr("height", d => y(d[0]) - y(d[1]))
+                .attr("width", x.bandwidth());
+
+            // Update total
+            const total = filteredData.reduce((acc, year) => {
+                return acc + activeGroups.reduce((sum, country) => sum + (year[country] || 0), 0);
+            }, 0);
+
+            svg.select(".total-count")
+                .text(`Total articles: ${total}`);
+
+            // Add event listeners
+            svg.selectAll(".stack rect")
+                .on("mouseover", function(event, d) {
+                    const countryName = d3.select(this.parentNode).datum().key;
+                    const value = d[1] - d[0];
+                    tooltip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    tooltip.html(`${countryName}: ${value}`)
+                        .style("left", (event.pageX + 10) + "px")
+                        .style("top", (event.pageY - 28) + "px");
+                })
+                .on("mouseout", function() {
+                    tooltip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                });
+        }
+
+        // Initial render
         updateChart();
     });
 </script>
