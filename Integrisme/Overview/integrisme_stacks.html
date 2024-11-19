@@ -246,7 +246,12 @@
             y.domain([0, maxY || 0]);
             
             // Update axes
-            yAxis.transition().duration(500).call(d3.axisLeft(y));
+            yAxis.transition()
+                .duration(500)
+                .call(d3.axisLeft(y)
+                    .ticks(Math.min(maxY, 20)) // Limit number of ticks
+                    .tickFormat(d3.format("d"))); // "d" format for integers only
+
             xAxis.call(d3.axisBottom(x))
                 .selectAll("text")
                 .attr("transform", "rotate(-45)")
