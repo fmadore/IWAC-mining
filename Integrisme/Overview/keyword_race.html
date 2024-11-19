@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Keywords Evolution Over Time</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        text {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+        
+        .tick text {
+            fill: #666;
+        }
+        
+        .axis-label {
+            fill: #666;
+            font-size: 14px;
+        }
+        
+        .title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .year {
+            font-size: 64px;
+            font-weight: bold;
+            opacity: 0.2;
+        }
+    </style>
+</head>
+<body>
+    <div id="chart"></div>
+
+<script>
+// Width and height of the visualization
+const width = 960;
+const height = 600;
+const margin = {top: 80, right: 200, bottom: 40, left: 200};
+const barSize = 40;
+const duration = 250;
+const n = 9; // number of keywords
+
+// Create SVG
+const svg = d3.select("#chart")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+// Load the data
+d3.json("yearly_counts.json").then(data => {
+    // Process data to create cumulative totals
+    let keywords = data[0].keywords.map(k => k.keyword);
+    let cumulative = {};
+    
+    keywords.forEach(keyword => {
+        cumulative[keyword] = 0;
+    });
+
+    let frames = data.map(yearData => {
+        let year = yearData.year;
+        let counts = {};
+        
+        yearData.keywords.forEach(k => {
+            cumulative[k.keyword] += k.total_count;
+            counts[k.keyword] = cumulative[k.keyword];
+        });
+        
+        return {
+            year,
+            counts: Object.entries(counts)
+                .map(([name, value]) => ({name, value}))
+                .sort((a, b) => b.value - a.value)
+        };
+    });
+
+    // Color scale
+    const color = d3.scaleOrdinal()
+        .domain(keywords)
+        .range(d3.schemeTableau10);
+
+    // Scales
+    const x = d3.scaleLinear([0, 1], [margin.left, width - margin.right]);
+    const y = d3.scaleBand()
+        .domain(d3.range(n))
+        .range([margin.top, margin.top + barSize * n]);
+
+    // Axis
+    const xAxis = svg.append("g")
+        .attr("transform", `translate(0,${margin.top})`);
+
+    // Labels
+    const yearLabel = svg.append("text")
+        .attr("class", "year")
+        .attr("x", width - margin.right)
+        .attr("y", margin.top - 10)
+        .style("text-anchor", "end");
+
+    // Title
+    svg.append("text")
+        .attr("class", "title")
+        .attr("x", margin.left)
+        .attr("y", margin.top - 20)
+        .text("Evolution des occurrences de mots-clés dans le temps");
+
+    function updateBars(frame) {
+        // Update scale
+        x.domain([0, d3.max(frame.counts, d => d.value)]);
+
+        // Update axis
+        xAxis.call(d3.axisTop(x).ticks(width / 80));
+
+        // Update bars
+        const bars = svg.selectAll("g.bar")
+            .data(frame.counts, d => d.name);
+
+        const barsEnter = bars.enter()
+            .append("g")
+            .attr("class", "bar");
+
+        barsEnter.append("rect");
+        barsEnter.append("text")
+            .attr("class", "label");
+        barsEnter.append("text")
+            .attr("class", "value");
+
+        // Update all bars
+        const barsUpdate = bars.merge(barsEnter);
+
+        barsUpdate.transition()
+            .duration(duration)
+            .attr("transform", (d, i) => `translate(0,${y(i)})`);
+
+        barsUpdate.select("rect")
+            .transition()
+            .duration(duration)
+            .attr("width", d => x(d.value) - x(0))
+            .attr("height", y.bandwidth() - 1)
+            .attr("x", x(0))
+            .attr("fill", d => color(d.name));
+
+        barsUpdate.select(".label")
+            .text(d => d.name)
+            .attr("x", x(0) - 6)
+            .attr("y", y.bandwidth() / 2)
+            .attr("dy", "0.35em")
+            .style("text-anchor", "end");
+
+        barsUpdate.select(".value")
+            .text(d => d.value)
+            .attr("x", d => x(d.value) + 6)
+            .attr("y", y.bandwidth() / 2)
+            .attr("dy", "0.35em");
+
+        // Update year label
+        yearLabel.text(frame.year);
+    }
+
+    // Animation
+    let frame = 0;
+    const interval = setInterval(() => {
+        updateBars(frames[frame]);
+        frame = (frame + 1) % frames.length;
+    }, duration);
+});
+</script>
+</body>
+</html> 
