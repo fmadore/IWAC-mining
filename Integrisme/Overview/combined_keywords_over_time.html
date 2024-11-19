@@ -45,16 +45,27 @@
         .hidden {
             opacity: 0;
         }
+        .title {
+            font-size: 16px;
+            font-weight: 600;
+            text-anchor: middle;
+        }
     </style>
 </head>
 <body>
-    <svg width="1200" height="600"></svg>
+    <svg width="1200" height="650"></svg>
     <script>
         const svg = d3.select("svg"),
-              margin = {top: 20, right: 150, bottom: 50, left: 60},
+              margin = {top: 50, right: 150, bottom: 50, left: 60},
               width = +svg.attr("width") - margin.left - margin.right,
               height = +svg.attr("height") - margin.top - margin.bottom,
               g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+        svg.append("text")
+            .attr("class", "title")
+            .attr("x", width / 2 + margin.left)
+            .attr("y", margin.top / 2)
+            .text("Number of Articles Mentioning Selected Keywords Over Time");
 
         const tooltip = d3.select("body").append("div")
             .attr("class", "tooltip")
