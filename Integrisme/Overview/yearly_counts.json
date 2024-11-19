@@ -524,8 +524,13 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Obscurantisme",
@@ -998,8 +1003,13 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Benin",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Djihadisme",
@@ -1048,8 +1058,13 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Togo",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Obscurantisme",
@@ -1173,8 +1188,13 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Benin",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Djihadisme",
@@ -1303,10 +1323,18 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 1,
+        "total_count": 3,
         "countries": [
           {
             "name": "Burkina Faso",
+            "count": 1
+          },
+          {
+            "name": "Côte d'Ivoire",
+            "count": 1
+          },
+          {
+            "name": "Togo",
             "count": 1
           }
         ]
@@ -1368,10 +1396,22 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 1,
+        "total_count": 5,
         "countries": [
           {
             "name": "Benin",
+            "count": 1
+          },
+          {
+            "name": "Burkina Faso",
+            "count": 2
+          },
+          {
+            "name": "Côte d'Ivoire",
+            "count": 1
+          },
+          {
+            "name": "Togo",
             "count": 1
           }
         ]
@@ -1428,8 +1468,13 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 2,
+        "countries": [
+          {
+            "name": "Togo",
+            "count": 2
+          }
+        ]
       },
       {
         "keyword": "Djihadisme",
@@ -1478,8 +1523,13 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Togo",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Djihadisme",
@@ -1528,8 +1578,13 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Togo",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Djihadisme",
@@ -1630,8 +1685,13 @@
       },
       {
         "keyword": "Fondamentalisme islamique",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Islamisme",
@@ -1743,15 +1803,19 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 4,
+        "total_count": 6,
         "countries": [
           {
             "name": "Benin",
-            "count": 1
+            "count": 2
           },
           {
             "name": "Burkina Faso",
             "count": 3
+          },
+          {
+            "name": "Côte d'Ivoire",
+            "count": 1
           }
         ]
       },
@@ -1762,10 +1826,14 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 1,
+        "total_count": 2,
         "countries": [
           {
             "name": "Benin",
+            "count": 1
+          },
+          {
+            "name": "Burkina Faso",
             "count": 1
           }
         ]
@@ -1835,8 +1903,13 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Obscurantisme",
@@ -1845,8 +1918,12 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 1,
+        "total_count": 3,
         "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 2
+          },
           {
             "name": "Togo",
             "count": 1
@@ -1892,10 +1969,18 @@
       },
       {
         "keyword": "Fondamentalisme islamique",
-        "total_count": 1,
+        "total_count": 3,
         "countries": [
           {
             "name": "Burkina Faso",
+            "count": 1
+          },
+          {
+            "name": "Côte d'Ivoire",
+            "count": 1
+          },
+          {
+            "name": "Togo",
             "count": 1
           }
         ]
@@ -1934,7 +2019,7 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 5,
+        "total_count": 9,
         "countries": [
           {
             "name": "Benin",
@@ -1942,11 +2027,11 @@
           },
           {
             "name": "Burkina Faso",
-            "count": 1
+            "count": 2
           },
           {
             "name": "Côte d'Ivoire",
-            "count": 2
+            "count": 5
           },
           {
             "name": "Togo",
@@ -1966,11 +2051,15 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 4,
+        "total_count": 5,
         "countries": [
           {
             "name": "Benin",
             "count": 2
+          },
+          {
+            "name": "Burkina Faso",
+            "count": 1
           },
           {
             "name": "Côte d'Ivoire",
@@ -2034,8 +2123,13 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Djihadisme",
@@ -2068,8 +2162,12 @@
       },
       {
         "keyword": "Fondamentalisme islamique",
-        "total_count": 1,
+        "total_count": 2,
         "countries": [
+          {
+            "name": "Côte d'Ivoire",
+            "count": 1
+          },
           {
             "name": "Togo",
             "count": 1
@@ -2116,11 +2214,15 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 1,
+        "total_count": 3,
         "countries": [
           {
-            "name": "Togo",
+            "name": "Benin",
             "count": 1
+          },
+          {
+            "name": "Togo",
+            "count": 2
           }
         ]
       },
@@ -2155,8 +2257,13 @@
       },
       {
         "keyword": "Fondamentalisme islamique",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Islamisme",
@@ -2180,8 +2287,13 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Obscurantisme",
@@ -2195,10 +2307,18 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 1,
+        "total_count": 5,
         "countries": [
           {
             "name": "Benin",
+            "count": 1
+          },
+          {
+            "name": "Burkina Faso",
+            "count": 3
+          },
+          {
+            "name": "Côte d'Ivoire",
             "count": 1
           }
         ]
@@ -2253,10 +2373,14 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 1,
+        "total_count": 3,
         "countries": [
           {
             "name": "Burkina Faso",
+            "count": 2
+          },
+          {
+            "name": "Côte d'Ivoire",
             "count": 1
           }
         ]
@@ -2277,8 +2401,13 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 3,
+        "countries": [
+          {
+            "name": "Côte d'Ivoire",
+            "count": 3
+          }
+        ]
       },
       {
         "keyword": "Djihadisme",
@@ -2418,11 +2547,11 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 3,
+        "total_count": 5,
         "countries": [
           {
             "name": "Burkina Faso",
-            "count": 1
+            "count": 3
           },
           {
             "name": "Côte d'Ivoire",
@@ -2441,19 +2570,19 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 6,
+        "total_count": 12,
         "countries": [
           {
             "name": "Burkina Faso",
-            "count": 3
+            "count": 4
           },
           {
             "name": "Côte d'Ivoire",
-            "count": 1
+            "count": 3
           },
           {
             "name": "Togo",
-            "count": 2
+            "count": 5
           }
         ]
       },
@@ -2508,7 +2637,7 @@
       },
       {
         "keyword": "Radicalisation",
-        "total_count": 9,
+        "total_count": 8,
         "countries": [
           {
             "name": "Benin",
@@ -2521,20 +2650,16 @@
           {
             "name": "Côte d'Ivoire",
             "count": 2
-          },
-          {
-            "name": "Togo",
-            "count": 1
           }
         ]
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 2,
+        "total_count": 3,
         "countries": [
           {
             "name": "Benin",
-            "count": 2
+            "count": 3
           }
         ]
       },
@@ -2554,7 +2679,7 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 9,
+        "total_count": 15,
         "countries": [
           {
             "name": "Benin",
@@ -2562,15 +2687,15 @@
           },
           {
             "name": "Burkina Faso",
-            "count": 1
+            "count": 4
           },
           {
             "name": "Côte d'Ivoire",
-            "count": 2
+            "count": 4
           },
           {
             "name": "Togo",
-            "count": 1
+            "count": 2
           }
         ]
       },
@@ -2651,8 +2776,13 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Obscurantisme",
@@ -2661,15 +2791,15 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 3,
+        "total_count": 6,
         "countries": [
           {
             "name": "Burkina Faso",
-            "count": 1
+            "count": 3
           },
           {
             "name": "Togo",
-            "count": 2
+            "count": 3
           }
         ]
       },
@@ -2715,8 +2845,13 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Obscurantisme",
@@ -2725,11 +2860,19 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 1,
+        "total_count": 4,
         "countries": [
+          {
+            "name": "Benin",
+            "count": 1
+          },
           {
             "name": "Côte d'Ivoire",
             "count": 1
+          },
+          {
+            "name": "Togo",
+            "count": 2
           }
         ]
       },
@@ -2854,10 +2997,14 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 1,
+        "total_count": 2,
         "countries": [
           {
             "name": "Burkina Faso",
+            "count": 1
+          },
+          {
+            "name": "Togo",
             "count": 1
           }
         ]
@@ -2869,15 +3016,15 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 2,
+        "total_count": 6,
         "countries": [
           {
             "name": "Burkina Faso",
-            "count": 1
+            "count": 3
           },
           {
             "name": "Togo",
-            "count": 1
+            "count": 3
           }
         ]
       },
@@ -2956,18 +3103,27 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 1,
+        "total_count": 4,
         "countries": [
           {
             "name": "Benin",
             "count": 1
+          },
+          {
+            "name": "Burkina Faso",
+            "count": 3
           }
         ]
       },
       {
         "keyword": "Djihadisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Salafisme",
@@ -3024,19 +3180,19 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 3,
+        "total_count": 7,
         "countries": [
           {
             "name": "Benin",
-            "count": 1
+            "count": 3
           },
           {
             "name": "Burkina Faso",
-            "count": 1
+            "count": 2
           },
           {
             "name": "Togo",
-            "count": 1
+            "count": 2
           }
         ]
       },
@@ -3086,10 +3242,18 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 1,
+        "total_count": 3,
         "countries": [
           {
+            "name": "Benin",
+            "count": 1
+          },
+          {
             "name": "Burkina Faso",
+            "count": 1
+          },
+          {
+            "name": "Côte d'Ivoire",
             "count": 1
           }
         ]
@@ -3140,11 +3304,11 @@
       },
       {
         "keyword": "Fondamentalisme islamique",
-        "total_count": 1,
+        "total_count": 2,
         "countries": [
           {
             "name": "Burkina Faso",
-            "count": 1
+            "count": 2
           }
         ]
       },
@@ -3184,11 +3348,11 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 4,
+        "total_count": 5,
         "countries": [
           {
             "name": "Burkina Faso",
-            "count": 3
+            "count": 4
           },
           {
             "name": "Côte d'Ivoire",
@@ -3198,13 +3362,23 @@
       },
       {
         "keyword": "Djihadisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Salafisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 1
+          }
+        ]
       }
     ]
   },
@@ -3252,8 +3426,12 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 1,
+        "total_count": 2,
         "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 1
+          },
           {
             "name": "Togo",
             "count": 1
@@ -3267,11 +3445,11 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 2,
+        "total_count": 3,
         "countries": [
           {
             "name": "Burkina Faso",
-            "count": 1
+            "count": 2
           },
           {
             "name": "Togo",
@@ -3306,11 +3484,11 @@
       },
       {
         "keyword": "Fondamentalisme islamique",
-        "total_count": 1,
+        "total_count": 3,
         "countries": [
           {
             "name": "Burkina Faso",
-            "count": 1
+            "count": 3
           }
         ]
       },
@@ -3340,11 +3518,11 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 3,
+        "total_count": 5,
         "countries": [
           {
             "name": "Burkina Faso",
-            "count": 3
+            "count": 5
           }
         ]
       },
@@ -3360,7 +3538,7 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 9,
+        "total_count": 10,
         "countries": [
           {
             "name": "Benin",
@@ -3368,7 +3546,7 @@
           },
           {
             "name": "Burkina Faso",
-            "count": 7
+            "count": 8
           }
         ]
       },
@@ -3437,7 +3615,7 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 8,
+        "total_count": 14,
         "countries": [
           {
             "name": "Benin",
@@ -3445,18 +3623,23 @@
           },
           {
             "name": "Burkina Faso",
-            "count": 7
+            "count": 13
           }
         ]
       },
       {
         "keyword": "Obscurantisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 12,
+        "total_count": 16,
         "countries": [
           {
             "name": "Benin",
@@ -3464,19 +3647,29 @@
           },
           {
             "name": "Burkina Faso",
-            "count": 6
+            "count": 10
           }
         ]
       },
       {
         "keyword": "Djihadisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 6,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 6
+          }
+        ]
       },
       {
         "keyword": "Salafisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 4,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 4
+          }
+        ]
       }
     ]
   },
@@ -3523,7 +3716,7 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 2,
+        "total_count": 5,
         "countries": [
           {
             "name": "Benin",
@@ -3531,7 +3724,7 @@
           },
           {
             "name": "Burkina Faso",
-            "count": 1
+            "count": 4
           }
         ]
       },
@@ -3542,10 +3735,14 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 3,
+        "total_count": 5,
         "countries": [
           {
             "name": "Benin",
+            "count": 2
+          },
+          {
+            "name": "Burkina Faso",
             "count": 2
           },
           {
@@ -3556,8 +3753,13 @@
       },
       {
         "keyword": "Djihadisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Salafisme",
@@ -3621,15 +3823,19 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 3,
+        "total_count": 5,
         "countries": [
           {
             "name": "Benin",
-            "count": 1
+            "count": 2
           },
           {
             "name": "Burkina Faso",
             "count": 2
+          },
+          {
+            "name": "Côte d'Ivoire",
+            "count": 1
           }
         ]
       },
@@ -3645,7 +3851,7 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 33,
+        "total_count": 37,
         "countries": [
           {
             "name": "Benin",
@@ -3653,7 +3859,7 @@
           },
           {
             "name": "Burkina Faso",
-            "count": 15
+            "count": 18
           },
           {
             "name": "Côte d'Ivoire",
@@ -3661,19 +3867,33 @@
           },
           {
             "name": "Togo",
-            "count": 1
+            "count": 2
           }
         ]
       },
       {
         "keyword": "Djihadisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 14,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 10
+          },
+          {
+            "name": "Côte d'Ivoire",
+            "count": 4
+          }
+        ]
       },
       {
         "keyword": "Salafisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 2,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 2
+          }
+        ]
       }
     ]
   },
@@ -3687,11 +3907,11 @@
       },
       {
         "keyword": "Fondamentalisme islamique",
-        "total_count": 3,
+        "total_count": 4,
         "countries": [
           {
             "name": "Burkina Faso",
-            "count": 2
+            "count": 3
           },
           {
             "name": "Togo",
@@ -3741,7 +3961,7 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 17,
+        "total_count": 18,
         "countries": [
           {
             "name": "Benin",
@@ -3749,7 +3969,7 @@
           },
           {
             "name": "Burkina Faso",
-            "count": 13
+            "count": 14
           },
           {
             "name": "Togo",
@@ -3769,15 +3989,33 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 84,
+        "total_count": 96,
         "countries": [
           {
             "name": "Benin",
-            "count": 6
+            "count": 7
           },
           {
             "name": "Burkina Faso",
-            "count": 74
+            "count": 81
+          },
+          {
+            "name": "Côte d'Ivoire",
+            "count": 2
+          },
+          {
+            "name": "Togo",
+            "count": 6
+          }
+        ]
+      },
+      {
+        "keyword": "Djihadisme",
+        "total_count": 16,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 13
           },
           {
             "name": "Côte d'Ivoire",
@@ -3785,19 +4023,19 @@
           },
           {
             "name": "Togo",
-            "count": 3
+            "count": 2
           }
         ]
       },
       {
-        "keyword": "Djihadisme",
-        "total_count": 0,
-        "countries": []
-      },
-      {
         "keyword": "Salafisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Togo",
+            "count": 1
+          }
+        ]
       }
     ]
   },
@@ -3820,8 +4058,12 @@
       },
       {
         "keyword": "Fondamentalisme islamique",
-        "total_count": 1,
+        "total_count": 2,
         "countries": [
+          {
+            "name": "Benin",
+            "count": 1
+          },
           {
             "name": "Burkina Faso",
             "count": 1
@@ -3866,51 +4108,51 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 24,
+        "total_count": 33,
         "countries": [
           {
             "name": "Benin",
-            "count": 1
+            "count": 3
           },
           {
             "name": "Burkina Faso",
-            "count": 17
+            "count": 22
           },
           {
             "name": "Côte d'Ivoire",
-            "count": 5
+            "count": 6
           },
           {
             "name": "Togo",
-            "count": 1
+            "count": 2
           }
         ]
       },
       {
         "keyword": "Obscurantisme",
-        "total_count": 1,
+        "total_count": 3,
         "countries": [
           {
             "name": "Burkina Faso",
-            "count": 1
+            "count": 3
           }
         ]
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 178,
+        "total_count": 188,
         "countries": [
           {
             "name": "Benin",
-            "count": 4
+            "count": 7
           },
           {
             "name": "Burkina Faso",
-            "count": 158
+            "count": 163
           },
           {
             "name": "Côte d'Ivoire",
-            "count": 13
+            "count": 15
           },
           {
             "name": "Togo",
@@ -3920,8 +4162,17 @@
       },
       {
         "keyword": "Djihadisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 20,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 16
+          },
+          {
+            "name": "Côte d'Ivoire",
+            "count": 4
+          }
+        ]
       },
       {
         "keyword": "Salafisme",
@@ -3974,11 +4225,11 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 8,
+        "total_count": 13,
         "countries": [
           {
             "name": "Burkina Faso",
-            "count": 8
+            "count": 13
           }
         ]
       },
@@ -3998,8 +4249,12 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 99,
+        "total_count": 100,
         "countries": [
+          {
+            "name": "Benin",
+            "count": 1
+          },
           {
             "name": "Burkina Faso",
             "count": 98
@@ -4012,8 +4267,13 @@
       },
       {
         "keyword": "Djihadisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 14,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 14
+          }
+        ]
       },
       {
         "keyword": "Salafisme",
@@ -4041,8 +4301,13 @@
       },
       {
         "keyword": "Fondamentalisme islamique",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Islamisme",
@@ -4078,15 +4343,19 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 17,
+        "total_count": 23,
         "countries": [
           {
             "name": "Benin",
-            "count": 6
+            "count": 7
           },
           {
             "name": "Burkina Faso",
-            "count": 10
+            "count": 13
+          },
+          {
+            "name": "Côte d'Ivoire",
+            "count": 2
           },
           {
             "name": "Togo",
@@ -4096,25 +4365,25 @@
       },
       {
         "keyword": "Obscurantisme",
-        "total_count": 2,
+        "total_count": 4,
         "countries": [
           {
             "name": "Burkina Faso",
-            "count": 2
+            "count": 4
           }
         ]
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 119,
+        "total_count": 124,
         "countries": [
           {
             "name": "Benin",
-            "count": 8
+            "count": 9
           },
           {
             "name": "Burkina Faso",
-            "count": 106
+            "count": 110
           },
           {
             "name": "Côte d'Ivoire",
@@ -4128,8 +4397,25 @@
       },
       {
         "keyword": "Djihadisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 9,
+        "countries": [
+          {
+            "name": "Benin",
+            "count": 2
+          },
+          {
+            "name": "Burkina Faso",
+            "count": 5
+          },
+          {
+            "name": "Côte d'Ivoire",
+            "count": 1
+          },
+          {
+            "name": "Togo",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Salafisme",
@@ -4177,7 +4463,7 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 15,
+        "total_count": 17,
         "countries": [
           {
             "name": "Benin",
@@ -4185,7 +4471,7 @@
           },
           {
             "name": "Burkina Faso",
-            "count": 7
+            "count": 9
           }
         ]
       },
@@ -4201,7 +4487,7 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 94,
+        "total_count": 96,
         "countries": [
           {
             "name": "Benin",
@@ -4209,22 +4495,31 @@
           },
           {
             "name": "Burkina Faso",
-            "count": 83
+            "count": 85
           }
         ]
       },
       {
         "keyword": "Djihadisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 3,
+        "countries": [
+          {
+            "name": "Burkina Faso",
+            "count": 3
+          }
+        ]
       },
       {
         "keyword": "Salafisme",
-        "total_count": 4,
+        "total_count": 5,
         "countries": [
           {
             "name": "Benin",
             "count": 4
+          },
+          {
+            "name": "Burkina Faso",
+            "count": 1
           }
         ]
       }
@@ -4292,31 +4587,41 @@
       },
       {
         "keyword": "Obscurantisme",
-        "total_count": 0,
-        "countries": []
-      },
-      {
-        "keyword": "Terrorisme",
-        "total_count": 34,
+        "total_count": 1,
         "countries": [
           {
-            "name": "Benin",
-            "count": 9
-          },
-          {
             "name": "Burkina Faso",
-            "count": 24
-          },
-          {
-            "name": "Togo",
             "count": 1
           }
         ]
       },
       {
+        "keyword": "Terrorisme",
+        "total_count": 38,
+        "countries": [
+          {
+            "name": "Benin",
+            "count": 11
+          },
+          {
+            "name": "Burkina Faso",
+            "count": 25
+          },
+          {
+            "name": "Togo",
+            "count": 2
+          }
+        ]
+      },
+      {
         "keyword": "Djihadisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 6,
+        "countries": [
+          {
+            "name": "Benin",
+            "count": 6
+          }
+        ]
       },
       {
         "keyword": "Salafisme",
@@ -4355,7 +4660,7 @@
       },
       {
         "keyword": "Radicalisation",
-        "total_count": 22,
+        "total_count": 21,
         "countries": [
           {
             "name": "Benin",
@@ -4363,7 +4668,7 @@
           },
           {
             "name": "Togo",
-            "count": 5
+            "count": 4
           }
         ]
       },
@@ -4388,11 +4693,11 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 21,
+        "total_count": 24,
         "countries": [
           {
             "name": "Benin",
-            "count": 17
+            "count": 20
           },
           {
             "name": "Togo",
@@ -4402,8 +4707,17 @@
       },
       {
         "keyword": "Djihadisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 5,
+        "countries": [
+          {
+            "name": "Benin",
+            "count": 3
+          },
+          {
+            "name": "Togo",
+            "count": 2
+          }
+        ]
       },
       {
         "keyword": "Salafisme",
@@ -4432,15 +4746,15 @@
       },
       {
         "keyword": "Radicalisation",
-        "total_count": 13,
+        "total_count": 11,
         "countries": [
           {
             "name": "Benin",
-            "count": 10
+            "count": 9
           },
           {
             "name": "Togo",
-            "count": 3
+            "count": 2
           }
         ]
       },
@@ -4465,15 +4779,15 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 13,
+        "total_count": 17,
         "countries": [
           {
             "name": "Benin",
-            "count": 10
+            "count": 12
           },
           {
             "name": "Togo",
-            "count": 3
+            "count": 5
           }
         ]
       },
@@ -4523,11 +4837,11 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 3,
+        "total_count": 4,
         "countries": [
           {
             "name": "Benin",
-            "count": 1
+            "count": 2
           },
           {
             "name": "Togo",
@@ -4542,11 +4856,15 @@
       },
       {
         "keyword": "Terrorisme",
-        "total_count": 2,
+        "total_count": 5,
         "countries": [
           {
+            "name": "Benin",
+            "count": 1
+          },
+          {
             "name": "Togo",
-            "count": 2
+            "count": 4
           }
         ]
       },
