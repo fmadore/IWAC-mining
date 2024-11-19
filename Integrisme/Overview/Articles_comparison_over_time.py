@@ -49,6 +49,7 @@ def get_newspaper_country_mapping():
         
         # Côte d'Ivoire newspapers
         'Agence Ivoirienne de Presse': 'Côte d\'Ivoire',
+        'Alif': 'Côte d\'Ivoire',
         'Fraternité Hebdo': 'Côte d\'Ivoire',
         'Fraternité Matin': 'Côte d\'Ivoire',
         'Ivoire Dimanche': 'Côte d\'Ivoire',
