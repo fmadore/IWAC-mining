@@ -237,8 +237,11 @@
         function updateChart() {
             const activeGroups = Array.from(enabledGroups);
             
-            // Update stacks
-            const stack = d3.stack().keys(activeGroups);
+            // Create stack generator
+            const stack = d3.stack()
+                .keys(activeGroups)
+                .order(d3.stackOrderDescending); // Simple descending order
+
             const stackedData = stack(filteredData);
             
             // Update y scale
@@ -249,8 +252,8 @@
             yAxis.transition()
                 .duration(500)
                 .call(d3.axisLeft(y)
-                    .ticks(Math.min(maxY, 20)) // Limit number of ticks
-                    .tickFormat(d3.format("d"))); // "d" format for integers only
+                    .ticks(Math.min(maxY, 20))
+                    .tickFormat(d3.format("d")));
 
             xAxis.call(d3.axisBottom(x))
                 .selectAll("text")
