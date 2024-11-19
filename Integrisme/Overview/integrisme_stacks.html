@@ -20,13 +20,30 @@
         }
         .tooltip {
             position: absolute;
-            padding: 12px;
-            background: white;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.98);
             border: 1px solid #ddd;
             border-radius: 8px;
             pointer-events: none;
             font-size: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 200px;
+        }
+        .tooltip-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 4px;
+        }
+        .tooltip-value {
+            color: #666;
+            margin-bottom: 2px;
+        }
+        .tooltip-percentage {
+            font-size: 11px;
+            color: #888;
+            font-style: italic;
         }
         .legend-item {
             cursor: pointer;
@@ -323,10 +340,25 @@
                 .on("mouseover", function(event, d) {
                     const countryName = d3.select(this.parentNode).datum().key;
                     const value = d[1] - d[0];
+                    const year = d.data.year;
+                    
+                    // Calculate total for the year
+                    const yearTotal = activeGroups.reduce((sum, country) => 
+                        sum + (d.data[country] || 0), 0);
+                    
+                    // Calculate percentage
+                    const percentage = ((value / yearTotal) * 100).toFixed(1);
+                    
                     tooltip.transition()
                         .duration(200)
                         .style("opacity", .9);
-                    tooltip.html(`${countryName}: ${value}`)
+                    
+                    tooltip.html(`
+                        <div class="tooltip-title">${countryName}</div>
+                        <div class="tooltip-value">Year: ${year}</div>
+                        <div class="tooltip-value">Articles: ${value}</div>
+                        <div class="tooltip-percentage">${percentage}% of ${yearTotal} articles in ${year}</div>
+                    `)
                         .style("left", (event.pageX + 10) + "px")
                         .style("top", (event.pageY - 28) + "px");
                 })
