@@ -87,12 +87,73 @@
                 padding: 8px;
             }
         }
+        .slider-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .year-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .range-slider {
+            position: relative;
+            width: 100%;
+            height: 30px;
+        }
+
+        .range {
+            position: absolute;
+            width: 100%;
+            height: 5px;
+            background: none;
+            pointer-events: none;
+            -webkit-appearance: none;
+        }
+
+        .range::-webkit-slider-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #4a90e2;
+            cursor: pointer;
+            pointer-events: auto;
+            -webkit-appearance: none;
+        }
+
+        .range::-moz-range-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #4a90e2;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        #year-start {
+            z-index: 1;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="chart-container">
             <svg></svg>
+        </div>
+        <div class="slider-container">
+            <div class="year-labels">
+                <span id="start-year"></span>
+                <span id="end-year"></span>
+            </div>
+            <div class="range-slider">
+                <input type="range" id="year-start" class="range">
+                <input type="range" id="year-end" class="range">
+            </div>
         </div>
     </div>
     <script>
@@ -162,33 +223,115 @@
                 x.domain(d3.extent(transformedData, d => d.year));
                 y.domain([0, d3.max(transformedData, d => d.total_count)]);
 
+                const years = Array.from(new Set(transformedData.map(d => d.year.getFullYear())));
+                const minYear = Math.min(...years);
+                const maxYear = Math.max(...years);
+
+                // Initialize slider values
+                const yearStartSlider = document.getElementById('year-start');
+                const yearEndSlider = document.getElementById('year-end');
+                const startYearLabel = document.getElementById('start-year');
+                const endYearLabel = document.getElementById('end-year');
+
+                yearStartSlider.min = minYear;
+                yearStartSlider.max = maxYear;
+                yearStartSlider.value = minYear;
+
+                yearEndSlider.min = minYear;
+                yearEndSlider.max = maxYear;
+                yearEndSlider.value = maxYear;
+
+                startYearLabel.textContent = minYear;
+                endYearLabel.textContent = maxYear;
+
                 // Update function
                 function updateChart(activeKeywords) {
-                    const activeData = transformedData.filter(d => activeKeywords.includes(d.keyword));
+                    const startYear = parseInt(yearStartSlider.value);
+                    const endYear = parseInt(yearEndSlider.value);
+                    
+                    const activeData = transformedData.filter(d => 
+                        activeKeywords.includes(d.keyword) &&
+                        d.year.getFullYear() >= startYear &&
+                        d.year.getFullYear() <= endYear
+                    );
+                    
+                    // Update x and y domains based on filtered data
+                    x.domain([new Date(startYear, 0, 1), new Date(endYear, 11, 31)]);
                     const maxY = d3.max(activeData, d => d.total_count) || 0;
                     y.domain([0, maxY]);
+
+                    // Update axes
+                    g.select(".axis--x")
+                        .transition()
+                        .duration(750)
+                        .call(d3.axisBottom(x)
+                            .ticks(width < 600 ? d3.timeYear.every(5) : d3.timeYear.every(2)))
+                        .selectAll("text")
+                        .attr("transform", "rotate(-45)")
+                        .style("text-anchor", "end");
 
                     g.select(".axis--y")
                         .transition()
                         .duration(750)
                         .call(d3.axisLeft(y));
 
+                    // Update lines
                     dataNest.forEach(([keyword, values]) => {
                         const isActive = activeKeywords.includes(keyword);
+                        const filteredValues = values.filter(d => 
+                            d.year.getFullYear() >= startYear && 
+                            d.year.getFullYear() <= endYear
+                        );
+                        
                         const lineId = `line-${keyword.replace(/\s+/g, '-')}`;
                         const dotsClass = `dots-${keyword.replace(/\s+/g, '-')}`;
 
+                        // Update line
                         d3.select(`#${lineId}`)
                             .classed("hidden", !isActive)
                             .transition()
                             .duration(750)
-                            .attr("d", line(values));
+                            .attr("d", line(filteredValues));
 
-                        d3.selectAll(`.${dotsClass}`)
-                            .classed("hidden", !isActive)
-                            .transition()
-                            .duration(750)
-                            .attr("cy", d => y(d.total_count));
+                        // Remove existing dots
+                        g.selectAll(`.${dotsClass}`).remove();
+
+                        // Add new dots if keyword is active
+                        if (isActive) {
+                            g.selectAll(`.${dotsClass}`)
+                                .data(filteredValues.filter(d => d.total_count > 0))
+                                .enter().append("circle")
+                                .attr("class", `dot ${dotsClass}`)
+                                .attr("r", width < 600 ? 3 : 4)
+                                .attr("cx", d => x(d.year))
+                                .attr("cy", d => y(d.total_count))
+                                .style("fill", z(keyword))
+                                .on("mouseover", function(event, d) {
+                                    tooltip.transition()
+                                        .duration(200)
+                                        .style("opacity", .9);
+                                    
+                                    let tooltipContent = `<strong>${d.keyword}</strong><br/>`;
+                                    tooltipContent += `Year: ${d.year.getFullYear()}<br/>`;
+                                    tooltipContent += `Total: ${d.total_count}<br/><br/>`;
+                                    
+                                    if (d.countries.length > 0) {
+                                        tooltipContent += "<strong>By Country:</strong><br/>";
+                                        d.countries.forEach(country => {
+                                            tooltipContent += `${country.name}: ${country.count}<br/>`;
+                                        });
+                                    }
+                                    
+                                    tooltip.html(tooltipContent)
+                                        .style("left", `${event.pageX + 10}px`)
+                                        .style("top", `${event.pageY - 28}px`);
+                                })
+                                .on("mouseout", function() {
+                                    tooltip.transition()
+                                        .duration(500)
+                                        .style("opacity", 0);
+                                });
+                        }
                     });
                 }
 
@@ -347,6 +490,23 @@
                     .style("font-size", isDesktop ? "12px" : "10px")
                     .style("text-anchor", "start")  // Always left-aligned
                     .text(d => d.keyword);
+
+                // Add event listeners for the sliders
+                yearStartSlider.addEventListener('input', function() {
+                    if (parseInt(yearStartSlider.value) > parseInt(yearEndSlider.value)) {
+                        yearStartSlider.value = yearEndSlider.value;
+                    }
+                    startYearLabel.textContent = yearStartSlider.value;
+                    updateChart(Array.from(activeKeywords));
+                });
+
+                yearEndSlider.addEventListener('input', function() {
+                    if (parseInt(yearEndSlider.value) < parseInt(yearStartSlider.value)) {
+                        yearEndSlider.value = yearStartSlider.value;
+                    }
+                    endYearLabel.textContent = yearEndSlider.value;
+                    updateChart(Array.from(activeKeywords));
+                });
             });
         }
 
