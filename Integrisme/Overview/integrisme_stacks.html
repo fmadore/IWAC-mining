@@ -123,17 +123,32 @@
             return countsByCountry;
         });
 
+        // Filter years with actual occurrences
+        const yearsWithOccurrences = processedData.filter(year => {
+            const total = subgroups.reduce((sum, country) => sum + (year[country] || 0), 0);
+            return total > 0;
+        });
+
+        // Get first and last years with occurrences
+        const firstYear = yearsWithOccurrences[0].year;
+        const lastYear = yearsWithOccurrences[yearsWithOccurrences.length - 1].year;
+
+        // Filter processedData to only include years between first and last occurrence
+        const filteredData = processedData.filter(d => 
+            d.year >= firstYear && d.year <= lastYear
+        );
+
         // Calculate total articles
-        const totalArticles = processedData.reduce((acc, year) => {
+        const totalArticles = filteredData.reduce((acc, year) => {
             const yearTotal = subgroups.reduce((sum, country) => {
                 return sum + (year[country] || 0);
             }, 0);
             return acc + yearTotal;
         }, 0);
 
-        // Add X axis
+        // Add X axis with filtered domain
         const x = d3.scaleBand()
-            .domain(processedData.map(d => d.year))
+            .domain(filteredData.map(d => d.year))
             .range([0, width])
             .padding([0.2]);
 
@@ -145,7 +160,7 @@
             .style("text-anchor", "end");
 
         // Add Y axis
-        const maxY = d3.max(processedData, d => {
+        const maxY = d3.max(filteredData, d => {
             return subgroups.reduce((sum, country) => sum + (d[country] || 0), 0);
         });
 
@@ -163,7 +178,7 @@
 
         // Stack the data
         const stackedData = d3.stack()
-            .keys(subgroups)(processedData);
+            .keys(subgroups)(filteredData);
 
         // Show the bars
         svg.append("g")
