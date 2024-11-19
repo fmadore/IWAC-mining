@@ -207,6 +207,12 @@
                 padding: 3px 8px;
             }
         }
+        .legend-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -515,6 +521,13 @@
                 const legend = svg.append("g")
                     .attr("class", "legend")
                     .attr("transform", `translate(${legendConfig.x},${legendConfig.y})`);
+
+                // Add legend title
+                legend.append("text")
+                    .attr("class", "legend-title")
+                    .attr("x", 0)
+                    .attr("y", -10)  // Position it above the legend items
+                    .text("Keywords");
 
                 const activeKeywords = new Set(keywords);
                 const legendItems = keywords.map(keyword => ({
