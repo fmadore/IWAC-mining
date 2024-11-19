@@ -119,14 +119,11 @@ d3.json("yearly_counts.json").then(data => {
         .range(d3.schemeTableau10);
 
     // Scales
-    const x = d3.scaleLinear([0, 1], [margin.left, width - margin.right]);
+    const x = d3.scaleLinear()
+        .range([margin.left, width - margin.right]);
     const y = d3.scaleBand()
         .domain(d3.range(n))
         .range([margin.top, margin.top + barSize * n]);
-
-    // Axis (now hidden through CSS)
-    const xAxis = svg.append("g")
-        .attr("transform", `translate(0,${margin.top})`);
 
     // Labels
     const yearLabel = svg.append("text")
@@ -145,10 +142,8 @@ d3.json("yearly_counts.json").then(data => {
 
     function updateBars(frame) {
         // Update scale
-        x.domain([0, d3.max(frame.counts, d => d.value)]);
-
-        // Update axis (still needed for scale but hidden via CSS)
-        xAxis.call(d3.axisTop(x).ticks(width / 80));
+        const maxValue = d3.max(frame.counts, d => d.value);
+        x.domain([0, maxValue]);
 
         // Update bars
         const bars = svg.selectAll("g.bar")
@@ -187,7 +182,7 @@ d3.json("yearly_counts.json").then(data => {
             .style("text-anchor", "end");
 
         barsUpdate.select(".value")
-            .text(d => d.value)
+            .text(d => Math.round(d.value))
             .attr("x", d => x(d.value) + 6)
             .attr("y", y.bandwidth() / 2)
             .attr("dy", "0.35em");
