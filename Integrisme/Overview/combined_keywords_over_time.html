@@ -4,22 +4,34 @@
     <meta charset="UTF-8">
     <title>Number of Articles Mentioning Selected Keywords Over Time</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
         .line {
             fill: none;
             stroke-width: 2px;
         }
         .axis-label {
             font-size: 12px;
+            font-weight: 500;
         }
         .tooltip {
             position: absolute;
-            padding: 10px;
+            padding: 12px;
             background: white;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 8px;
             pointer-events: none;
             font-size: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .tooltip strong {
+            font-weight: 600;
+        }
+        text {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
     </style>
 </head>
@@ -27,7 +39,7 @@
     <svg width="1200" height="600"></svg>
     <script>
         const svg = d3.select("svg"),
-              margin = {top: 20, right: 150, bottom: 50, left: 50},
+              margin = {top: 20, right: 150, bottom: 50, left: 60},
               width = +svg.attr("width") - margin.left - margin.right,
               height = +svg.attr("height") - margin.top - margin.bottom,
               g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
@@ -77,6 +89,14 @@
                 .attr("transform", "rotate(-45)")
                 .style("text-anchor", "end");
 
+            // Add X axis label
+            g.append("text")
+                .attr("class", "axis-label")
+                .attr("text-anchor", "middle")
+                .attr("x", width/2)
+                .attr("y", height + margin.bottom - 5)
+                .text("Year");
+
             // Add Y axis
             g.append("g")
                 .attr("class", "axis axis--y")
@@ -85,9 +105,9 @@
                 .attr("class", "axis-label")
                 .attr("fill", "#000")
                 .attr("transform", "rotate(-90)")
-                .attr("y", -40)
-                .attr("dy", "0.71em")
-                .attr("text-anchor", "end")
+                .attr("y", -margin.left + 15)
+                .attr("x", -height/2)
+                .attr("text-anchor", "middle")
                 .text("Number of Articles");
 
             // Add lines
@@ -104,7 +124,7 @@
             // Add dots with tooltips
             dataNest.forEach(keywordGroup => {
                 g.selectAll(".dot-" + keywordGroup[0].replace(/\s+/g, '-'))
-                    .data(keywordGroup[1].filter(d => d.total_count > 0)) // Only add dots for non-zero values
+                    .data(keywordGroup[1].filter(d => d.total_count > 0))
                     .enter().append("circle")
                     .attr("class", "dot")
                     .attr("r", 4)
@@ -121,7 +141,7 @@
                         tooltipContent += `Total: ${d.total_count}<br/><br/>`;
                         
                         if (d.countries.length > 0) {
-                            tooltipContent += "By Country:<br/>";
+                            tooltipContent += "<strong>By Country:</strong><br/>";
                             d.countries.forEach(country => {
                                 tooltipContent += `${country.name}: ${country.count}<br/>`;
                             });
