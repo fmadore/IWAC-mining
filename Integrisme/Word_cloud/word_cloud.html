@@ -23,9 +23,11 @@
             font-family: Arial, sans-serif;
             cursor: pointer;
             transition: transform 0.2s;
+            pointer-events: all;
         }
         .word:hover {
             transform: scale(1.1);
+            z-index: 100;
         }
         #controls {
             width: 80%;
@@ -51,14 +53,17 @@
             font-weight: bold;
         }
         .tooltip {
-            position: absolute;
-            padding: 8px;
+            position: fixed;
+            padding: 10px;
             background: rgba(0, 0, 0, 0.8);
             color: white;
             border-radius: 4px;
-            font-size: 12px;
+            font-size: 14px;
             pointer-events: none;
             z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            max-width: 200px;
+            white-space: nowrap;
         }
         svg {
             max-width: 100%;
@@ -147,21 +152,28 @@
                 .attr('transform', d => `translate(${d.x},${d.y})`)
                 .text(d => d.text)
                 .on('mouseover', function(event, d) {
-                    tooltip.transition()
-                        .duration(200)
-                        .style("opacity", .9);
-                    tooltip.html(`
-                        <strong>Word:</strong> ${d.text}<br/>
-                        <strong>Frequency:</strong> ${formatNumber(d.frequency)}<br/>
-                        <strong>Percentage:</strong> ${d.percentage}%<br/>
-                        <strong>Rank:</strong> ${currentWords.findIndex(w => w.text === d.text) + 1}/${currentWords.length}
-                    `)
-                        .style("left", (event.pageX + 10) + "px")
-                        .style("top", (event.pageY - 28) + "px");
+                    // Stop any ongoing transitions
+                    tooltip.interrupt();
+                    
+                    // Calculate position relative to viewport
+                    const bounds = this.getBoundingClientRect();
+                    const tooltipX = bounds.left + bounds.width/2;
+                    const tooltipY = bounds.top - 10;
+                    
+                    tooltip
+                        .style("opacity", 1) // Immediate opacity change
+                        .html(`
+                            <strong>Word:</strong> ${d.text}<br/>
+                            <strong>Frequency:</strong> ${formatNumber(d.frequency)}<br/>
+                            <strong>Percentage:</strong> ${d.percentage}%<br/>
+                            <strong>Rank:</strong> ${currentWords.findIndex(w => w.text === d.text) + 1}/${currentWords.length}
+                        `)
+                        .style("left", `${tooltipX}px`)
+                        .style("top", `${tooltipY}px`)
+                        .style("transform", "translate(-50%, -100%)"); // Center the tooltip
                 })
                 .on('mouseout', function() {
-                    tooltip.transition()
-                        .duration(500)
+                    tooltip
                         .style("opacity", 0);
                 });
         }
