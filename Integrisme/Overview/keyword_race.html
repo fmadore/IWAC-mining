@@ -74,7 +74,7 @@ const width = 960;
 const height = 600;
 const margin = {top: 80, right: 200, bottom: 40, left: 200};
 const barSize = 40;
-const duration = 1000;
+const duration = 750;
 const n = 9; // number of keywords
 
 // Create SVG
@@ -229,9 +229,9 @@ d3.json("yearly_counts.json").then(data => {
                 playing = false;
                 d3.select("#playButton").text("Play");
                 d3.select("#replayButton").style("display", "block");
-                frame = frames.length - 1; // Keep last frame displayed
+                frame = frames.length - 1;
             }
-        }, duration + 500);
+        }, duration + 350);
     }
 
     // Function to toggle play/pause
