@@ -24,9 +24,10 @@
         }
         
         .year {
-            font-size: 64px;
+            font-size: 96px;
             font-weight: bold;
             opacity: 0.2;
+            fill: #ccc;
         }
     </style>
 </head>
@@ -39,7 +40,7 @@ const width = 960;
 const height = 600;
 const margin = {top: 80, right: 200, bottom: 40, left: 200};
 const barSize = 40;
-const duration = 250;
+const duration = 1000;
 const n = 9; // number of keywords
 
 // Create SVG
@@ -94,7 +95,7 @@ d3.json("yearly_counts.json").then(data => {
     const yearLabel = svg.append("text")
         .attr("class", "year")
         .attr("x", width - margin.right)
-        .attr("y", margin.top - 10)
+        .attr("y", height - margin.bottom)
         .style("text-anchor", "end");
 
     // Title
@@ -153,8 +154,15 @@ d3.json("yearly_counts.json").then(data => {
             .attr("y", y.bandwidth() / 2)
             .attr("dy", "0.35em");
 
-        // Update year label
-        yearLabel.text(frame.year);
+        // Update year label with transition
+        yearLabel
+            .transition()
+            .duration(duration)
+            .textTween((d, i) => {
+                const prev = yearLabel.text();
+                const next = frame.year;
+                return d3.interpolateRound(prev || next, next);
+            });
     }
 
     // Animation
@@ -162,7 +170,7 @@ d3.json("yearly_counts.json").then(data => {
     const interval = setInterval(() => {
         updateBars(frames[frame]);
         frame = (frame + 1) % frames.length;
-    }, duration);
+    }, duration + 500);
 });
 </script>
 </body>
