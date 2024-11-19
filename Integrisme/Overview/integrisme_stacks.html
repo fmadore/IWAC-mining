@@ -217,13 +217,55 @@
             .attr("text-anchor", "middle")
             .text("Number of Articles Mentioning \"Intégrisme\" by Country Over Time");
 
-        // Add total articles count
+        // Function to calculate total articles for enabled groups
+        function calculateTotal(data, enabledCountries) {
+            return data.reduce((acc, year) => {
+                const yearTotal = enabledCountries.reduce((sum, country) => {
+                    return sum + (year[country] || 0);
+                }, 0);
+                return acc + yearTotal;
+            }, 0);
+        }
+
+        // Function to update the chart
+        function updateChart() {
+            // Filter the data based on enabled groups
+            const filteredGroups = subgroups.filter(group => enabledGroups.has(group));
+            
+            // Update total articles count
+            const currentTotal = calculateTotal(filteredData, filteredGroups);
+            svg.select(".total-count")
+                .transition()
+                .duration(500)
+                .tween("text", function() {
+                    const i = d3.interpolate(parseInt(this.textContent.split(": ")[1]) || 0, currentTotal);
+                    return function(t) {
+                        this.textContent = `Total articles: ${Math.round(i(t))}`;
+                    };
+                });
+
+            // Rest of the updateChart function remains the same...
+            const updatedStackedData = d3.stack()
+                .keys(filteredGroups)(filteredData);
+
+            // Update the y-axis based on the current maximum value
+            const maxY = d3.max(filteredData, d => {
+                return filteredGroups.reduce((sum, country) => sum + (d[country] || 0), 0);
+            });
+            y.domain([0, maxY || 0]);
+            svg.select(".axis--y").transition().duration(500).call(d3.axisLeft(y));
+
+            // Update bars code remains the same...
+        }
+
+        // Add total articles count with a class for updating
         svg.append("text")
+            .attr("class", "total-count")  // Add this class
             .attr("x", width / 2)
             .attr("y", -margin.top / 2 + 25)
             .attr("text-anchor", "middle")
             .style("font-size", "12px")
-            .text(`Total articles: ${totalArticles}`);
+            .text(`Total articles: ${calculateTotal(filteredData, subgroups)}`);
 
         // Add X axis label
         svg.append("text")
@@ -253,13 +295,29 @@
             .attr("y", 0)
             .text("Country");
 
-        // Add legend items
+        // Keep track of enabled/disabled states
+        const enabledGroups = new Set(subgroups);
+
+        // Add legend items with interactivity
         const legendItems = legend.selectAll(".legend-item")
             .data(subgroups.slice().reverse())
             .enter()
             .append("g")
             .attr("class", "legend-item")
-            .attr("transform", (d, i) => `translate(0,${i * 20 + 20})`);
+            .attr("transform", (d, i) => `translate(0,${i * 20 + 20})`)
+            .on("click", function(event, d) {
+                // Toggle the enabled state
+                if (enabledGroups.has(d)) {
+                    if (enabledGroups.size > 1) { // Prevent removing all groups
+                        enabledGroups.delete(d);
+                        d3.select(this).classed("disabled", true);
+                    }
+                } else {
+                    enabledGroups.add(d);
+                    d3.select(this).classed("disabled", false);
+                }
+                updateChart();
+            });
 
         legendItems.append("rect")
             .attr("width", 19)
@@ -271,6 +329,9 @@
             .attr("y", 9.5)
             .attr("dy", "0.32em")
             .text(d => d);
+
+        // Initial chart render with all groups
+        updateChart();
     });
 </script>
 </body>
