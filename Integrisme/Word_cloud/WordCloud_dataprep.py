@@ -1,19 +1,25 @@
 import pandas as pd
-import stanza
 from collections import Counter
 import json
 from tqdm import tqdm
-import nltk
-from nltk.corpus import stopwords
 import os
+from transformers import CamembertTokenizer, CamembertModel
+import torch
 
-# Download necessary resources
-nltk.download('stopwords')
-stanza.download('fr')
-nlp = stanza.Pipeline('fr')
+# Initialize CamemBERT
+tokenizer = CamembertTokenizer.from_pretrained('camembert-base')
+model = CamembertModel.from_pretrained('camembert-base')
 
-# Use NLTK's French stopwords
-french_stopwords = set(stopwords.words('french'))
+# French stopwords - common words that don't add meaning
+french_stopwords = {
+    'le', 'la', 'les', 'un', 'une', 'des', 'du', 'de', 'à', 'au', 'aux',
+    'et', 'ou', 'mais', 'donc', 'car', 'ni', 'que', 'qui', 'quoi', 'dont',
+    'où', 'dans', 'sur', 'sous', 'avec', 'sans', 'pour', 'par', 'en', 'vers',
+    'ce', 'cet', 'cette', 'ces', 'mon', 'ton', 'son', 'notre', 'votre', 'leur',
+    'je', 'tu', 'il', 'elle', 'nous', 'vous', 'ils', 'elles', 'me', 'te', 'se',
+    'être', 'avoir', 'faire', 'dire', 'aller', 'voir', 'venir', 'falloir', 'pouvoir',
+    'plus', 'moins', 'très', 'bien', 'mal', 'peu', 'trop', 'beaucoup', 'aussi', 'el'
+}
 
 def load_data(url):
     """Load data from URL."""
@@ -24,12 +30,29 @@ def filter_integrisme_articles(df):
     return df[df['dcterms:subject'].fillna('').str.contains('Intégrisme', case=False)]
 
 def preprocess_text(text):
-    """Preprocess text: tokenize, remove stopwords, and lemmatize using Stanza."""
-    doc = nlp(text)
-    tokens = [word.lemma.lower() for sentence in doc.sentences 
-             for word in sentence.words 
-             if word.text.isalpha() and word.lemma.lower() not in french_stopwords]
-    return tokens
+    """Preprocess text using CamemBERT tokenizer."""
+    # Tokenize the text
+    encoded = tokenizer(text, return_tensors='pt', truncation=True, max_length=512)
+    
+    # Get token representations
+    with torch.no_grad():
+        outputs = model(**encoded)
+    
+    # Get the tokens
+    tokens = tokenizer.convert_ids_to_tokens(encoded['input_ids'][0])
+    
+    # Clean tokens: remove special tokens, punctuation, and stopwords
+    cleaned_tokens = [
+        token.replace('▁', '').lower() 
+        for token in tokens 
+        if token.replace('▁', '').isalpha() 
+        and token.replace('▁', '').lower() not in french_stopwords
+        and not token.startswith('<')
+        and not token.startswith('##')
+        and len(token.replace('▁', '')) > 1
+    ]
+    
+    return cleaned_tokens
 
 def generate_word_frequencies(tokens_list, max_words=200):
     """Generate word frequencies from list of tokens.
