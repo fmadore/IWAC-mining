@@ -5,12 +5,13 @@ from tqdm import tqdm
 import os
 from transformers import CamembertTokenizer, CamembertModel
 import torch
+import re
 
 # Initialize CamemBERT
 tokenizer = CamembertTokenizer.from_pretrained('camembert-base')
 model = CamembertModel.from_pretrained('camembert-base')
 
-# French stopwords - common words that don't add meaning
+# Expanded French stopwords
 french_stopwords = {
     'le', 'la', 'les', 'un', 'une', 'des', 'du', 'de', 'à', 'au', 'aux',
     'et', 'ou', 'mais', 'donc', 'car', 'ni', 'que', 'qui', 'quoi', 'dont',
@@ -18,7 +19,11 @@ french_stopwords = {
     'ce', 'cet', 'cette', 'ces', 'mon', 'ton', 'son', 'notre', 'votre', 'leur',
     'je', 'tu', 'il', 'elle', 'nous', 'vous', 'ils', 'elles', 'me', 'te', 'se',
     'être', 'avoir', 'faire', 'dire', 'aller', 'voir', 'venir', 'falloir', 'pouvoir',
-    'plus', 'moins', 'très', 'bien', 'mal', 'peu', 'trop', 'beaucoup', 'aussi', 'el'
+    'plus', 'moins', 'très', 'bien', 'mal', 'peu', 'trop', 'beaucoup', 'aussi', 'el',
+    'fait', 'fois', 'cas', 'chose', 'rien', 'tout', 'tous', 'toute', 'toutes',
+    'autre', 'autres', 'même', 'mêmes', 'après', 'avant', 'depuis', 'pendant',
+    'selon', 'ainsi', 'alors', 'encore', 'toujours', 'jamais', 'lors', 'dont',
+    'cela', 'ceci', 'celui', 'celle', 'ceux', 'celles'
 }
 
 def load_data(url):
@@ -29,8 +34,70 @@ def filter_integrisme_articles(df):
     """Filter articles mentioning 'intégrisme'."""
     return df[df['dcterms:subject'].fillna('').str.contains('Intégrisme', case=False)]
 
+def clean_text(text):
+    """Initial text cleaning before tokenization."""
+    if not isinstance(text, str):
+        return ""
+    
+    # Convert to lowercase
+    text = text.lower()
+    
+    # Replace various types of apostrophes and quotes
+    text = text.replace(''', "'").replace(''', "'").replace('`', "'")
+    text = text.replace('"', '"').replace('"', '"').replace('«', '"').replace('»', '"')
+    
+    # Remove URLs
+    text = re.sub(r'http\S+|www\S+|https\S+', '', text)
+    
+    # Remove email addresses
+    text = re.sub(r'\S+@\S+', '', text)
+    
+    # Remove digits and digit-word combinations
+    text = re.sub(r'\w*\d\w*', '', text)
+    
+    # Remove multiple spaces and newlines
+    text = re.sub(r'\s+', ' ', text)
+    
+    # Remove special characters but keep French accents
+    text = re.sub(r'[^\w\s\'\-àáâãäçèéêëìíîïñòóôõöùúûüýÿ]', ' ', text)
+    
+    return text.strip()
+
+def merge_split_words(tokens):
+    """Merge commonly split words."""
+    merged_tokens = []
+    i = 0
+    while i < len(tokens):
+        current_token = tokens[i]
+        
+        # List of common split words to merge
+        if i + 1 < len(tokens):
+            next_token = tokens[i + 1]
+            
+            # Add more cases as needed
+            if current_token == "aujourd" and next_token == "hui":
+                merged_tokens.append("aujourd'hui")
+                i += 2
+            elif current_token == "c" and next_token == "est":
+                merged_tokens.append("c'est")
+                i += 2
+            elif current_token == "d" and next_token == "abord":
+                merged_tokens.append("d'abord")
+                i += 2
+            else:
+                merged_tokens.append(current_token)
+                i += 1
+        else:
+            merged_tokens.append(current_token)
+            i += 1
+    
+    return merged_tokens
+
 def preprocess_text(text):
     """Preprocess text using CamemBERT tokenizer."""
+    # Initial cleaning
+    text = clean_text(text)
+    
     # Tokenize the text
     encoded = tokenizer(text, return_tensors='pt', truncation=True, max_length=512)
     
@@ -41,18 +108,23 @@ def preprocess_text(text):
     # Get the tokens
     tokens = tokenizer.convert_ids_to_tokens(encoded['input_ids'][0])
     
-    # Clean tokens: remove special tokens, punctuation, and stopwords
+    # Clean tokens
     cleaned_tokens = [
-        token.replace('▁', '').lower() 
-        for token in tokens 
-        if token.replace('▁', '').isalpha() 
-        and token.replace('▁', '').lower() not in french_stopwords
-        and not token.startswith('<')
-        and not token.startswith('##')
-        and len(token.replace('▁', '')) > 1
+        token.replace('▁', '').lower()
+        for token in tokens
+        if (token.replace('▁', '').isalpha() 
+            and not token.startswith('<')
+            and not token.startswith('##')
+            and len(token.replace('▁', '')) > 1)
     ]
     
-    return cleaned_tokens
+    # Merge split words
+    merged_tokens = merge_split_words(cleaned_tokens)
+    
+    # Remove stopwords
+    final_tokens = [token for token in merged_tokens if token not in french_stopwords]
+    
+    return final_tokens
 
 def generate_word_frequencies(tokens_list, max_words=200):
     """Generate word frequencies from list of tokens.
