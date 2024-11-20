@@ -126,10 +126,10 @@ d3.json("yearly_counts.json").then(data => {
         .range([margin.top, margin.top + barSize * n]);
 
     // Labels
-    const yearLabel = svg.append("text")
+    const yearLabel = svg.append("g")
+        .attr("transform", `translate(${width - margin.right}, ${height - margin.bottom})`)
+        .append("text")
         .attr("class", "year")
-        .attr("x", width - margin.right)
-        .attr("y", height - margin.bottom)
         .style("text-anchor", "end");
 
     // Title - updated position and text
@@ -192,9 +192,9 @@ d3.json("yearly_counts.json").then(data => {
             .transition()
             .duration(duration)
             .textTween((d, i) => {
-                const prev = yearLabel.text();
+                const prev = +yearLabel.text() || frame.year;
                 const next = frame.year;
-                return d3.interpolateRound(prev || next, next);
+                return t => Math.round(d3.interpolate(prev, next)(t));
             });
     }
 
@@ -226,7 +226,7 @@ d3.json("yearly_counts.json").then(data => {
                 d3.select("#replayButton").style("display", "block");
                 frame = frames.length - 1;
             }
-        }, duration + 350);
+        }, duration);
     }
 
     // Function to toggle play/pause
