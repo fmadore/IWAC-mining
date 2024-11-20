@@ -1568,8 +1568,13 @@
       },
       {
         "keyword": "Extrémisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Côte d'Ivoire",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Obscurantisme",
@@ -1764,7 +1769,7 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 8,
+        "total_count": 9,
         "countries": [
           {
             "name": "Benin",
@@ -1772,7 +1777,7 @@
           },
           {
             "name": "Côte d'Ivoire",
-            "count": 6
+            "count": 7
           }
         ]
       },
@@ -1855,7 +1860,7 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 15,
+        "total_count": 19,
         "countries": [
           {
             "name": "Burkina Faso",
@@ -1863,7 +1868,7 @@
           },
           {
             "name": "Côte d'Ivoire",
-            "count": 12
+            "count": 16
           },
           {
             "name": "Togo",
@@ -1947,7 +1952,7 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 20,
+        "total_count": 21,
         "countries": [
           {
             "name": "Benin",
@@ -1959,7 +1964,7 @@
           },
           {
             "name": "Côte d'Ivoire",
-            "count": 13
+            "count": 14
           },
           {
             "name": "Togo",
