@@ -98,31 +98,37 @@ def preprocess_text(text):
     # Initial cleaning
     text = clean_text(text)
     
-    # Tokenize the text
-    encoded = tokenizer(text, return_tensors='pt', truncation=True, max_length=512)
+    # Tokenize the text without splitting into subwords
+    words = text.split()
+    cleaned_words = []
     
-    # Get token representations
+    for word in words:
+        # Skip if it's a stopword or too short
+        if word in french_stopwords or len(word) <= 1:
+            continue
+            
+        # Basic validation
+        if word.isalpha():
+            cleaned_words.append(word)
+    
+    # Now use CamemBERT only for validation/normalization if needed
+    encoded = tokenizer(
+        " ".join(cleaned_words), 
+        return_tensors='pt', 
+        truncation=True, 
+        max_length=512
+    )
+    
     with torch.no_grad():
         outputs = model(**encoded)
     
-    # Get the tokens
-    tokens = tokenizer.convert_ids_to_tokens(encoded['input_ids'][0])
-    
-    # Clean tokens
-    cleaned_tokens = [
-        token.replace('▁', '').lower()
-        for token in tokens
-        if (token.replace('▁', '').isalpha() 
-            and not token.startswith('<')
-            and not token.startswith('##')
-            and len(token.replace('▁', '')) > 1)
+    # Get the full words back
+    decoded = tokenizer.decode(encoded['input_ids'][0], skip_special_tokens=True)
+    final_tokens = [
+        word.lower() 
+        for word in decoded.split() 
+        if word.lower() not in french_stopwords and len(word) > 1
     ]
-    
-    # Merge split words
-    merged_tokens = merge_split_words(cleaned_tokens)
-    
-    # Remove stopwords
-    final_tokens = [token for token in merged_tokens if token not in french_stopwords]
     
     return final_tokens
 
@@ -160,8 +166,8 @@ def main():
     tqdm.pandas(desc="Processing articles")
     integrisme_articles['processed_tokens'] = integrisme_articles['bibo:content'].fillna('').progress_apply(preprocess_text)
     
-    # Generate word frequencies (top 100 words)
-    word_frequencies = generate_word_frequencies(integrisme_articles['processed_tokens'], max_words=100)
+    # Generate word frequencies (top 200 words instead of 100)
+    word_frequencies = generate_word_frequencies(integrisme_articles['processed_tokens'], max_words=200)
     
     # Save to JSON file in the same directory as the script
     script_dir = os.path.dirname(os.path.abspath(__file__))
