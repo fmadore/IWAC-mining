@@ -3,28 +3,36 @@ from collections import Counter
 import json
 from tqdm import tqdm
 import os
-from transformers import CamembertTokenizer, CamembertModel
-import torch
+import spacy
 import re
+from spacy.lang.fr.stop_words import STOP_WORDS
 
-# Initialize CamemBERT
-tokenizer = CamembertTokenizer.from_pretrained('camembert-base')
-model = CamembertModel.from_pretrained('camembert-base')
+# Load French transformer model
+nlp = spacy.load('fr_dep_news_trf')
 
-# Expanded French stopwords
-french_stopwords = {
-    'le', 'la', 'les', 'un', 'une', 'des', 'du', 'de', 'à', 'au', 'aux',
-    'et', 'ou', 'mais', 'donc', 'car', 'ni', 'que', 'qui', 'quoi', 'dont',
-    'où', 'dans', 'sur', 'sous', 'avec', 'sans', 'pour', 'par', 'en', 'vers',
-    'ce', 'cet', 'cette', 'ces', 'mon', 'ton', 'son', 'notre', 'votre', 'leur',
-    'je', 'tu', 'il', 'elle', 'nous', 'vous', 'ils', 'elles', 'me', 'te', 'se',
-    'être', 'avoir', 'faire', 'dire', 'aller', 'voir', 'venir', 'falloir', 'pouvoir',
-    'plus', 'moins', 'très', 'bien', 'mal', 'peu', 'trop', 'beaucoup', 'aussi', 'el',
-    'fait', 'fois', 'cas', 'chose', 'rien', 'tout', 'tous', 'toute', 'toutes',
-    'autre', 'autres', 'même', 'mêmes', 'après', 'avant', 'depuis', 'pendant',
-    'selon', 'ainsi', 'alors', 'encore', 'toujours', 'jamais', 'lors', 'dont',
-    'cela', 'ceci', 'celui', 'celle', 'ceux', 'celles'
+# Combine spaCy's stopwords with custom ones
+custom_stopwords = {
+    # Words specific to newspaper articles and reporting
+    'afp', 'reuters', 'ap', 'photo', 'photographe', 'journal', 'article',
+    'lire', 'voir', 'dit', 'dire', 'faire', 'être', 'avoir',
+    # Common verbs in news reporting
+    'déclarer', 'affirmer', 'expliquer', 'indiquer', 'préciser', 'ajouter',
+    'poursuivre', 'conclure', 'annoncer', 'rapporter', 'souligner',
+    # Time-related words
+    'année', 'mois', 'semaine', 'jour', 'hier', 'aujourd', 'hui', 'demain',
+    'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche',
+    'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
+    'août', 'septembre', 'octobre', 'novembre', 'décembre',
+    # Numbers and quantities
+    'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix',
+    'premier', 'première', 'second', 'seconde', 'dernier', 'dernière',
+    # Common but uninformative words in news context
+    'façon', 'manière', 'chose', 'fois', 'cas', 'exemple', 'partie',
+    'moment', 'temps', 'heure', 'période',
 }
+
+# Combine all stopwords
+french_stopwords = set(STOP_WORDS) | custom_stopwords
 
 def load_data(url):
     """Load data from URL."""
@@ -64,43 +72,31 @@ def clean_text(text):
     return text.strip()
 
 def preprocess_text(text):
-    """Preprocess text using CamemBERT tokenizer."""
+    """Preprocess text using spaCy for lemmatization."""
     # Initial cleaning
     text = clean_text(text)
     
-    # Tokenize the text without splitting into subwords
-    words = text.split()
-    cleaned_words = []
+    # Process the text with spaCy
+    doc = nlp(text)
     
-    for word in words:
-        # Skip if it's a stopword or too short
-        if word in french_stopwords or len(word) <= 1:
-            continue
-            
-        # Basic validation
-        if word.isalpha():
-            cleaned_words.append(word)
-    
-    # Use CamemBERT for proper tokenization and normalization
-    encoded = tokenizer(
-        " ".join(cleaned_words), 
-        return_tensors='pt', 
-        truncation=True, 
-        max_length=512
-    )
-    
-    with torch.no_grad():
-        outputs = model(**encoded)
-    
-    # Get the full words back - CamemBERT will properly handle contractions and compound words
-    decoded = tokenizer.decode(encoded['input_ids'][0], skip_special_tokens=True)
-    final_tokens = [
-        word.lower() 
-        for word in decoded.split() 
-        if word.lower() not in french_stopwords and len(word) > 1
+    # Get lemmatized tokens, filtering out stopwords and short words
+    cleaned_words = [
+        token.lemma_.lower()
+        for token in doc
+        if (
+            token.lemma_.lower() not in french_stopwords 
+            and len(token.lemma_) > 1
+            and token.lemma_.isalpha()
+            and not token.is_punct
+            and not token.is_space
+            and not token.is_digit
+            and not token.like_num  # Catches written numbers like 'trois'
+            and not token.is_currency
+            and token.pos_ not in ['AUX', 'DET', 'PRON', 'ADP', 'SCONJ', 'CCONJ']
+        )
     ]
     
-    return final_tokens
+    return cleaned_words
 
 def generate_word_frequencies(tokens_list, max_words=200):
     """Generate word frequencies from list of tokens.
