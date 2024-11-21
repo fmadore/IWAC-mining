@@ -108,6 +108,84 @@
             border-radius: 4px;
             margin: 20px;
         }
+        /* Add these new styles */
+        #main-container {
+            display: flex;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        #visualization-container {
+            flex: 1;
+            min-width: 0; /* Prevents flex item from overflowing */
+        }
+
+        #sidebar {
+            width: 300px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 20px;
+            height: fit-content;
+        }
+
+        .word-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .word-list-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            font-family: Arial, sans-serif;
+        }
+
+        .word-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .word-rank {
+            color: #666;
+            margin-right: 10px;
+        }
+
+        .word-text {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .word-frequency {
+            color: #666;
+        }
+
+        #sidebar h2 {
+            margin: 0 0 20px 0;
+            color: #333;
+            font-family: Arial, sans-serif;
+            font-size: 1.2em;
+        }
+
+        /* Update existing container style */
+        #container {
+            width: 100%;
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            #main-container {
+                flex-direction: column;
+            }
+            
+            #sidebar {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -119,7 +197,15 @@
                 <span id="word-count">50</span>
             </div>
         </div>
-        <div id="word-cloud"></div>
+        <div id="main-container">
+            <div id="visualization-container">
+                <div id="word-cloud"></div>
+            </div>
+            <div id="sidebar">
+                <h2>Top 25 Words</h2>
+                <div id="top-words-list"></div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -295,6 +381,9 @@
                         .style("opacity", 0)
                         .style("visibility", "hidden");
                 });
+
+            // Add this line at the end of the draw function
+            updateSidebar(currentWords);
         }
 
         // Improve data loading with loading state
@@ -332,6 +421,26 @@
 
         // Start loading when document is ready
         document.addEventListener('DOMContentLoaded', loadData);
+
+        // Add this function to update the sidebar
+        function updateSidebar(words) {
+            const topWords = words.slice(0, 25);
+            const listContainer = document.getElementById('top-words-list');
+            
+            const html = `
+                <ul class="word-list">
+                    ${topWords.map((word, index) => `
+                        <li class="word-list-item">
+                            <span class="word-rank">${index + 1}.</span>
+                            <span class="word-text">${word.text}</span>
+                            <span class="word-frequency">${formatNumber(word.frequency)}</span>
+                        </li>
+                    `).join('')}
+                </ul>
+            `;
+            
+            listContainer.innerHTML = html;
+        }
     </script>
 </body>
 </html> 
