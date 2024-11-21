@@ -6,177 +6,132 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/jasondavies/d3-cloud/build/d3.layout.cloud.js"></script>
     <style>
-        #container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
+        /* Update the common styles */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --border-radius: 12px;
+            --padding: 20px;
+            --font-family: Arial, sans-serif;
         }
+
+        /* Update controls style to match */
+        #controls {
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: var(--padding);
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            font-family: var(--font-family);
+        }
+
+        /* Style the slider */
+        #word-slider {
+            width: 300px;
+            accent-color: #3498db;
+        }
+
+        /* Update word cloud container */
         #word-cloud {
             width: 100%;
             height: 80vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background: var(--primary-gradient);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
             margin: 20px;
         }
-        .word {
-            font-family: Arial, sans-serif;
-            cursor: pointer;
-            pointer-events: all;
-            transition: filter 0.2s ease;
-        }
-        .word:hover {
-            filter: brightness(115%);
-        }
-        #controls {
-            width: 80%;
-            max-width: 600px;
-            margin: 20px;
-            padding: 20px;
-            background: #f5f5f5;
-            border-radius: 8px;
-            text-align: center;
-        }
-        #slider-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        #word-slider {
+
+        /* Update sidebar styles */
+        #sidebar {
             width: 300px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: var(--padding);
+            height: fit-content;
         }
-        #word-count {
-            width: 60px;
-            text-align: center;
-            font-weight: bold;
+
+        #sidebar h2 {
+            margin: 0 0 20px 0;
+            color: #2c3e50;
+            font-family: var(--font-family);
+            font-size: 1.2em;
+            font-weight: 600;
         }
+
+        .word-list-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-family: var(--font-family);
+            transition: background-color 0.2s ease;
+        }
+
+        .word-list-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .word-rank {
+            color: #3498db;
+            margin-right: 15px;
+            font-weight: 600;
+            min-width: 25px;
+        }
+
+        .word-text {
+            flex: 1;
+            margin-right: 15px;
+            color: #2c3e50;
+        }
+
+        .word-frequency {
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        /* Update tooltip style */
         .tooltip {
             position: fixed;
             padding: 12px 16px;
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            color: white;
-            border-radius: 4px;
+            background: white;
+            color: #2c3e50;
+            border-radius: var(--border-radius);
             font-size: 14px;
             pointer-events: none;
             z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow);
             max-width: 200px;
             white-space: nowrap;
             transition: all 0.15s ease-out;
             opacity: 0;
             visibility: hidden;
             border: none;
-            font-family: Arial, sans-serif;
+            font-family: var(--font-family);
             line-height: 1.4;
         }
-        svg {
-            max-width: 100%;
-            height: auto;
+
+        .tooltip strong {
+            color: #3498db;
         }
-        /* Add responsive design improvements */
-        @media (max-width: 768px) {
-            #word-slider {
-                width: 200px;
-            }
-            #controls {
-                width: 95%;
-                margin: 10px;
-                padding: 10px;
-            }
-        }
-        
-        /* Add loading and error states */
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 200px;
-            font-size: 1.2em;
-            color: #666;
-        }
-        
-        .error-message {
-            color: #d32f2f;
-            text-align: center;
-            padding: 20px;
-            background: #ffebee;
-            border-radius: 4px;
-            margin: 20px;
-        }
-        /* Add these new styles */
+
+        /* Update main container layout */
         #main-container {
             display: flex;
             width: 100%;
             max-width: 1400px;
             margin: 0 auto;
-            gap: 20px;
-            padding: 20px;
+            gap: var(--padding);
+            padding: var(--padding);
         }
 
-        #visualization-container {
-            flex: 1;
-            min-width: 0; /* Prevents flex item from overflowing */
-        }
-
-        #sidebar {
-            width: 300px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            padding: 20px;
-            height: fit-content;
-        }
-
-        .word-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .word-list-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-            font-family: Arial, sans-serif;
-        }
-
-        .word-list-item:last-child {
-            border-bottom: none;
-        }
-
-        .word-rank {
-            color: #666;
-            margin-right: 10px;
-        }
-
-        .word-text {
-            flex: 1;
-            margin-right: 10px;
-        }
-
-        .word-frequency {
-            color: #666;
-        }
-
-        #sidebar h2 {
-            margin: 0 0 20px 0;
-            color: #333;
-            font-family: Arial, sans-serif;
-            font-size: 1.2em;
-        }
-
-        /* Update existing container style */
-        #container {
-            width: 100%;
-        }
-
-        /* Responsive design */
+        /* Responsive adjustments */
         @media (max-width: 1024px) {
             #main-container {
                 flex-direction: column;
@@ -184,6 +139,15 @@
             
             #sidebar {
                 width: 100%;
+            }
+
+            #controls {
+                width: 95%;
+                margin: 10px auto;
+            }
+
+            #word-slider {
+                width: 200px;
             }
         }
     </style>
