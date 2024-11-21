@@ -14,23 +14,38 @@
     padding: 20px;
 }
 
-/* Controls - Updated to be inside word cloud */
+/* Controls - Updated for better centering */
 #controls {
     position: absolute;
     top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    right: 0;
+    margin: 0 auto;
     z-index: 2;
-    width: auto;
+    width: 100%;
     padding: var(--padding);
     font-family: var(--font-family);
     text-align: center;
 }
 
-/* Slider */
+#slider-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Slider - Updated */
 #word-slider {
     width: 300px;
     accent-color: #3498db;
+    margin: 0 10px;
+}
+
+/* Word count label */
+#word-count {
+    min-width: 30px;
+    text-align: left;
 }
 
 /* Main container layout */
