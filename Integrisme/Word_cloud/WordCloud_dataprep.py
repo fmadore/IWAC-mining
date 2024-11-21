@@ -140,9 +140,14 @@ def main():
     # Generate word frequencies (top 200 words instead of 100)
     word_frequencies = generate_word_frequencies(integrisme_articles['processed_tokens'], max_words=200)
     
-    # Save to JSON file in the same directory as the script
+    # Save to JSON file in the data directory
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    output_path = os.path.join(script_dir, 'word_frequencies.json')
+    data_dir = os.path.join(script_dir, 'data')
+    
+    # Create data directory if it doesn't exist
+    os.makedirs(data_dir, exist_ok=True)
+    
+    output_path = os.path.join(data_dir, 'word_frequencies.json')
     save_to_json(word_frequencies, output_path)
     print(f"Word frequencies saved to {output_path}")
 

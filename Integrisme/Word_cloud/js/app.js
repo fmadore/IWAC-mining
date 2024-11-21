@@ -26,7 +26,7 @@ class WordCloudApp {
         const container = document.getElementById('word-cloud');
         container.innerHTML = '<div class="loading">Loading word cloud data...</div>';
 
-        d3.json('word_frequencies.json')
+        d3.json('data/word_frequencies.json')
             .then(data => {
                 if (!data || Object.keys(data).length === 0) {
                     throw new Error('No data available');
