@@ -63,36 +63,6 @@ def clean_text(text):
     
     return text.strip()
 
-def merge_split_words(tokens):
-    """Merge commonly split words."""
-    merged_tokens = []
-    i = 0
-    while i < len(tokens):
-        current_token = tokens[i]
-        
-        # List of common split words to merge
-        if i + 1 < len(tokens):
-            next_token = tokens[i + 1]
-            
-            # Add more cases as needed
-            if current_token == "aujourd" and next_token == "hui":
-                merged_tokens.append("aujourd'hui")
-                i += 2
-            elif current_token == "c" and next_token == "est":
-                merged_tokens.append("c'est")
-                i += 2
-            elif current_token == "d" and next_token == "abord":
-                merged_tokens.append("d'abord")
-                i += 2
-            else:
-                merged_tokens.append(current_token)
-                i += 1
-        else:
-            merged_tokens.append(current_token)
-            i += 1
-    
-    return merged_tokens
-
 def preprocess_text(text):
     """Preprocess text using CamemBERT tokenizer."""
     # Initial cleaning
@@ -111,7 +81,7 @@ def preprocess_text(text):
         if word.isalpha():
             cleaned_words.append(word)
     
-    # Now use CamemBERT only for validation/normalization if needed
+    # Use CamemBERT for proper tokenization and normalization
     encoded = tokenizer(
         " ".join(cleaned_words), 
         return_tensors='pt', 
@@ -122,7 +92,7 @@ def preprocess_text(text):
     with torch.no_grad():
         outputs = model(**encoded)
     
-    # Get the full words back
+    # Get the full words back - CamemBERT will properly handle contractions and compound words
     decoded = tokenizer.decode(encoded['input_ids'][0], skip_special_tokens=True)
     final_tokens = [
         word.lower() 
