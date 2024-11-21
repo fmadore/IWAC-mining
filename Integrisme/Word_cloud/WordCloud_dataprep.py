@@ -77,6 +77,9 @@ def preprocess_text(text):
     # Initial cleaning
     text = clean_text(text)
     
+    # Replace "el hadj" and variations with empty string before spaCy processing
+    text = re.sub(r'\b[eE]l[\s-][hH]adj\b', '', text)
+    
     # Process the text with spaCy
     doc = nlp(text)
     
@@ -94,6 +97,7 @@ def preprocess_text(text):
             and not token.like_num  # Catches written numbers like 'trois'
             and not token.is_currency
             and token.pos_ not in ['AUX', 'DET', 'PRON', 'ADP', 'SCONJ', 'CCONJ']
+            and not re.match(r'^el\s*hadj$', token.lemma_.lower())  # Additional check for any remaining variations
         )
     ]
     
