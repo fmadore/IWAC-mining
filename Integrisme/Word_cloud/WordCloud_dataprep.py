@@ -40,7 +40,8 @@ def load_data(url):
 
 def filter_integrisme_articles(df):
     """Filter articles mentioning 'intégrisme'."""
-    return df[df['dcterms:subject'].fillna('').str.contains('Intégrisme', case=False)]
+    # Create an explicit copy of the filtered DataFrame
+    return df[df['dcterms:subject'].fillna('').str.contains('Intégrisme', case=False)].copy()
 
 def clean_text(text):
     """Initial text cleaning before tokenization."""
@@ -125,7 +126,7 @@ def main():
     # Load data
     df = load_data(url)
     
-    # Filter articles mentioning "intégrisme"
+    # Filter articles mentioning "intégrisme" and create a copy
     integrisme_articles = filter_integrisme_articles(df)
     
     # Preprocess text in "bibo:content" with progress tracking
