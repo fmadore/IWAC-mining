@@ -18,11 +18,19 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 20px;
         }
         .word {
             font-family: Arial, sans-serif;
             cursor: pointer;
             pointer-events: all;
+            transition: filter 0.2s ease;
+        }
+        .word:hover {
+            filter: brightness(115%);
         }
         #controls {
             width: 80%;
@@ -49,8 +57,8 @@
         }
         .tooltip {
             position: fixed;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.8);
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
             color: white;
             border-radius: 4px;
             font-size: 14px;
@@ -59,7 +67,12 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             max-width: 200px;
             white-space: nowrap;
-            transition: opacity 0.2s ease;
+            transition: all 0.15s ease-out;
+            opacity: 0;
+            visibility: hidden;
+            border: none;
+            font-family: Arial, sans-serif;
+            line-height: 1.4;
         }
         svg {
             max-width: 100%;
@@ -117,6 +130,21 @@
             minFontSize: 12,
             maxFontSize: 80,
             transitionDuration: 200
+        };
+
+        const WORD_CATEGORIES = {
+            religious: ['religieux', 'musulman', 'islam', 'islamique', 'religion', 'imam', 'mosquée', 'prophète', 'coran', 'dieu', 'foi'],
+            political: ['politique', 'président', 'ministre', 'gouvernement', 'état', 'national', 'parti'],
+            social: ['dialogue', 'communauté', 'association', 'social', 'culture'],
+            places: ['ivoire', 'burkina', 'pays', 'monde', 'faso', 'bénin']
+        };
+
+        const CATEGORY_COLORS = {
+            religious: d3.interpolateReds,
+            political: d3.interpolateBlues,
+            social: d3.interpolateGreens,
+            places: d3.interpolateOranges,
+            default: d3.interpolatePurples
         };
 
         let allWords = [];
@@ -182,11 +210,11 @@
                 const layout = d3.layout.cloud()
                     .size([CONFIG.width, CONFIG.height])
                     .words(currentWords)
-                    .padding(3)
-                    .rotate(() => 0)
+                    .padding(5)
+                    .rotate(() => Math.random() < 0.5 ? 0 : 90) // Only 0° or 90° rotation
                     .font('Arial')
                     .fontSize(d => d.size)
-                    .spiral('archimedean')  // Changed spiral type for better distribution
+                    .spiral('rectangular')  // Changed to rectangular for better space usage
                     .on('end', draw);
 
                 layout.start();
@@ -196,11 +224,18 @@
             }
         }
 
-        // Add color consistency
-        const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-        const getWordColor = (word) => {
-            return colorScale(word);
-        };
+        // Replace the getWordColor function with this improved version
+        function getWordColor(word) {
+            // Find which category the word belongs to
+            for (const [category, words] of Object.entries(WORD_CATEGORIES)) {
+                if (words.includes(word.toLowerCase())) {
+                    // Use the frequency percentage to determine color intensity
+                    const intensity = Math.random() * 0.4 + 0.3; // Random between 0.3 and 0.7
+                    return CATEGORY_COLORS[category](intensity);
+                }
+            }
+            return CATEGORY_COLORS.default(Math.random() * 0.4 + 0.3);
+        }
 
         // Improve draw function with transitions
         function draw(words) {
@@ -217,23 +252,33 @@
             svg.attr('role', 'img')
                .attr('aria-label', 'Word cloud visualization');
 
-            svg.selectAll('text')
+            const wordElements = svg.selectAll('text')
                 .data(words)
                 .enter()
                 .append('text')
                 .attr('class', 'word')
-                .style('font-size', d => `${d.size}px`)
+                .style('font-size', '0px') // Start with size 0 for animation
                 .style('font-family', 'Arial')
                 .style('fill', d => d.color)
                 .style('font-weight', 'bold')
                 .attr('text-anchor', 'middle')
-                .attr('transform', d => `translate(${d.x},${d.y})`)
                 .text(d => d.text)
+                .attr('transform', d => `translate(${d.x},${d.y}) rotate(${d.rotate})`);
+
+            // Add entrance animation
+            wordElements.transition()
+                .duration(600)
+                .ease(d3.easeBackOut)
+                .style('font-size', d => `${d.size}px`);
+
+            wordElements
                 .on('mouseover', function(event, d) {
-                    const mouseX = event.pageX;
-                    const mouseY = event.pageY;
+                    const bbox = this.getBoundingClientRect();
+                    const centerX = bbox.left + (bbox.width / 2);
+                    const topY = bbox.top - 10;
                     
                     tooltip
+                        .style("visibility", "visible")
                         .style("opacity", 1)
                         .html(`
                             <strong>Word:</strong> ${d.text}<br/>
@@ -241,20 +286,14 @@
                             <strong>Percentage:</strong> ${d.percentage}%<br/>
                             <strong>Rank:</strong> ${currentWords.findIndex(w => w.text === d.text) + 1}/${currentWords.length}
                         `)
-                        .style("left", `${mouseX}px`)
-                        .style("top", `${mouseY - 10}px`)
+                        .style("left", `${centerX}px`)
+                        .style("top", `${topY}px`)
                         .style("transform", "translate(-50%, -100%)");
                 })
-                .on('mousemove', function(event) {
-                    const mouseX = event.pageX;
-                    const mouseY = event.pageY;
-                    
-                    tooltip
-                        .style("left", `${mouseX}px`)
-                        .style("top", `${mouseY - 10}px`);
-                })
                 .on('mouseout', function() {
-                    tooltip.style("opacity", 0);
+                    tooltip
+                        .style("opacity", 0)
+                        .style("visibility", "hidden");
                 });
         }
 
