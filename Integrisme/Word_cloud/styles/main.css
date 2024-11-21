@@ -7,23 +7,47 @@
     --font-family: Arial, sans-serif;
 }
 
+/* Container layout */
+#container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
 /* Controls */
 #controls {
     width: 80%;
     max-width: 600px;
-    margin: 20px auto;
+    margin: 0 auto;
     padding: var(--padding);
     background: white;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     text-align: center;
     font-family: var(--font-family);
+    position: relative;
+    z-index: 1;
 }
 
 /* Slider */
 #word-slider {
     width: 300px;
     accent-color: #3498db;
+}
+
+/* Main container layout */
+#main-container {
+    display: flex;
+    width: 100%;
+    gap: 30px;
+    position: relative;
+    margin-top: -30px;
+}
+
+/* Visualization container */
+#visualization-container {
+    flex: 1;
+    min-width: 0;
 }
 
 /* Word cloud container */
@@ -36,17 +60,22 @@
     background: var(--primary-gradient);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
-    margin: 20px;
 }
 
 /* Sidebar */
 #sidebar {
     width: 300px;
+    min-width: 300px;
     background: white;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     padding: var(--padding);
     height: fit-content;
+    position: sticky;
+    top: 100px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    margin-top: 50px;
 }
 
 #sidebar h2 {
@@ -113,16 +142,6 @@
     color: #3498db;
 }
 
-/* Main container layout */
-#main-container {
-    display: flex;
-    width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
-    gap: var(--padding);
-    padding: var(--padding);
-}
-
 /* Loading state */
 .loading {
     color: #2c3e50;
@@ -143,14 +162,40 @@
     margin-bottom: 10px;
 }
 
+/* Word list styling */
+.word-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
 /* Responsive adjustments */
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
     #main-container {
         flex-direction: column;
+        margin-top: 20px;
     }
     
     #sidebar {
         width: 100%;
+        min-width: 0;
+        position: static;
+        max-height: none;
+        margin-top: 0;
+    }
+
+    #visualization-container {
+        min-height: 500px;
+    }
+}
+
+@media (max-width: 768px) {
+    #container {
+        padding: 10px;
+    }
+
+    #main-container {
+        gap: 15px;
     }
 
     #controls {
