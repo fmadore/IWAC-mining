@@ -512,12 +512,15 @@
                     // Find the maximum y value from active data
                     const maxY = d3.max(activeData, d => d.total_count) || 0;
                     
-                    // Set minimum y-axis height to prevent empty graph
+                    // Set minimum y-axis height and adjust padding based on data range
                     const minYAxisMax = 5;  // Minimum max value for y-axis
                     const yAxisMax = Math.max(maxY, minYAxisMax);
                     
-                    // Update y domain with padding and minimum height
-                    y.domain([0, yAxisMax * 1.4]);  // Keep the 1.4 padding for annotations
+                    // Use smaller padding multiplier for smaller values
+                    const paddingMultiplier = maxY < 10 ? 2.0 : 1.4;
+                    
+                    // Update y domain with adaptive padding
+                    y.domain([0, yAxisMax * paddingMultiplier]);
 
                     // Update axes with smoother transition
                     g.select(".axis--x")
@@ -608,7 +611,7 @@
                         }
                     });
 
-                    // Update annotations with new y-axis scale
+                    // Update annotations with adaptive positioning
                     annotationGroups.each(function(d) {
                         const group = d3.select(this);
                         const eventYear = parseInt(d.year);
@@ -619,9 +622,12 @@
                         const yearData = activeData.filter(td => td.year.getFullYear() === eventYear);
                         const yearMaxY = d3.max(yearData, yd => yd.total_count) || 0;
                         
+                        // Adjust vertical offset based on data range
+                        const verticalOffset = maxY < 10 ? 20 : 100;
+                        
                         // Position annotations relative to the visible data range
                         const annotationYPos = Math.min(
-                            y(yearMaxY) - 100,  // Normal position
+                            y(yearMaxY) - verticalOffset,  // Normal position with adaptive offset
                             y(yAxisMax * 0.8)   // Maximum height to prevent going off chart
                         );
 
