@@ -45,10 +45,15 @@ OMEKA_KEY_CREDENTIAL = os.getenv('OMEKA_KEY_CREDENTIAL')
 
 def preprocess_text(text):
     """
-    Preprocess text using the transformer model's advanced capabilities.
+    Preprocess text using the transformer model's advanced capabilities at different levels.
+    Returns a dictionary containing processed text at article, paragraph and sentence levels.
     """
     if not text:
-        return ""
+        return {
+            "article": "",
+            "paragraphs": [],
+            "sentences": []
+        }
     
     # Convert to lowercase and remove special characters
     text = re.sub(r'[^\w\s]', ' ', text.lower())
@@ -56,19 +61,43 @@ def preprocess_text(text):
     # Process with spaCy
     doc = nlp(text)
     
-    # Filter tokens with more advanced criteria
-    processed_tokens = [
-        token.lemma_  # Use lemmatization instead of raw text
-        for token in doc
-        if not token.is_stop 
-        and not token.is_punct
-        and not token.is_space
-        and len(token.text.strip()) > 1  # Remove single characters
-        and not token.like_num  # Remove numbers
-        and token.pos_ not in ['SPACE', 'SYM']  # Remove specific parts of speech
-    ]
+    def process_tokens(tokens):
+        """Helper function to process a sequence of tokens."""
+        return [
+            token.lemma_  # Use lemmatization instead of raw text
+            for token in tokens
+            if not token.is_stop 
+            and not token.is_punct
+            and not token.is_space
+            and len(token.text.strip()) > 1  # Remove single characters
+            and not token.like_num  # Remove numbers
+            and token.pos_ not in ['SPACE', 'SYM']  # Remove specific parts of speech
+        ]
     
-    return " ".join(processed_tokens)
+    # Process at article level
+    article_tokens = process_tokens(doc)
+    
+    # Process at paragraph level
+    paragraphs = []
+    for para in text.split('\n\n'):
+        if para.strip():
+            para_doc = nlp(para)
+            para_tokens = process_tokens(para_doc)
+            if para_tokens:  # Only add non-empty paragraphs
+                paragraphs.append(" ".join(para_tokens))
+    
+    # Process at sentence level
+    sentences = []
+    for sent in doc.sents:
+        sent_tokens = process_tokens(sent)
+        if sent_tokens:  # Only add non-empty sentences
+            sentences.append(" ".join(sent_tokens))
+    
+    return {
+        "article": " ".join(article_tokens),
+        "paragraphs": paragraphs,
+        "sentences": sentences
+    }
 
 def fetch_data(url):
     """Fetch data from a given URL with authentication."""
@@ -108,11 +137,11 @@ def process_article_content(article_data):
             if isinstance(content, list):
                 for item in content:
                     if '@value' in item:
-                        # Add processed version of the text
-                        item['processed_value'] = preprocess_text(item['@value'])
+                        # Add processed versions of the text at different levels
+                        item['processed_text'] = preprocess_text(item['@value'])
             elif isinstance(content, dict) and '@value' in content:
-                # Add processed version of the text
-                content['processed_value'] = preprocess_text(content['@value'])
+                # Add processed versions of the text at different levels
+                content['processed_text'] = preprocess_text(content['@value'])
     except Exception as e:
         logging.error(f"Error processing article content: {str(e)}")
     
