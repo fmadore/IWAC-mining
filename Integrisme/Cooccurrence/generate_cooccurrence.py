@@ -24,7 +24,19 @@ def get_top_terms(word_frequencies_path, n_terms=50):
     
     with open(word_frequencies_file, 'r', encoding='utf-8') as f:
         word_freq = json.load(f)
-    return list(dict(sorted(word_freq.items(), key=lambda x: x[1], reverse=True)[:n_terms]).keys())
+    
+    # Filter out potentially problematic terms
+    filtered_freq = {
+        word: freq for word, freq in word_freq.items() 
+        if len(word) > 2  # Filter out very short words
+        and not any(c.isdigit() for c in word)  # Filter out words with numbers
+        and word not in ['celer', 'célér']  # Explicitly exclude problematic words
+    }
+    
+    # Get top N terms
+    return list(dict(sorted(filtered_freq.items(), 
+                          key=lambda x: x[1], 
+                          reverse=True)[:n_terms]).keys())
 
 def calculate_cooccurrence(articles, top_terms, window_type='article'):
     """Calculate co-occurrence matrix for top terms
