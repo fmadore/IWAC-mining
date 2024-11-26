@@ -113,16 +113,29 @@ def fetch_data(url):
         return None
 
 def fetch_ids_from_item(url):
-    """Fetch all @id URLs from the @reverse section of the item."""
+    """
+    Fetch article URLs from the @reverse section of the item.
+    Only returns URLs for items that are of type bibo:Article.
+    """
     logging.info(f"Fetching IDs from {url}")
     data = fetch_data(url)
     
     if data and '@reverse' in data and 'dcterms:subject' in data['@reverse']:
-        urls = [item['@id'] for item in data['@reverse']['dcterms:subject']]
-        logging.info(f"Found {len(urls)} URLs to process")
-        return urls
+        # Get all URLs first
+        potential_urls = [item['@id'] for item in data['@reverse']['dcterms:subject']]
+        
+        # Filter for articles only
+        article_urls = []
+        for url in potential_urls:
+            item_data = fetch_data(url)
+            if item_data and '@type' in item_data and 'bibo:Article' in item_data['@type']:
+                article_urls.append(url)
+                logging.debug(f"Found article: {item_data.get('o:title', 'Untitled')}")
+        
+        logging.info(f"Found {len(article_urls)} article URLs out of {len(potential_urls)} total URLs")
+        return article_urls
     else:
-        logging.warning(f"No @id URLs found in {url}")
+        logging.warning(f"No article URLs found in {url}")
         return []
 
 def process_article_content(article_data):
