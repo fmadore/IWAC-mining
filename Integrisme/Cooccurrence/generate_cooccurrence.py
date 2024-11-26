@@ -68,14 +68,14 @@ def generate_matrix_data():
     
     # Prepare the output data structure
     output_data = {
-        "nodes": [{"id": term, "name": term} for term in top_terms],
+        "nodes": [{"id": i, "name": term} for i, term in enumerate(top_terms)],
         "links": []
     }
     
     # Convert matrix to links
     n = len(top_terms)
     for i in range(n):
-        for j in range(i+1, n):
+        for j in range(n):  # Changed to include all combinations
             if matrix[i][j] > 0:
                 output_data["links"].append({
                     "source": i,
