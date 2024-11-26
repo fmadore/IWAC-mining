@@ -61,6 +61,7 @@ def get_newspaper_country_mapping():
         'Le Patriote': 'Côte d\'Ivoire',
         'Notre Temps': 'Côte d\'Ivoire',
         'Notre Voie': 'Côte d\'Ivoire',
+        'Plume Libre': 'Côte d\'Ivoire',
         
         # Togo newspapers
         'Agence Togolaise de Presse': 'Togo',
