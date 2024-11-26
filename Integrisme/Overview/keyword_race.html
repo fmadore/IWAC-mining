@@ -27,8 +27,8 @@
         .year {
             font-size: 96px;
             font-weight: bold;
-            opacity: 0.2;
-            fill: #ccc;
+            opacity: 0.4;
+            fill: #666;
         }
 
         /* Hide axis lines and ticks */
@@ -127,7 +127,7 @@ d3.json("yearly_counts.json").then(data => {
 
     // Labels
     const yearLabel = svg.append("g")
-        .attr("transform", `translate(${width - margin.right}, ${height - margin.bottom})`)
+        .attr("transform", `translate(${width - margin.right + 100}, ${height - margin.bottom - 60})`)
         .append("text")
         .attr("class", "year")
         .style("text-anchor", "end");
