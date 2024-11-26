@@ -1,0 +1,2721 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Yako",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.26075,
+          12.9591
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Passoré",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.2666666666667,
+          12.95
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Burkina Faso",
+        "mentions": 36
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.66667,
+          12.5
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bobo-Dioulasso",
+        "mentions": 13
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.2979,
+          11.17715
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ouagadougou",
+        "mentions": 37
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.53388,
+          12.36566
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bénin",
+        "mentions": 15
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.25,
+          9.5
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Le Caire",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.235833,
+          30.044444
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "République centrafricaine",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.9,
+          6.7
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Mali",
+        "mentions": 13
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.0,
+          18.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Boulkiemdé",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.3666666666667,
+          12.25
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Koudougou",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.36272,
+          12.25263
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ouahigouya",
+        "mentions": 6
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.42158,
+          13.58278
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Libye",
+        "mentions": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.0,
+          28.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Koupéla",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.35103,
+          12.17864
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tunisie",
+        "mentions": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.0,
+          34.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Parakou",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.63031,
+          9.33716
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Borgou",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.6196353130056622,
+          10.74821385974019
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "La Mecque",
+        "mentions": 15
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          39.826111,
+          21.4225
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Médine",
+        "mentions": 10
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          39.61417,
+          24.46861
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Côte d'Ivoire",
+        "mentions": 48
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -5.5,
+          8.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Algérie",
+        "mentions": 19
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0,
+          28.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "France",
+        "mentions": 9
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.0,
+          46.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Alger",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.0586111111111,
+          36.776388888889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Suisse",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.01427,
+          47.00016
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Djibo",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.6249,
+          14.12526
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Soum",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.633333,
+          14.1
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Cotonou",
+        "mentions": 6
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.41833,
+          6.36536
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Nigéria",
+        "mentions": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.0,
+          10.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ghana",
+        "mentions": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.2,
+          8.1
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sierra Leone",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -12.1,
+          8.5
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Togo",
+        "mentions": 9
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.08333,
+          8.66667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Allemagne",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.5,
+          51.5
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Royaume-Uni",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.69531,
+          54.75844
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "États-Unis",
+        "mentions": 8
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.5,
+          39.76
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Iran",
+        "mentions": 7
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          53.0,
+          32.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sakété",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.65866,
+          6.73618
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tripoli",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.18733,
+          32.88743
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "New York",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.006111,
+          40.712778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Malanville",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.38327,
+          11.86819
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Arabie saoudite",
+        "mentions": 16
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          45.0,
+          25.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Égypte",
+        "mentions": 9
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.0,
+          27.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Poura",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.75,
+          11.616666666667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sanguié",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.4666666666667,
+          12.316666666667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Djougou",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.66598,
+          9.70853
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Donga",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.666667,
+          9.7
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bassila",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.6654,
+          9.00814
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Allada",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.15138,
+          6.66547
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bohicon",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.0667,
+          7.17826
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Lokossa",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.71674,
+          6.63869
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Porto-Novo",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.60359,
+          6.49646
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Abomey",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.99119,
+          7.18286
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Mono",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.7166666666667,
+          6.6333333333333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Aplahoué",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.68333,
+          6.93333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Maroc",
+        "mentions": 8
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -10.0,
+          28.5
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sénégal",
+        "mentions": 8
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -14.25,
+          14.5
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kpalimé",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.62805555555556,
+          6.91
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Dapaong",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.2,
+          10.866666666667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tône",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.166667,
+          10.916667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Lomé",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.22154,
+          6.12874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Angleterre",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.0,
+          53.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ramatoulaye",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.316667,
+          13.633333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Oumé",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -5.4166666666667,
+          6.3833333333333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Niger",
+        "mentions": 10
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.0,
+          18.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Île Maurice",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          57.5,
+          -20.2
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Afghanistan",
+        "mentions": 4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          66.0,
+          33.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tchétchénie",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          45.716694444444,
+          43.4
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bosnie-Herzégovine",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.0,
+          44.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Palestine",
+        "mentions": 7
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.20329,
+          31.92157
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Irak",
+        "mentions": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          44.0,
+          33.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Chine",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.451944,
+          35.844722
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tové",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.12583,
+          6.32222
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tchamba",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.4166666666667,
+          9.0333333333333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kloto",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.75,
+          7.083333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Djeddah",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          39.18624,
+          21.49012
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rome",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.482777777778,
+          41.893055555556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Mauritanie",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -10.5,
+          20.25
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Soudan",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.0,
+          16.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Somalie",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          48.0,
+          6.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Jérusalem",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.225556,
+          31.778889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tchad",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.0,
+          15.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Dori",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.03261,
+          14.0341
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bolomakoté",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.293358454395325,
+          11.158339735248203
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Stade Wobi",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.296944,
+          11.181944
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Dédougou",
+        "mentions": 4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.46075,
+          12.46338
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Casablanca",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.62,
+          33.599166666667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rabat",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.8361111111111,
+          34.025277777778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Dakar",
+        "mentions": 4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -17.457222222222,
+          14.731944444444
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Fada N'Gourma",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.35843,
+          12.06157
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sikasso",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.0969444444444,
+          11.199722222222
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Belgique",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.5,
+          50.75
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Berne",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.44743,
+          46.94798
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tougan",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.07527,
+          13.05913
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Israël",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.75,
+          31.5
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kaya",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.08444,
+          13.09167
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pouytenga",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.42565,
+          12.25162
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pakistan",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          70.0,
+          30.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Centre culturel islamique AEEMB",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.4871601188636745,
+          12.37545088285411
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Banfora",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.76667,
+          10.63333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Orodara",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.92612,
+          10.98568
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ziniaré",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.2971,
+          12.58186
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kougny",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.118572,
+          12.784055
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sourou",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.0666666666667,
+          13.066666666667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tunis",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18,
+          36.800833333333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Koweït",
+        "mentions": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.75,
+          29.5
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Adjamé",
+        "mentions": 11
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.02366,
+          5.3648
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Dabou",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.376667,
+          5.325556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Anyama",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.0516666666667,
+          5.4944444444444
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bondoukou",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.8,
+          8.04
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Abidjan",
+        "mentions": 20
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.00167,
+          5.35444
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Cocody",
+        "mentions": 10
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.9666666666667,
+          5.35
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Plateau",
+        "mentions": 6
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.02014,
+          5.32549
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Aghien",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.999984,
+          5.388123
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Adzopé",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.864814,
+          6.103517
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Yopougon",
+        "mentions": 8
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.066667,
+          5.316667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Samatiguila",
+        "mentions": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.5666666666667,
+          9.8333333333333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Gambie",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -15.5,
+          13.5
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Marcory",
+        "mentions": 4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.9833333333333,
+          5.3
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Mosquée de la Riviéra Golf",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.9788409923568815,
+          5.33757653748572
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bouaké",
+        "mentions": 4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -5.03306,
+          7.68333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Man",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.553611,
+          7.4125
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "San-Pédro",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.633333,
+          4.733333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Abengourou",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.496389,
+          6.729722
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Yamoussoukro",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -5.274167,
+          6.816111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Gaoua",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.16475,
+          10.38247
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sapouy",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.77361,
+          11.55444
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Téhéran",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          51.416667,
+          35.7
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Riyad",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          46.71,
+          24.65
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Turquie",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.0,
+          39.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Qom",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          50.87638888888889,
+          34.64
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Abobo",
+        "mentions": 4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.020556,
+          5.418889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Abobo Banco",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.02092,
+          5.41301
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Odienné",
+        "mentions": 4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.566667,
+          9.5
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Port-Bouët",
+        "mentions": 9
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.9,
+          5.266667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Paris",
+        "mentions": 4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3488,
+          48.85341
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Marseille",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.3763888888889,
+          43.296666666667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tengréla",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.4069444444444,
+          10.481111111111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Korhogo",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -5.629444,
+          9.457778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Gagnoa",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -5.93333,
+          6.13333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rouen",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.1025,
+          49.443055555556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Guinée",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -10.66667,
+          10.83333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Liberia",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.75,
+          6.533333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rwanda",
+        "mentions": 4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30.0,
+          -2.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Palais des Sports de Treichville",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.005278,
+          5.298056
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Attécoubé",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.033333,
+          5.333333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Treichville",
+        "mentions": 9
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.0,
+          5.3
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Touba",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.683333,
+          8.283333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Grande Mosquée d'Adjamé",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.026326534959187,
+          5.353286615241792
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Burundi",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.816667,
+          -3.666667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Niamey",
+        "mentions": 4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.1175,
+          13.515
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Liban",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.83333,
+          33.83333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Anvers",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.3997222222222225,
+          51.221111111111114
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Zinder",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.9833333333333,
+          13.8
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Canada",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -113.64258,
+          60.10867
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Londres",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.1275,
+          51.507222222222
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Koumassi",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.95,
+          5.3
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Afrique du Sud",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.0,
+          -29.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sassandra",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.0833333333333,
+          4.95
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Jacqueville",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.4166666666667,
+          5.2
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Aboisso",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.2,
+          5.466667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Aïn Madhi",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3,
+          33.8
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Cameroun",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.5,
+          6.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "République du Congo",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.383331,
+          -0.75
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Brazzaville",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.27111111111111,
+          -4.269444444444445
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kaolack",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.076388888889,
+          14.138888888889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Nafona",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -5.0166666666667,
+          10.25
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Niangoloko",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.9166666666667,
+          10.283333333333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Soubakaniédougou",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -5.00423,
+          10.474941
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tabou",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.3527777777778,
+          4.4230555555556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Comoé",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.75,
+          10.633333333333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kiribina",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.8,
+          10.65
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Diarabakoko",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.783333,
+          10.466667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Cascades",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.5,
+          10.25
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "World Trade Center",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.0125,
+          40.711388888889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kaboul",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          69.165833333333,
+          34.532777777778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Benghazi",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.066667,
+          32.116667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Qatar",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          51.25,
+          25.5
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Émirats arabes unis",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          54.5,
+          23.75
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Inde",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          79.0,
+          22.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Syrie",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          38.0,
+          35.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Espagne",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.5,
+          40.2
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Irlande du Nord",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.6925,
+          54.6075
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bangladesh",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          89.86666666666666,
+          24.016666666666666
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Suède",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0,
+          61.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Blida",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.8333333333333,
+          36.472222222222
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Lyon",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.8413888888889,
+          45.758888888889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bingerville",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.9,
+          5.35
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Damas",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          36.291944444444,
+          33.513055555556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bagdad",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          44.36611111111111,
+          33.31527777777778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Istanbul",
+        "mentions": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.960278,
+          41.01
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bamako",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.992222,
+          12.645833
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Mankono",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.18333333,
+          8.05
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Séguéla",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.6730555555556,
+          7.9611111111111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kong",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.610263,
+          9.150632
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Riviera III",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.953459,
+          5.348571
+        ]
+      }
+    }
+  ]
+}
