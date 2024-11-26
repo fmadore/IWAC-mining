@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Co-occurrence Matrix Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="controls">
+            <select id="order">
+                <option value="name">Par nom</option>
+                <option value="count">Par fréquence</option>
+                <option value="cluster">Par groupe</option>
+            </select>
+        </div>
+        <div id="matrix"></div>
+    </div>
+    <script src="matrix.js"></script>
+</body>
+</html> 
