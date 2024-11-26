@@ -4,6 +4,30 @@
     padding: 20px;
 }
 
+.description {
+    margin-bottom: 30px;
+}
+
+.description h2 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.description p {
+    color: #666;
+    line-height: 1.5;
+}
+
+#window-type {
+    display: inline-block;
+    padding: 2px 5px;
+    font-size: inherit;
+    border: none;
+    border-bottom: 1px dashed #666;
+    background: transparent;
+    cursor: pointer;
+}
+
 .controls {
     margin-bottom: 20px;
 }

@@ -9,6 +9,17 @@
 </head>
 <body>
     <div class="container">
+        <div class="description">
+            <h2>Co-occurrence Matrix Visualization</h2>
+            <p>This visualization shows how frequently terms appear together in newspaper articles. 
+               Terms are considered co-occurring when they appear in the same 
+               <select id="window-type">
+                    <option value="article">article</option>
+                    <option value="paragraph">paragraph</option>
+                    <option value="sentence">sentence</option>
+               </select>.
+            </p>
+        </div>
         <div class="controls">
             <label for="order">Order: </label>
             <select id="order">

@@ -6,12 +6,14 @@ class MatrixVisualization {
         this.height = 800;
         this.data = null;
         this.transitionDuration = 750;
+        this.windowType = 'article';
     }
 
     async initialize() {
         try {
             // Load the data
-            this.data = await d3.json('data/cooccurrence.json');
+            const allData = await d3.json('data/cooccurrence.json');
+            this.data = allData[this.windowType];
             
             // Create the SVG container
             this.svg = d3.select('#matrix')
@@ -41,6 +43,15 @@ class MatrixVisualization {
             // Add event listeners for ordering
             d3.select('#order').on('change', (event) => {
                 this.updateVisualization(event.target.value);
+            });
+
+            // Add event listener for window type
+            d3.select('#window-type').on('change', async (event) => {
+                this.windowType = event.target.value;
+                const allData = await d3.json('data/cooccurrence.json');
+                this.data = allData[this.windowType];
+                this.color.domain([0, d3.max(this.data.links, d => d.value)]);
+                this.updateVisualization(d3.select('#order').property('value'));
             });
         } catch (error) {
             console.error('Error initializing visualization:', error);

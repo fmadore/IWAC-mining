@@ -26,20 +26,32 @@ def get_top_terms(word_frequencies_path, n_terms=50):
         word_freq = json.load(f)
     return list(dict(sorted(word_freq.items(), key=lambda x: x[1], reverse=True)[:n_terms]).keys())
 
-def calculate_cooccurrence(articles, top_terms):
-    """Calculate co-occurrence matrix for top terms"""
+def calculate_cooccurrence(articles, top_terms, window_type='article'):
+    """Calculate co-occurrence matrix for top terms
+    
+    Args:
+        articles: List of article dictionaries
+        top_terms: List of terms to analyze
+        window_type: 'article', 'paragraph', or 'sentence'
+    """
     n = len(top_terms)
     term_to_idx = {term: i for i, term in enumerate(top_terms)}
     matrix = np.zeros((n, n))
     
     for article in articles:
-        # Extract content from the nested structure
-        try:
-            # Get the first item from bibo:content list and its @value
-            content = article.get('bibo:content', [{}])[0].get('@value', '').lower()
+        content = article.get('bibo:content', [{}])[0].get('@value', '').lower()
+        
+        if window_type == 'article':
+            windows = [content]
+        elif window_type == 'paragraph':
+            # Split on double newlines or other paragraph markers
+            windows = [p.strip() for p in content.split('\n\n') if p.strip()]
+        elif window_type == 'sentence':
+            # Simple sentence splitting - could be improved with nltk
+            windows = [s.strip() for s in content.split('.') if s.strip()]
             
-            # Create a binary vector for terms present in this article
-            present_terms = [term for term in top_terms if term in content]
+        for window in windows:
+            present_terms = [term for term in top_terms if term in window]
             
             # Update co-occurrence matrix
             for i, term1 in enumerate(present_terms):
@@ -49,11 +61,7 @@ def calculate_cooccurrence(articles, top_terms):
                     if idx1 != idx2:
                         matrix[idx2][idx1] += 1
                         
-        except (KeyError, IndexError, AttributeError) as e:
-            print(f"Warning: Could not process article: {e}")
-            continue
-    
-    return matrix.tolist()
+    return matrix
 
 def generate_matrix_data():
     """Generate the matrix data in the required format"""
@@ -61,27 +69,32 @@ def generate_matrix_data():
     articles = load_integrisme_data()
     
     # Get top terms from word frequencies
-    top_terms = get_top_terms(word_frequencies_path=None)  # path is handled inside the function
+    top_terms = get_top_terms(word_frequencies_path=None)
     
-    # Calculate co-occurrence matrix
-    matrix = calculate_cooccurrence(articles, top_terms)
+    # Calculate co-occurrence matrices for different window types
+    matrices = {
+        'article': calculate_cooccurrence(articles, top_terms, 'article'),
+        'paragraph': calculate_cooccurrence(articles, top_terms, 'paragraph'),
+        'sentence': calculate_cooccurrence(articles, top_terms, 'sentence')
+    }
     
-    # Prepare the output data structure
-    output_data = {
+    # Prepare output data structures for each window type
+    output_data = {window_type: {
         "nodes": [{"id": i, "name": term} for i, term in enumerate(top_terms)],
         "links": []
-    }
+    } for window_type in matrices.keys()}
     
     # Convert matrix to links
     n = len(top_terms)
-    for i in range(n):
-        for j in range(n):  # Changed to include all combinations
-            if matrix[i][j] > 0:
-                output_data["links"].append({
-                    "source": i,
-                    "target": j,
-                    "value": matrix[i][j]
-                })
+    for window_type, matrix in matrices.items():
+        for i in range(n):
+            for j in range(n):
+                if matrix[i][j] > 0:
+                    output_data[window_type]["links"].append({
+                        "source": i,
+                        "target": j,
+                        "value": matrix[i][j]
+                    })
     
     # Create output directory if it doesn't exist
     output_dir = Path(__file__).parent / 'data'
