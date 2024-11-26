@@ -271,6 +271,26 @@
                 font-size: 9px;
             }
         }
+        .annotation-group {
+            cursor: pointer;
+        }
+
+        .annotation-group:hover .annotation-bg {
+            fill: rgba(255, 255, 255, 1);
+            stroke: #666;
+            stroke-width: 1.5;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .annotation-group:hover .annotation-text {
+            font-weight: 600;
+        }
+
+        .annotation-group:hover .annotation-line {
+            stroke: #666;
+            stroke-width: 2;
+            stroke-dasharray: none;
+        }
     </style>
 </head>
 <body>
@@ -407,7 +427,34 @@
                     .enter()
                     .append("g")
                     .attr("class", "annotation-group")
-                    .attr("data-year", d => d.year);
+                    .attr("data-year", d => d.year)
+                    .on("mouseover", function(event, d) {
+                        // Bring this annotation group to front
+                        this.parentNode.appendChild(this);
+                        
+                        // Dim all lines and dots
+                        d3.selectAll(".line").style("opacity", 0.2);
+                        d3.selectAll(".dot").style("opacity", 0.2);
+                        
+                        // Show tooltip with additional information
+                        tooltip.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+                        
+                        tooltip.html(`<strong>${d.event}</strong><br/>${d.description}`)
+                            .style("left", `${event.pageX + 10}px`)
+                            .style("top", `${event.pageY - 28}px`);
+                    })
+                    .on("mouseout", function() {
+                        // Restore lines and dots
+                        d3.selectAll(".line").style("opacity", 1);
+                        d3.selectAll(".dot").style("opacity", 1);
+                        
+                        // Hide tooltip
+                        tooltip.transition()
+                            .duration(500)
+                            .style("opacity", 0);
+                    });
 
                 // Add lines
                 annotationGroups.append("line")
