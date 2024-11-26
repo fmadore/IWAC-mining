@@ -8,9 +8,13 @@ import os
 # Get the directory of the current script
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
+# Set up logging directory
+log_dir = os.path.join(script_dir, 'logs')
+os.makedirs(log_dir, exist_ok=True)
+
 # Set up logging
 log_filename = f'spatial_mapping_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log'
-log_path = os.path.join(script_dir, log_filename)
+log_path = os.path.join(log_dir, log_filename)
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
