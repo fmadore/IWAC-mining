@@ -81,15 +81,6 @@ class MatrixVisualization {
                 case 'frequency':
                     nodes.sort((a, b) => degrees.get(b.id) - degrees.get(a.id));
                     break;
-                case 'cluster':
-                    nodes.sort((a, b) => {
-                        const aStrength = this.data.links.filter(l => l.source === a.id || l.target === a.id)
-                            .reduce((sum, l) => sum + l.value, 0);
-                        const bStrength = this.data.links.filter(l => l.source === b.id || l.target === b.id)
-                            .reduce((sum, l) => sum + l.value, 0);
-                        return bStrength - aStrength;
-                    });
-                    break;
                 default: // 'name'
                     nodes.sort((a, b) => a.name.localeCompare(b.name));
             }
