@@ -109,46 +109,10 @@ def process_article_content(article_data):
                 for item in content:
                     if '@value' in item:
                         # Add processed version of the text
-                        processed_text = preprocess_text(item['@value'])
-                        item['processed_value'] = processed_text
-                        
-                        # Add additional NLP information
-                        doc = nlp(item['@value'])
-                        item['nlp_metadata'] = {
-                            'entities': [(ent.text, ent.label_) for ent in doc.ents],
-                            'noun_phrases': [chunk.text for chunk in doc.noun_chunks],
-                            'main_tokens': [
-                                {
-                                    'text': token.text,
-                                    'lemma': token.lemma_,
-                                    'pos': token.pos_,
-                                    'tag': token.tag_
-                                }
-                                for token in doc
-                                if token.pos_ in ['NOUN', 'VERB', 'ADJ']
-                            ]
-                        }
+                        item['processed_value'] = preprocess_text(item['@value'])
             elif isinstance(content, dict) and '@value' in content:
-                # Process single content item
-                processed_text = preprocess_text(content['@value'])
-                content['processed_value'] = processed_text
-                
-                # Add additional NLP information
-                doc = nlp(content['@value'])
-                content['nlp_metadata'] = {
-                    'entities': [(ent.text, ent.label_) for ent in doc.ents],
-                    'noun_phrases': [chunk.text for chunk in doc.noun_chunks],
-                    'main_tokens': [
-                        {
-                            'text': token.text,
-                            'lemma': token.lemma_,
-                            'pos': token.pos_,
-                            'tag': token.tag_
-                        }
-                        for token in doc
-                        if token.pos_ in ['NOUN', 'VERB', 'ADJ']
-                    ]
-                }
+                # Add processed version of the text
+                content['processed_value'] = preprocess_text(content['@value'])
     except Exception as e:
         logging.error(f"Error processing article content: {str(e)}")
     
