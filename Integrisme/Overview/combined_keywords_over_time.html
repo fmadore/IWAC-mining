@@ -227,6 +227,27 @@
         .dot.dimmed {
             opacity: 0.2;
         }
+        .save-button {
+            padding: 8px 16px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: block;
+            margin: 20px auto;
+        }
+
+        @media (max-width: 768px) {
+            .save-button {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -244,6 +265,7 @@
                 <input type="range" id="year-end" class="range">
             </div>
         </div>
+        <button class="save-button">Save as SVG</button>
     </div>
     <script>
         function createChart() {
@@ -690,6 +712,42 @@
             });
         }
 
+        function saveSvgAsFile() {
+            const svg = document.querySelector('svg');
+            
+            // Deep clone the SVG
+            const clone = svg.cloneNode(true);
+            
+            // Convert SVG to string
+            // Inject CSS styles directly into the SVG
+            const styleSheet = document.createElement('style');
+            styleSheet.textContent = Array.from(document.styleSheets)
+                .filter(sheet => !sheet.href) // Only include internal styles
+                .map(sheet => Array.from(sheet.cssRules)
+                    .map(rule => rule.cssText)
+                    .join('\n'))
+                .join('\n');
+            clone.insertBefore(styleSheet, clone.firstChild);
+            
+            const svgData = new XMLSerializer().serializeToString(clone);
+            
+            // Add XML declaration and doctype
+            const svgContent = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' +
+                            '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n' +
+                            svgData;
+            
+            const svgBlob = new Blob([svgContent], {type: 'image/svg+xml;charset=utf-8'});
+            
+            // Download SVG file
+            const downloadLink = document.createElement('a');
+            downloadLink.download = 'keywords_over_time.svg';
+            downloadLink.href = URL.createObjectURL(svgBlob);
+            downloadLink.click();
+            
+            // Clean up
+            URL.revokeObjectURL(downloadLink.href);
+        }
+
         // Initial creation
         createChart();
 
@@ -708,6 +766,12 @@
                 timeout = setTimeout(later, wait);
             };
         }
+
+        // Update the click handler to use the new function name
+        document.querySelector('.save-button').addEventListener('click', saveSvgAsFile);
+
+        // Update button text
+        document.querySelector('.save-button').textContent = 'Save as SVG';
     </script>
 </body>
 </html>
