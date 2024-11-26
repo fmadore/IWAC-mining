@@ -5,6 +5,9 @@ import os
 from tqdm import tqdm
 import logging
 from datetime import datetime
+import spacy
+from spacy.lang.fr.stop_words import STOP_WORDS
+import re
 
 # Get the directory of the current script
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -21,12 +24,51 @@ logging.basicConfig(
     ]
 )
 
+# Load French language model
+try:
+    nlp = spacy.load('fr_dep_news_trf')
+    logging.info("Successfully loaded French transformer language model")
+except OSError:
+    logging.warning("French transformer model not found. Installing...")
+    os.system("python -m spacy download fr_dep_news_trf")
+    nlp = spacy.load('fr_dep_news_trf')
+
+# Add batch size configuration for transformer
+nlp.max_length = 1000000  # Increase max length to handle longer texts
+
 # Load environment variables from .env file
 load_dotenv()
 
 OMEKA_BASE_URL = os.getenv('OMEKA_BASE_URL')
 OMEKA_KEY_IDENTITY = os.getenv('OMEKA_KEY_IDENTITY')
 OMEKA_KEY_CREDENTIAL = os.getenv('OMEKA_KEY_CREDENTIAL')
+
+def preprocess_text(text):
+    """
+    Preprocess text using the transformer model's advanced capabilities.
+    """
+    if not text:
+        return ""
+    
+    # Convert to lowercase and remove special characters
+    text = re.sub(r'[^\w\s]', ' ', text.lower())
+    
+    # Process with spaCy
+    doc = nlp(text)
+    
+    # Filter tokens with more advanced criteria
+    processed_tokens = [
+        token.lemma_  # Use lemmatization instead of raw text
+        for token in doc
+        if not token.is_stop 
+        and not token.is_punct
+        and not token.is_space
+        and len(token.text.strip()) > 1  # Remove single characters
+        and not token.like_num  # Remove numbers
+        and token.pos_ not in ['SPACE', 'SYM']  # Remove specific parts of speech
+    ]
+    
+    return " ".join(processed_tokens)
 
 def fetch_data(url):
     """Fetch data from a given URL with authentication."""
@@ -54,6 +96,64 @@ def fetch_ids_from_item(url):
         logging.warning(f"No @id URLs found in {url}")
         return []
 
+def process_article_content(article_data):
+    """Process the content of an article and add processed text."""
+    if not article_data:
+        return article_data
+    
+    try:
+        # Find the content in bibo:content
+        if 'bibo:content' in article_data:
+            content = article_data['bibo:content']
+            if isinstance(content, list):
+                for item in content:
+                    if '@value' in item:
+                        # Add processed version of the text
+                        processed_text = preprocess_text(item['@value'])
+                        item['processed_value'] = processed_text
+                        
+                        # Add additional NLP information
+                        doc = nlp(item['@value'])
+                        item['nlp_metadata'] = {
+                            'entities': [(ent.text, ent.label_) for ent in doc.ents],
+                            'noun_phrases': [chunk.text for chunk in doc.noun_chunks],
+                            'main_tokens': [
+                                {
+                                    'text': token.text,
+                                    'lemma': token.lemma_,
+                                    'pos': token.pos_,
+                                    'tag': token.tag_
+                                }
+                                for token in doc
+                                if token.pos_ in ['NOUN', 'VERB', 'ADJ']
+                            ]
+                        }
+            elif isinstance(content, dict) and '@value' in content:
+                # Process single content item
+                processed_text = preprocess_text(content['@value'])
+                content['processed_value'] = processed_text
+                
+                # Add additional NLP information
+                doc = nlp(content['@value'])
+                content['nlp_metadata'] = {
+                    'entities': [(ent.text, ent.label_) for ent in doc.ents],
+                    'noun_phrases': [chunk.text for chunk in doc.noun_chunks],
+                    'main_tokens': [
+                        {
+                            'text': token.text,
+                            'lemma': token.lemma_,
+                            'pos': token.pos_,
+                            'tag': token.tag_
+                        }
+                        for token in doc
+                        if token.pos_ in ['NOUN', 'VERB', 'ADJ']
+                    ]
+                }
+    except Exception as e:
+        logging.error(f"Error processing article content: {str(e)}")
+    
+    return article_data
+
 def main():
     # URL of the item to fetch @id URLs from
     item_url = f"{OMEKA_BASE_URL}/items/59"
@@ -71,11 +171,13 @@ def main():
     successful_fetches = 0
     failed_fetches = 0
 
-    # Fetch data for each URL with progress bar
-    for url in tqdm(urls, desc="Fetching articles", unit="article"):
+    # Fetch and process data for each URL with progress bar
+    for url in tqdm(urls, desc="Fetching and processing articles", unit="article"):
         data = fetch_data(url)
         if data:
-            all_data.append(data)
+            # Process the article content before adding to all_data
+            processed_data = process_article_content(data)
+            all_data.append(processed_data)
             successful_fetches += 1
         else:
             failed_fetches += 1
