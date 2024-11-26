@@ -227,6 +227,10 @@ class MatrixVisualization {
                         const sourceName = nodes.find(n => n.id === d.source).name;
                         const targetName = nodes.find(n => n.id === d.target).name;
                         
+                        // Highlight the labels
+                        this.highlightLabels(sourceName, targetName, true);
+                        
+                        // Show tooltip
                         d3.select('.tooltip')
                             .transition()
                             .duration(200)
@@ -237,16 +241,41 @@ class MatrixVisualization {
                             .style('top', (event.pageY - 28) + 'px');
                     }
                 })
-                .on('mouseout', () => {
-                    d3.select('.tooltip')
-                        .transition()
-                        .duration(500)
-                        .style('opacity', 0);
+                .on('mouseout', (event, d) => {
+                    if (d.value > 0) {
+                        const sourceName = nodes.find(n => n.id === d.source).name;
+                        const targetName = nodes.find(n => n.id === d.target).name;
+                        
+                        // Remove highlighting
+                        this.highlightLabels(sourceName, targetName, false);
+                        
+                        // Hide tooltip
+                        d3.select('.tooltip')
+                            .transition()
+                            .duration(500)
+                            .style('opacity', 0);
+                    }
                 });
 
         } catch (error) {
             console.error('Error updating visualization:', error);
         }
+    }
+
+    highlightLabels(sourceName, targetName, highlight = true) {
+        const opacity = highlight ? 1 : 0.5;
+        const fontWeight = highlight ? 'bold' : 'normal';
+        const color = highlight ? '#0d47a1' : 'black';  // Use the same blue as maxColor
+
+        this.svg.selectAll('.row-label')
+            .style('opacity', d => d.name === sourceName || d.name === targetName ? 1 : opacity)
+            .style('font-weight', d => d.name === sourceName || d.name === targetName ? fontWeight : 'normal')
+            .style('fill', d => d.name === sourceName || d.name === targetName ? color : 'black');
+
+        this.svg.selectAll('.column-label')
+            .style('opacity', d => d.name === sourceName || d.name === targetName ? 1 : opacity)
+            .style('font-weight', d => d.name === sourceName || d.name === targetName ? fontWeight : 'normal')
+            .style('fill', d => d.name === sourceName || d.name === targetName ? color : 'black');
     }
 }
 

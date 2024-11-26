@@ -40,12 +40,14 @@ select {
 .row text {
     font-size: 11px;
     text-anchor: end;
+    transition: all 0.2s ease;
 }
 
 .column text {
     font-size: 11px;
     text-anchor: start;
     transform-origin: 0 0;
+    transition: all 0.2s ease;
 }
 
 .cell {
