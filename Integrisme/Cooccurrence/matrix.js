@@ -7,6 +7,8 @@ class MatrixVisualization {
         this.data = null;
         this.transitionDuration = 750;
         this.windowType = 'article';
+        this.minColor = "#f8f9fa";  // Very light grey/white for zero values
+        this.maxColor = "#0d47a1";  // Deep blue for maximum values
     }
 
     async initialize() {
@@ -95,6 +97,30 @@ class MatrixVisualization {
             // Update scales
             this.x.domain(nodes.map(d => d.id));
             this.y.domain(nodes.map(d => d.id));
+
+            // Update color scale based on non-zero values
+            const nonZeroValues = this.data.links
+                .map(d => d.value)
+                .filter(v => v > 0);
+                
+            const minValue = d3.min(nonZeroValues) || 0;
+            const maxValue = d3.max(nonZeroValues) || 1;
+
+            // Create logarithmic scale for better distribution of colors
+            this.color = d3.scaleSequential()
+                .interpolator(d3.interpolate(this.minColor, this.maxColor))
+                .domain([
+                    minValue, 
+                    maxValue
+                ]);
+
+            // Create normalized color mapping function
+            const getNormalizedColor = (value) => {
+                if (value === 0) return this.minColor;
+                // Use log scale to better distribute colors
+                const normalizedValue = Math.log(value - minValue + 1) / Math.log(maxValue - minValue + 1);
+                return d3.interpolate(this.minColor, this.maxColor)(normalizedValue);
+            };
 
             // Update rows with transition
             const rows = this.svg.selectAll('.row')
@@ -200,7 +226,7 @@ class MatrixVisualization {
                 .attr('y', d => this.y(d.target))
                 .attr('width', this.x.bandwidth())
                 .attr('height', this.y.bandwidth())
-                .style('fill', d => d.value > 0 ? this.color(d.value) : '#f8f9fa')
+                .style('fill', d => getNormalizedColor(d.value))
                 .style('opacity', d => d.value > 0 ? 1 : 0.1);
 
             // Add tooltips (needs to be outside transition)
