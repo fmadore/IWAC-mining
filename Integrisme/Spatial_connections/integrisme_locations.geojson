@@ -1545,7 +1545,7 @@
       "type": "Feature",
       "properties": {
         "name": "Plateau",
-        "mentions": 6
+        "mentions": 7
       },
       "geometry": {
         "type": "Point",
@@ -1622,6 +1622,20 @@
         "coordinates": [
           -15.5,
           13.5
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hôtel Ivoire",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.00547,
+          5.3269
         ]
       }
     },
@@ -1810,20 +1824,6 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Abobo",
-        "mentions": 4
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -4.020556,
-          5.418889
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
         "name": "Abobo Banco",
         "mentions": 3
       },
@@ -1838,14 +1838,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Odienné",
-        "mentions": 4
+        "name": "Treichville",
+        "mentions": 9
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -7.566667,
-          9.5
+          -4.0,
+          5.3
         ]
       }
     },
@@ -1860,6 +1860,48 @@
         "coordinates": [
           -3.9,
           5.266667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Koumassi",
+        "mentions": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.95,
+          5.3
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Abobo",
+        "mentions": 4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.020556,
+          5.418889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Odienné",
+        "mentions": 4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.566667,
+          9.5
         ]
       }
     },
@@ -2020,20 +2062,6 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Treichville",
-        "mentions": 9
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -4.0,
-          5.3
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
         "name": "Touba",
         "mentions": 1
       },
@@ -2056,6 +2084,20 @@
         "coordinates": [
           -4.026326534959187,
           5.353286615241792
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Petite mosquée de la Riviéra",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.980895863811308,
+          5.351224783601886
         ]
       }
     },
@@ -2154,20 +2196,6 @@
         "coordinates": [
           -0.1275,
           51.507222222222
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "name": "Koumassi",
-        "mentions": 3
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -3.95,
-          5.3
         ]
       }
     },
@@ -2686,6 +2714,20 @@
         "coordinates": [
           -6.6730555555556,
           7.9611111111111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Mosquée de la Riviéra 3",
+        "mentions": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.954733469340994,
+          5.348374315507951
         ]
       }
     },
