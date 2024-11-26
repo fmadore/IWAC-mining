@@ -418,7 +418,7 @@
                     .attr("y2", d => {
                         const yearData = transformedData.filter(td => td.year.getFullYear() === parseInt(d.year));
                         const maxY = d3.max(yearData, yd => yd.total_count) || 0;
-                        return y(maxY) - 40;
+                        return y(maxY) - 100;
                     });
 
                 // Add text
@@ -428,7 +428,7 @@
                     .attr("y", d => {
                         const yearData = transformedData.filter(td => td.year.getFullYear() === parseInt(d.year));
                         const maxY = d3.max(yearData, yd => yd.total_count) || 0;
-                        return y(maxY) - 45;
+                        return y(maxY) - 105;
                     })
                     .attr("text-anchor", "middle")
                     .text(d => d.event);
@@ -462,7 +462,7 @@
                     // Update x and y domains based on filtered data
                     x.domain([new Date(startYear, 0, 1), new Date(endYear, 11, 31)]);
                     const maxY = d3.max(activeData, d => d.total_count) || 0;
-                    y.domain([0, maxY * 1.2]); // Add padding for annotations
+                    y.domain([0, maxY * 1.4]); // Increased padding for higher annotations
 
                     // Update axes
                     g.select(".axis--x")
@@ -563,7 +563,7 @@
                         // Find the maximum y-value for this year
                         const yearData = activeData.filter(td => td.year.getFullYear() === eventYear);
                         const maxY = d3.max(yearData, yd => yd.total_count) || 0;
-                        const adjustedYPos = y(maxY) - 40;
+                        const adjustedYPos = y(maxY) - 100;
 
                         if (isInRange) {
                             // Update line
