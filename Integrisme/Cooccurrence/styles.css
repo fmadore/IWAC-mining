@@ -1,0 +1,45 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.controls {
+    margin-bottom: 20px;
+}
+
+select {
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+.row text {
+    font-size: 10px;
+    text-anchor: end;
+}
+
+.column text {
+    font-size: 10px;
+    text-anchor: start;
+    transform: rotate(-45deg);
+}
+
+.cell {
+    fill: #1f77b4;
+    opacity: 0.8;
+}
+
+.cell:hover {
+    stroke: #000;
+    stroke-width: 0.5px;
+}
+
+.tooltip {
+    position: absolute;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none;
+} 
