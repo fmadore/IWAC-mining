@@ -248,6 +248,29 @@
                 font-size: 12px;
             }
         }
+        .annotation-line {
+            stroke: #666;
+            stroke-width: 1.5;
+            stroke-dasharray: 2,2;
+        }
+
+        .annotation-text {
+            font-size: 11px;
+            fill: #333;
+            font-weight: 500;
+        }
+
+        .annotation-bg {
+            fill: rgba(255, 255, 255, 0.9);
+            stroke: #ddd;
+            stroke-width: 1;
+        }
+
+        @media (max-width: 768px) {
+            .annotation-text {
+                font-size: 9px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -355,6 +378,76 @@
                 startYearLabel.textContent = minYear;
                 endYearLabel.textContent = maxYear;
 
+                // Define historical events
+                const historicalEvents = [
+                    {
+                        year: "1991",
+                        event: "Start of Algerian Civil War",
+                        description: "FIS banned, beginning of armed conflict"
+                    },
+                    {
+                        year: "1995",
+                        event: "Peak of Violence",
+                        description: "GIA campaigns intensify"
+                    },
+                    {
+                        year: "2002",
+                        event: "End of Civil War",
+                        description: "Major conflict ends"
+                    }
+                ];
+
+                // Add annotations
+                const annotations = g.append("g")
+                    .attr("class", "annotations");
+
+                // Create annotation groups for each event
+                const annotationGroups = annotations.selectAll(".annotation-group")
+                    .data(historicalEvents)
+                    .enter()
+                    .append("g")
+                    .attr("class", "annotation-group")
+                    .attr("data-year", d => d.year);
+
+                // Add lines
+                annotationGroups.append("line")
+                    .attr("class", "annotation-line")
+                    .attr("x1", d => x(parseYear(d.year)))
+                    .attr("x2", d => x(parseYear(d.year)))
+                    .attr("y1", d => y(0))
+                    .attr("y2", d => {
+                        const yearData = transformedData.filter(td => td.year.getFullYear() === parseInt(d.year));
+                        const maxY = d3.max(yearData, yd => yd.total_count) || 0;
+                        return y(maxY) - 40;
+                    });
+
+                // Add text
+                annotationGroups.append("text")
+                    .attr("class", "annotation-text")
+                    .attr("x", d => x(parseYear(d.year)))
+                    .attr("y", d => {
+                        const yearData = transformedData.filter(td => td.year.getFullYear() === parseInt(d.year));
+                        const maxY = d3.max(yearData, yd => yd.total_count) || 0;
+                        return y(maxY) - 45;
+                    })
+                    .attr("text-anchor", "middle")
+                    .text(d => d.event);
+
+                // Add background rectangles (inserted before text)
+                annotationGroups.insert("rect", "text")
+                    .attr("class", "annotation-bg")
+                    .each(function(d) {
+                        const text = d3.select(this.parentNode).select("text");
+                        const bbox = text.node().getBBox();
+                        const padding = 4;
+                        d3.select(this)
+                            .attr("x", bbox.x - padding)
+                            .attr("y", bbox.y - padding)
+                            .attr("width", bbox.width + (padding * 2))
+                            .attr("height", bbox.height + (padding * 2))
+                            .attr("rx", 3);
+                    });
+
                 // Update function
                 function updateChart(activeKeywords) {
                     const startYear = parseInt(yearStartSlider.value);
@@ -369,7 +462,7 @@
                     // Update x and y domains based on filtered data
                     x.domain([new Date(startYear, 0, 1), new Date(endYear, 11, 31)]);
                     const maxY = d3.max(activeData, d => d.total_count) || 0;
-                    y.domain([0, maxY]);
+                    y.domain([0, maxY * 1.2]); // Add padding for annotations
 
                     // Update axes
                     g.select(".axis--x")
@@ -457,6 +550,59 @@
                                         .duration(500)
                                         .style("opacity", 0);
                                 });
+                        }
+                    });
+
+                    // Update annotations
+                    annotationGroups.each(function(d) {
+                        const group = d3.select(this);
+                        const eventYear = parseInt(d.year);
+                        const isInRange = eventYear >= startYear && eventYear <= endYear;
+                        const xPos = x(parseYear(d.year));
+                        
+                        // Find the maximum y-value for this year
+                        const yearData = activeData.filter(td => td.year.getFullYear() === eventYear);
+                        const maxY = d3.max(yearData, yd => yd.total_count) || 0;
+                        const adjustedYPos = y(maxY) - 40;
+
+                        if (isInRange) {
+                            // Update line
+                            group.select(".annotation-line")
+                                .transition()
+                                .duration(750)
+                                .style("opacity", 1)
+                                .attr("x1", xPos)
+                                .attr("x2", xPos)
+                                .attr("y1", y(0))
+                                .attr("y2", adjustedYPos);
+
+                            // Update text
+                            const text = group.select(".annotation-text")
+                                .transition()
+                                .duration(750)
+                                .style("opacity", 1)
+                                .attr("x", xPos)
+                                .attr("y", adjustedYPos - 5);
+
+                            // Update background
+                            const textNode = group.select(".annotation-text").node();
+                            const bbox = textNode.getBBox();
+                            const padding = 4;
+
+                            group.select(".annotation-bg")
+                                .transition()
+                                .duration(750)
+                                .style("opacity", 1)
+                                .attr("x", bbox.x - padding)
+                                .attr("y", bbox.y - padding)
+                                .attr("width", bbox.width + (padding * 2))
+                                .attr("height", bbox.height + (padding * 2));
+                        } else {
+                            // Hide all elements if out of range
+                            group.selectAll("line, text, rect")
+                                .transition()
+                                .duration(750)
+                                .style("opacity", 0);
                         }
                     });
                 }
