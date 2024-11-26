@@ -506,12 +506,20 @@
                         d.year.getFullYear() <= endYear
                     );
                     
-                    // Update x and y domains based on filtered data
+                    // Update x domain
                     x.domain([new Date(startYear, 0, 1), new Date(endYear, 11, 31)]);
+                    
+                    // Find the maximum y value from active data
                     const maxY = d3.max(activeData, d => d.total_count) || 0;
-                    y.domain([0, maxY * 1.4]); // Increased padding for higher annotations
+                    
+                    // Set minimum y-axis height to prevent empty graph
+                    const minYAxisMax = 5;  // Minimum max value for y-axis
+                    const yAxisMax = Math.max(maxY, minYAxisMax);
+                    
+                    // Update y domain with padding and minimum height
+                    y.domain([0, yAxisMax * 1.4]);  // Keep the 1.4 padding for annotations
 
-                    // Update axes
+                    // Update axes with smoother transition
                     g.select(".axis--x")
                         .transition()
                         .duration(750)
@@ -526,7 +534,7 @@
                         .duration(750)
                         .call(d3.axisLeft(y));
 
-                    // Update lines
+                    // Update lines with transition
                     dataNest.forEach(([keyword, values]) => {
                         const isActive = activeKeywords.includes(keyword);
                         const filteredValues = values.filter(d => 
@@ -537,7 +545,7 @@
                         const lineId = `line-${keyword.replace(/\s+/g, '-')}`;
                         const dotsClass = `dots-${keyword.replace(/\s+/g, '-')}`;
 
-                        // Update line
+                        // Update line with transition
                         d3.select(`#${lineId}`)
                             .classed("hidden", !isActive)
                             .transition()
@@ -600,17 +608,22 @@
                         }
                     });
 
-                    // Update annotations
+                    // Update annotations with new y-axis scale
                     annotationGroups.each(function(d) {
                         const group = d3.select(this);
                         const eventYear = parseInt(d.year);
                         const isInRange = eventYear >= startYear && eventYear <= endYear;
                         const xPos = x(parseYear(d.year));
                         
-                        // Find the maximum y-value for this year
+                        // Find the maximum y-value for this year in active data
                         const yearData = activeData.filter(td => td.year.getFullYear() === eventYear);
-                        const maxY = d3.max(yearData, yd => yd.total_count) || 0;
-                        const adjustedYPos = y(maxY) - 100;
+                        const yearMaxY = d3.max(yearData, yd => yd.total_count) || 0;
+                        
+                        // Position annotations relative to the visible data range
+                        const annotationYPos = Math.min(
+                            y(yearMaxY) - 100,  // Normal position
+                            y(yAxisMax * 0.8)   // Maximum height to prevent going off chart
+                        );
 
                         if (isInRange) {
                             // Update line
@@ -621,12 +634,12 @@
                                 .attr("x1", xPos)
                                 .attr("x2", xPos)
                                 .attr("y1", y(0))
-                                .attr("y2", adjustedYPos);
+                                .attr("y2", annotationYPos);
 
-                            // Update text first (without transition)
+                            // Update text
                             const textElement = group.select(".annotation-text")
                                 .attr("x", xPos)
-                                .attr("y", adjustedYPos - 5);
+                                .attr("y", annotationYPos - 5);
                             
                             // Get the new text bounding box
                             const bbox = textElement.node().getBBox();
