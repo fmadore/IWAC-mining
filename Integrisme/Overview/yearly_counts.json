@@ -1608,7 +1608,7 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 4,
+        "total_count": 5,
         "countries": [
           {
             "name": "Benin",
@@ -1616,7 +1616,7 @@
           },
           {
             "name": "Côte d'Ivoire",
-            "count": 3
+            "count": 4
           }
         ]
       },
@@ -1672,7 +1672,7 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 9,
+        "total_count": 14,
         "countries": [
           {
             "name": "Burkina Faso",
@@ -1680,7 +1680,7 @@
           },
           {
             "name": "Côte d'Ivoire",
-            "count": 7
+            "count": 12
           },
           {
             "name": "Togo",
