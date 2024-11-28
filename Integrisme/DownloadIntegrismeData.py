@@ -1,4 +1,5 @@
-import requests
+import asyncio
+import aiohttp
 import json
 from dotenv import load_dotenv
 import os
@@ -24,14 +25,38 @@ logging.basicConfig(
     ]
 )
 
-# Load French language model
-try:
-    nlp = spacy.load('fr_dep_news_trf')
-    logging.info("Successfully loaded French transformer language model")
-except OSError:
-    logging.warning("French transformer model not found. Installing...")
-    os.system("python -m spacy download fr_dep_news_trf")
-    nlp = spacy.load('fr_dep_news_trf')
+# Load French language model with progress bar
+def download_spacy_model():
+    """Download spacy model with progress bar if not already installed."""
+    try:
+        nlp = spacy.load('fr_dep_news_trf')
+        logging.info("Successfully loaded French transformer language model")
+        return nlp
+    except OSError:
+        logging.info("French transformer model not found. Starting download...")
+        from spacy.cli import download
+        from tqdm import tqdm
+        
+        class TqdmProgressbar:
+            def __init__(self):
+                self.pbar = None
+            
+            def __call__(self, dl_total, dl_count, width=None):
+                if self.pbar is None:
+                    self.pbar = tqdm(total=dl_total, unit='B', unit_scale=True)
+                self.pbar.n = dl_count
+                self.pbar.refresh()
+                if dl_count == dl_total:
+                    self.pbar.close()
+                    self.pbar = None
+        
+        download('fr_dep_news_trf', progress=TqdmProgressbar())
+        nlp = spacy.load('fr_dep_news_trf')
+        logging.info("Successfully installed and loaded French transformer model")
+        return nlp
+
+# Initialize the model
+nlp = download_spacy_model()
 
 # Add batch size configuration for transformer
 nlp.max_length = 1000000  # Increase max length to handle longer texts
@@ -116,66 +141,51 @@ def preprocess_text(text):
         "sentences": sentences
     }
 
-def fetch_data(url):
-    """Fetch data from a given URL with authentication."""
+semaphore = asyncio.Semaphore(10)  # Limit to 10 concurrent requests
+
+async def fetch_data_async(session, url):
+    """Fetch data from a given URL with authentication asynchronously."""
     headers = {
         'Authorization': f'ApiKey {OMEKA_KEY_IDENTITY}:{OMEKA_KEY_CREDENTIAL}'
     }
     try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Raise an exception for bad status codes
-        return response.json()
-    except requests.exceptions.RequestException as e:
+        async with semaphore:  # Add this line to limit concurrent requests
+            async with session.get(url, headers=headers) as response:
+                response.raise_for_status()
+                return await response.json()
+    except Exception as e:
         logging.error(f"Failed to fetch data from {url}: {str(e)}")
         return None
 
-def fetch_ids_from_item(url):
-    """
-    Fetch article URLs from the @reverse section of the item.
-    Only returns URLs for items that are of type bibo:Article.
-    """
+async def fetch_ids_from_item_async(session, url):
+    """Async version of fetch_ids_from_item."""
     logging.info(f"Starting to fetch IDs from {url}")
-    data = fetch_data(url)
+    data = await fetch_data_async(session, url)
     
-    if not data:
-        logging.error(f"Failed to fetch data from {url}")
+    if not data or '@reverse' not in data or 'dcterms:subject' not in data['@reverse']:
+        logging.error(f"Failed to fetch or parse data from {url}")
         return []
     
-    if '@reverse' not in data:
-        logging.warning(f"No @reverse field found in data from {url}")
-        return []
-        
-    if 'dcterms:subject' not in data['@reverse']:
-        logging.warning(f"No dcterms:subject field found in @reverse data from {url}")
-        return []
-    
-    # Get all URLs first
     potential_urls = [item['@id'] for item in data['@reverse']['dcterms:subject']]
     logging.info(f"Found {len(potential_urls)} potential URLs to process")
     
-    # Filter for articles only
+    # Create progress bar for URL validation
     article_urls = []
-    for i, url in enumerate(potential_urls, 1):
-        logging.info(f"Processing URL {i}/{len(potential_urls)}: {url}")
-        item_data = fetch_data(url)
-        
-        if not item_data:
-            logging.warning(f"Failed to fetch data for URL: {url}")
-            continue
-            
-        if '@type' not in item_data:
-            logging.warning(f"No @type field found in data from URL: {url}")
-            continue
-            
-        if 'bibo:Article' in item_data['@type']:
-            article_urls.append(url)
-            title = item_data.get('o:title', 'Untitled')
-            logging.info(f"Found article: '{title}' at {url}")
-        else:
-            logging.debug(f"Skipping non-article item: {url}")
+    with tqdm(total=len(potential_urls), desc="Validating articles", unit="item") as pbar:
+        for url in potential_urls:
+            item_data = await fetch_data_async(session, url)
+            if not item_data:
+                logging.warning(f"Failed to fetch data for URL: {url}")
+                pbar.update(1)
+                continue
+                
+            if '@type' in item_data and 'bibo:Article' in item_data['@type']:
+                article_urls.append(url)
+                title = item_data.get('o:title', 'Untitled')
+                logging.info(f"Found article: '{title}' at {url}")
+            pbar.update(1)
     
     logging.info(f"Processing complete: Found {len(article_urls)} articles out of {len(potential_urls)} total items")
-    
     return article_urls
 
 def process_article_content(article_data):
@@ -200,48 +210,61 @@ def process_article_content(article_data):
     
     return article_data
 
-def main():
-    # URL of the item to fetch @id URLs from
+async def process_urls_async(urls):
+    """Process multiple URLs concurrently."""
+    async with aiohttp.ClientSession() as session:
+        all_data = []
+        successful_fetches = 0
+        failed_fetches = 0
+        
+        # Create progress bar for article processing
+        pbar = tqdm(total=len(urls), desc="Processing articles", unit="article")
+        
+        for url in urls:
+            data = await fetch_data_async(session, url)
+            if data:
+                processed_data = process_article_content(data)
+                all_data.append(processed_data)
+                successful_fetches += 1
+            else:
+                failed_fetches += 1
+            pbar.update(1)
+            
+        pbar.close()
+        return all_data, successful_fetches, failed_fetches
+
+async def main_async():
     item_url = f"{OMEKA_BASE_URL}/items/59"
     
     logging.info("Starting data collection process")
     
-    # Fetch all @id URLs
-    urls = fetch_ids_from_item(item_url)
-    if not urls:
-        logging.error("No URLs found to process. Exiting.")
-        return
+    async with aiohttp.ClientSession() as session:
+        # Fetch all article URLs
+        urls = await fetch_ids_from_item_async(session, item_url)
+        if not urls:
+            logging.error("No URLs found to process. Exiting.")
+            return
 
-    # List to store all fetched data
-    all_data = []
-    successful_fetches = 0
-    failed_fetches = 0
+        # Process all URLs concurrently
+        all_data, successful_fetches, failed_fetches = await process_urls_async(urls)
 
-    # Fetch and process data for each URL with progress bar
-    for url in tqdm(urls, desc="Fetching and processing articles", unit="article"):
-        data = fetch_data(url)
-        if data:
-            # Process the article content before adding to all_data
-            processed_data = process_article_content(data)
-            all_data.append(processed_data)
-            successful_fetches += 1
-        else:
-            failed_fetches += 1
+        # Log summary statistics
+        logging.info(f"Data collection completed:")
+        logging.info(f"- Total URLs processed: {len(urls)}")
+        logging.info(f"- Successful fetches: {successful_fetches}")
+        logging.info(f"- Failed fetches: {failed_fetches}")
 
-    # Log summary statistics
-    logging.info(f"Data collection completed:")
-    logging.info(f"- Total URLs processed: {len(urls)}")
-    logging.info(f"- Successful fetches: {successful_fetches}")
-    logging.info(f"- Failed fetches: {failed_fetches}")
+        # Save all data to a single JSON file
+        output_file = os.path.join(script_dir, 'integrisme_data.json')
+        try:
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(all_data, f, ensure_ascii=False, indent=4)
+            logging.info(f"Data successfully saved to {output_file}")
+        except Exception as e:
+            logging.error(f"Failed to save data to file: {str(e)}")
 
-    # Save all data to a single JSON file in script directory
-    output_file = os.path.join(script_dir, 'integrisme_data.json')
-    try:
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(all_data, f, ensure_ascii=False, indent=4)
-        logging.info(f"Data successfully saved to {output_file}")
-    except Exception as e:
-        logging.error(f"Failed to save data to file: {str(e)}")
+def main():
+    asyncio.run(main_async())
 
 if __name__ == "__main__":
     main() 
