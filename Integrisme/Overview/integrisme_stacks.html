@@ -82,11 +82,29 @@
                 padding: 8px;
             }
         }
+        .save-button {
+            padding: 8px 16px;
+            background-color: #4e79a7;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .save-button:hover {
+            background-color: #3d6089;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <svg></svg>
+    <div style="text-align: center; margin-top: 10px;">
+        <button class="save-button">Save as PNG</button>
+    </div>
 </div>
 
 <script>
@@ -415,6 +433,89 @@
 
         // Initial render
         updateChart();
+
+        // Add this function after the updateChart function but before the initial render
+        function saveSvgAsPng() {
+            try {
+                // Get the SVG element
+                const svgElement = document.querySelector('svg');
+                
+                // Deep clone the SVG
+                const clonedSvg = svgElement.cloneNode(true);
+                
+                // Add inline styles
+                const styles = document.getElementsByTagName('style');
+                const styleText = Array.from(styles)
+                    .map(style => style.textContent)
+                    .join(' ');
+                
+                const styleElement = document.createElement('style');
+                styleElement.textContent = styleText;
+                clonedSvg.insertBefore(styleElement, clonedSvg.firstChild);
+                
+                // Set dimensions explicitly
+                clonedSvg.setAttribute('width', svgElement.getBoundingClientRect().width);
+                clonedSvg.setAttribute('height', svgElement.getBoundingClientRect().height);
+                
+                // Convert SVG to string with XML declaration
+                const serializer = new XMLSerializer();
+                const svgString = serializer.serializeToString(clonedSvg);
+                
+                // Create Blob and URL
+                const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+                const url = URL.createObjectURL(svgBlob);
+                
+                // Create canvas
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                // Set canvas size
+                canvas.width = svgElement.getBoundingClientRect().width;
+                canvas.height = svgElement.getBoundingClientRect().height;
+                
+                // Handle image loading
+                img.onload = () => {
+                    try {
+                        // Draw image on canvas
+                        ctx.fillStyle = 'white';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, 0, 0);
+                        
+                        // Convert to PNG and download
+                        canvas.toBlob((blob) => {
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'integrisme_visualization.png';
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                        }, 'image/png');
+                    } catch (err) {
+                        console.error('Error in image processing:', err);
+                        alert('Error saving the image. Please try again.');
+                    }
+                };
+                
+                // Handle image error
+                img.onerror = (err) => {
+                    console.error('Error loading image:', err);
+                    alert('Error loading the image. Please try again.');
+                };
+                
+                // Load image
+                img.src = url;
+                
+            } catch (err) {
+                console.error('Error in save function:', err);
+                alert('Error saving the visualization. Please try again.');
+            }
+        }
+
+        // Add this event listener after loading the data
+        d3.select('.save-button').on('click', saveSvgAsPng);
     });
 </script>
 </body>
