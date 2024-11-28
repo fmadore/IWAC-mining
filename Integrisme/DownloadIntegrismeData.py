@@ -55,6 +55,23 @@ def preprocess_text(text):
             "sentences": []
         }
     
+    # Initial text cleaning
+    text = (text.strip()
+        .replace('\xa0', ' ')  # Replace non-breaking spaces
+        .replace('  ', ' ')    # Replace double spaces
+        .replace('«', '"')     # Normalize French quotes
+        .replace('»', '"')
+        .replace('"', '"')     # Normalize other quotes
+        .replace('"', '"')
+        .replace(''', "'")     # Normalize apostrophes
+        .replace(''', "'")
+        .replace('…', '...')   # Normalize ellipsis
+        .replace('–', '-')     # Normalize dashes
+        .replace('—', '-'))
+    
+    # Remove multiple spaces (including those created by previous replacements)
+    text = re.sub(r'\s+', ' ', text)
+    
     # Convert to lowercase and remove special characters
     text = re.sub(r'[^\w\s]', ' ', text.lower())
     
@@ -64,14 +81,14 @@ def preprocess_text(text):
     def process_tokens(tokens):
         """Helper function to process a sequence of tokens."""
         return [
-            token.lemma_  # Use lemmatization instead of raw text
+            token.lemma_
             for token in tokens
             if not token.is_stop 
             and not token.is_punct
             and not token.is_space
-            and len(token.text.strip()) > 1  # Remove single characters
-            and not token.like_num  # Remove numbers
-            and token.pos_ not in ['SPACE', 'SYM']  # Remove specific parts of speech
+            and len(token.text.strip()) > 1
+            and not token.like_num
+            and token.pos_ not in ['SPACE', 'SYM']
         ]
     
     # Process at article level
@@ -83,14 +100,14 @@ def preprocess_text(text):
         if para.strip():
             para_doc = nlp(para)
             para_tokens = process_tokens(para_doc)
-            if para_tokens:  # Only add non-empty paragraphs
+            if para_tokens:
                 paragraphs.append(" ".join(para_tokens))
     
     # Process at sentence level
     sentences = []
     for sent in doc.sents:
         sent_tokens = process_tokens(sent)
-        if sent_tokens:  # Only add non-empty sentences
+        if sent_tokens:
             sentences.append(" ".join(sent_tokens))
     
     return {
