@@ -357,7 +357,7 @@
                 .y(d => y(d.total_count));
 
             // Load and process data
-            d3.json("yearly_counts.json").then(data => {
+            d3.json("https://raw.githubusercontent.com/fmadore/Mining_IWAC/main/Integrisme/Overview/yearly_counts.json").then(data => {
                 // Transform data (same as before)
                 const transformedData = [];
                 data.forEach(yearData => {
