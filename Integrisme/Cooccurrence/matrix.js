@@ -13,8 +13,8 @@ class MatrixVisualization {
 
     async initialize() {
         try {
-            // Load the data
-            const allData = await d3.json('data/cooccurrence.json');
+            // Load the data from GitHub raw content instead of local file
+            const allData = await d3.json('https://raw.githubusercontent.com/fmadore/Mining_IWAC/main/Integrisme/Cooccurrence/data/cooccurrence.json');
             this.data = allData[this.windowType];
             
             // Create the SVG container
@@ -50,7 +50,7 @@ class MatrixVisualization {
             // Add event listener for window type
             d3.select('#window-type').on('change', async (event) => {
                 this.windowType = event.target.value;
-                const allData = await d3.json('data/cooccurrence.json');
+                const allData = await d3.json('https://raw.githubusercontent.com/fmadore/Mining_IWAC/main/Integrisme/Cooccurrence/data/cooccurrence.json');
                 this.data = allData[this.windowType];
                 this.color.domain([0, d3.max(this.data.links, d => d.value)]);
                 this.updateVisualization(d3.select('#order').property('value'));
