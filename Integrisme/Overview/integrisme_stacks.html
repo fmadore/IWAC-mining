@@ -5,6 +5,8 @@
     <title>Intégrisme Mentions by Country Over Time</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -144,7 +146,7 @@
         .range(['#4e79a7', '#f28e2c', '#76b7b2', '#9c755f']);
 
     // Load and process the data
-    d3.json("yearly_counts.json").then(function(data) {
+    d3.json("https://raw.githubusercontent.com/fmadore/Mining_IWAC/main/Integrisme/Overview/yearly_counts.json").then(function(data) {
         // Process data
         const processedData = data.map(yearData => {
             const year = yearData.year;
