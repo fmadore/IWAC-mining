@@ -13,9 +13,13 @@ import re
 # Get the directory of the current script
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
-# Set up logging with path in script directory
+# Create logs directory if it doesn't exist
+logs_dir = os.path.join(script_dir, 'logs')
+os.makedirs(logs_dir, exist_ok=True)
+
+# Set up logging with path in logs directory
 log_filename = f'integrisme_download_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log'
-log_path = os.path.join(script_dir, log_filename)
+log_path = os.path.join(logs_dir, log_filename)
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
