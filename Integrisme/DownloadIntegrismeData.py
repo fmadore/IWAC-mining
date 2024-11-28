@@ -134,26 +134,49 @@ def fetch_ids_from_item(url):
     Fetch article URLs from the @reverse section of the item.
     Only returns URLs for items that are of type bibo:Article.
     """
-    logging.info(f"Fetching IDs from {url}")
+    logging.info(f"Starting to fetch IDs from {url}")
     data = fetch_data(url)
     
-    if data and '@reverse' in data and 'dcterms:subject' in data['@reverse']:
-        # Get all URLs first
-        potential_urls = [item['@id'] for item in data['@reverse']['dcterms:subject']]
-        
-        # Filter for articles only
-        article_urls = []
-        for url in potential_urls:
-            item_data = fetch_data(url)
-            if item_data and '@type' in item_data and 'bibo:Article' in item_data['@type']:
-                article_urls.append(url)
-                logging.debug(f"Found article: {item_data.get('o:title', 'Untitled')}")
-        
-        logging.info(f"Found {len(article_urls)} article URLs out of {len(potential_urls)} total URLs")
-        return article_urls
-    else:
-        logging.warning(f"No article URLs found in {url}")
+    if not data:
+        logging.error(f"Failed to fetch data from {url}")
         return []
+    
+    if '@reverse' not in data:
+        logging.warning(f"No @reverse field found in data from {url}")
+        return []
+        
+    if 'dcterms:subject' not in data['@reverse']:
+        logging.warning(f"No dcterms:subject field found in @reverse data from {url}")
+        return []
+    
+    # Get all URLs first
+    potential_urls = [item['@id'] for item in data['@reverse']['dcterms:subject']]
+    logging.info(f"Found {len(potential_urls)} potential URLs to process")
+    
+    # Filter for articles only
+    article_urls = []
+    for i, url in enumerate(potential_urls, 1):
+        logging.info(f"Processing URL {i}/{len(potential_urls)}: {url}")
+        item_data = fetch_data(url)
+        
+        if not item_data:
+            logging.warning(f"Failed to fetch data for URL: {url}")
+            continue
+            
+        if '@type' not in item_data:
+            logging.warning(f"No @type field found in data from URL: {url}")
+            continue
+            
+        if 'bibo:Article' in item_data['@type']:
+            article_urls.append(url)
+            title = item_data.get('o:title', 'Untitled')
+            logging.info(f"Found article: '{title}' at {url}")
+        else:
+            logging.debug(f"Skipping non-article item: {url}")
+    
+    logging.info(f"Processing complete: Found {len(article_urls)} articles out of {len(potential_urls)} total items")
+    
+    return article_urls
 
 def process_article_content(article_data):
     """Process the content of an article and add processed text."""
