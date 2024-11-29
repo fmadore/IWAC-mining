@@ -89,12 +89,18 @@ export default class MapViz {
         });
 
         // Create color scale using threshold scale
-        const values = [...countryMentions.values()];
-        const max = d3.max(values);
-        
         this.choroplethScale = d3.scaleThreshold()
-            .domain([1, 5, 10, 25, 50, 100, 150]) // Custom breakpoints for better distribution
-            .range(MapConfig.colors.choropleth.scale);
+            .domain([1, 5, 10, 25, 50, 100, 150])  // Explicit thresholds
+            .range([
+                MapConfig.colors.choropleth.scale[0],  // 0-1
+                MapConfig.colors.choropleth.scale[1],  // 1-5
+                MapConfig.colors.choropleth.scale[2],  // 5-10
+                MapConfig.colors.choropleth.scale[3],  // 10-25
+                MapConfig.colors.choropleth.scale[4],  // 25-50
+                MapConfig.colors.choropleth.scale[5],  // 50-100
+                MapConfig.colors.choropleth.scale[6],  // 100-150
+                MapConfig.colors.choropleth.scale[6]   // 150+
+            ]);
 
         return countryMentions;
     }
@@ -217,7 +223,7 @@ export default class MapViz {
             .attr("class", "legend")
             .attr("transform", `translate(${this.width - legendWidth - padding}, ${this.height - legendHeight - padding - 20})`);
 
-        // Define the legend data with ranges
+        // Define the legend data with ranges that match the thresholds
         const legendData = [
             { range: "0", color: MapConfig.colors.choropleth.noData },
             { range: "1-4", color: MapConfig.colors.choropleth.scale[0] },
