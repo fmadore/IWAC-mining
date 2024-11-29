@@ -11,9 +11,21 @@ const svg = d3.select('#visualization')
     .attr('role', 'img')  // Accessibility
     .attr('aria-label', 'Sentiment Analysis Over Time');
 
+// Add clipPath definition
+svg.append('defs')
+    .append('clipPath')
+    .attr('id', 'clip')
+    .append('rect')
+    .attr('width', width)
+    .attr('height', height);
+
 // Create a group for zoom
 const g = svg.append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
+
+// Create a clipped group for the dots
+const dotsGroup = g.append('g')
+    .attr('clip-path', 'url(#clip)');
 
 // Create scales
 const x = d3.scaleTime()
@@ -49,8 +61,7 @@ function zoomed(event) {
     g.select('.x-axis').call(xAxis.scale(newX));
     g.select('.y-axis').call(yAxis.scale(newY));
     
-    // Update dots
-    g.selectAll('.dot')
+    dotsGroup.selectAll('.dot')
         .attr('cx', d => newX(d.date))
         .attr('cy', d => newY(d[currentSentiment]));
 }
@@ -106,8 +117,7 @@ function updateVisualization() {
         .duration(750)
         .call(yAxis);
     
-    // Update dots
-    g.selectAll('.dot')
+    dotsGroup.selectAll('.dot')
         .transition()
         .duration(750)
         .attr('cy', d => y(d[currentSentiment]));
@@ -168,7 +178,7 @@ async function visualizeSentiment() {
             .style('opacity', 0);
 
         // Add interactive dots
-        g.selectAll('.dot')
+        dotsGroup.selectAll('.dot')
             .data(sentimentData)
             .enter()
             .append('circle')
