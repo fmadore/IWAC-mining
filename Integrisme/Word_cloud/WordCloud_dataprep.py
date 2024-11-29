@@ -1,118 +1,46 @@
-import pandas as pd
-from collections import Counter
 import json
-from tqdm import tqdm
 import os
-import spacy
-import re
-from spacy.lang.fr.stop_words import STOP_WORDS
+from collections import Counter
 
-# Load French transformer model
-nlp = spacy.load('fr_dep_news_trf')
+def load_data(json_path):
+    """Load data from JSON file."""
+    with open(json_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
-# Combine spaCy's stopwords with custom ones
-custom_stopwords = {
-    # Words specific to newspaper articles and reporting
-    'afp', 'reuters', 'ap', 'photo', 'photographe', 'journal', 'article',
-    'lire', 'voir', 'dit', 'dire', 'faire', 'être', 'avoir',
-    # Common verbs in news reporting
-    'déclarer', 'affirmer', 'expliquer', 'indiquer', 'préciser', 'ajouter',
-    'poursuivre', 'conclure', 'annoncer', 'rapporter', 'souligner',
-    # Time-related words
-    'année', 'mois', 'semaine', 'jour', 'hier', 'aujourd', 'hui', 'demain',
-    'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche',
-    'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
-    'août', 'septembre', 'octobre', 'novembre', 'décembre',
-    # Numbers and quantities
-    'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix',
-    'premier', 'première', 'second', 'seconde', 'dernier', 'dernière',
-    # Common but uninformative words in news context
-    'façon', 'manière', 'chose', 'fois', 'cas', 'exemple', 'partie',
-    'moment', 'temps', 'heure', 'période',
-}
+def extract_processed_text(articles):
+    """Extract preprocessed text from articles."""
+    processed_texts = []
+    
+    for article in articles:
+        # Get the content if it exists
+        content = article.get('bibo:content', [{}])[0]
+        
+        # Get the processed text if it exists
+        processed_text = content.get('processed_text', {})
+        
+        # Get the article text if it exists
+        article_text = processed_text.get('article', '')
+        
+        if article_text:
+            processed_texts.append(article_text)
+            
+    return processed_texts
 
-# Combine all stopwords
-french_stopwords = set(STOP_WORDS) | custom_stopwords
-
-def load_data(url):
-    """Load data from URL."""
-    return pd.read_csv(url)
-
-def filter_integrisme_articles(df):
-    """Filter articles mentioning 'intégrisme'."""
-    # Create an explicit copy of the filtered DataFrame
-    return df[df['dcterms:subject'].fillna('').str.contains('Intégrisme', case=False)].copy()
-
-def clean_text(text):
-    """Initial text cleaning before tokenization."""
-    if not isinstance(text, str):
-        return ""
-    
-    # Convert to lowercase
-    text = text.lower()
-    
-    # Replace various types of apostrophes and quotes
-    text = text.replace(''', "'").replace(''', "'").replace('`', "'")
-    text = text.replace('"', '"').replace('"', '"').replace('«', '"').replace('»', '"')
-    
-    # Remove URLs
-    text = re.sub(r'http\S+|www\S+|https\S+', '', text)
-    
-    # Remove email addresses
-    text = re.sub(r'\S+@\S+', '', text)
-    
-    # Remove digits and digit-word combinations
-    text = re.sub(r'\w*\d\w*', '', text)
-    
-    # Remove multiple spaces and newlines
-    text = re.sub(r'\s+', ' ', text)
-    
-    # Remove special characters but keep French accents
-    text = re.sub(r'[^\w\s\'\-àáâãäçèéêëìíîïñòóôõöùúûüýÿ]', ' ', text)
-    
-    return text.strip()
-
-def preprocess_text(text):
-    """Preprocess text using spaCy for lemmatization."""
-    # Initial cleaning
-    text = clean_text(text)
-    
-    # Replace "el hadj" and variations with empty string before spaCy processing
-    text = re.sub(r'\b[eE]l[\s-][hH]adj\b', '', text)
-    
-    # Process the text with spaCy
-    doc = nlp(text)
-    
-    # Get lemmatized tokens, filtering out stopwords and short words
-    cleaned_words = [
-        token.lemma_.lower()
-        for token in doc
-        if (
-            token.lemma_.lower() not in french_stopwords 
-            and len(token.lemma_) > 1
-            and token.lemma_.isalpha()
-            and not token.is_punct
-            and not token.is_space
-            and not token.is_digit
-            and not token.like_num  # Catches written numbers like 'trois'
-            and not token.is_currency
-            and token.pos_ not in ['AUX', 'DET', 'PRON', 'ADP', 'SCONJ', 'CCONJ']
-            and not re.match(r'^el\s*hadj$', token.lemma_.lower())  # Additional check for any remaining variations
-        )
-    ]
-    
-    return cleaned_words
-
-def generate_word_frequencies(tokens_list, max_words=200):
-    """Generate word frequencies from list of tokens.
+def generate_word_frequencies(processed_texts, max_words=200):
+    """Generate word frequencies from processed texts.
     
     Args:
-        tokens_list: List of token lists from processed articles
-        max_words: Maximum number of words to include in output (default: 100)
+        processed_texts: List of preprocessed article texts
+        max_words: Maximum number of words to include in output (default: 200)
     """
-    # Flatten the list of tokens and count frequencies
-    all_tokens = [token for sublist in tokens_list for token in sublist]
-    word_freq = Counter(all_tokens)
+    # Split each text into words and create a flat list
+    all_words = []
+    for text in processed_texts:
+        words = text.split()
+        all_words.extend(words)
+    
+    # Count frequencies
+    word_freq = Counter(all_words)
     
     # Convert to dictionary format, limiting to max_words
     return dict(word_freq.most_common(max_words))
@@ -124,29 +52,26 @@ def save_to_json(word_frequencies, output_path):
 
 def main():
     """Main function to generate word frequency JSON."""
-    # URL for the data
-    url = "https://raw.githubusercontent.com/fmadore/Islam-West-Africa-Collection/main/Metadata/CSV/newspaper_articles.csv"
+    # Get the script directory
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Path to input JSON file (going up one directory)
+    input_path = os.path.join(os.path.dirname(script_dir), 'integrisme_data.json')
     
     # Load data
-    df = load_data(url)
+    articles = load_data(input_path)
     
-    # Filter articles mentioning "intégrisme" and create a copy
-    integrisme_articles = filter_integrisme_articles(df)
+    # Extract preprocessed texts
+    processed_texts = extract_processed_text(articles)
     
-    # Preprocess text in "bibo:content" with progress tracking
-    tqdm.pandas(desc="Processing articles")
-    integrisme_articles['processed_tokens'] = integrisme_articles['bibo:content'].fillna('').progress_apply(preprocess_text)
-    
-    # Generate word frequencies (top 200 words instead of 100)
-    word_frequencies = generate_word_frequencies(integrisme_articles['processed_tokens'], max_words=200)
-    
-    # Save to JSON file in the data directory
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    data_dir = os.path.join(script_dir, 'data')
+    # Generate word frequencies
+    word_frequencies = generate_word_frequencies(processed_texts, max_words=200)
     
     # Create data directory if it doesn't exist
+    data_dir = os.path.join(script_dir, 'data')
     os.makedirs(data_dir, exist_ok=True)
     
+    # Save to JSON file
     output_path = os.path.join(data_dir, 'word_frequencies.json')
     save_to_json(word_frequencies, output_path)
     print(f"Word frequencies saved to {output_path}")
