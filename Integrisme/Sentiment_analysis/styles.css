@@ -1,65 +1,97 @@
-.tooltip {
-  position: absolute;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  pointer-events: none;
-  font-size: 12px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
 }
 
-.line {
-  transition: stroke-width 0.2s;
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
 }
 
-.line:hover {
-  stroke-width: 3px;
+.sentiment-explanation {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 30px;
 }
 
-.dot {
-  fill: steelblue;
-  transition: r 0.2s;
-  cursor: pointer;
+.sentiment-explanation h2 {
+    color: #444;
+    margin-top: 0;
 }
 
-.dot:hover {
-  fill: #2a4d69;
+.sentiment-explanation ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.sentiment-explanation li {
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.sentiment-explanation li ul {
+    margin-top: 5px;
 }
 
 .controls {
-  margin: 20px;
-  padding: 10px;
-  background: #f5f5f5;
-  border-radius: 4px;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
 }
 
-.controls select {
-  padding: 5px;
-  margin-left: 10px;
-  border-radius: 4px;
+.controls label {
+    margin-right: 10px;
+    font-weight: bold;
 }
 
-/* Accessibility improvements */
-@media (prefers-reduced-motion: reduce) {
-  .line,
-  .dot {
-    transition: none;
-  }
+select {
+    padding: 5px 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
 }
 
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .line {
-    stroke: #000;
-  }
-  
-  .dot {
-    fill: #000;
-  }
-  
-  .tooltip {
-    background: #fff;
-    border: 2px solid #000;
-  }
+.tooltip {
+    position: absolute;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    pointer-events: none;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 2;
+}
+
+.dot {
+    fill: steelblue;
+    cursor: pointer;
+}
+
+.dot:hover {
+    fill: #2a4d69;
+}
+
+.x-label, .y-label {
+    font-size: 14px;
+    fill: #666;
+}
+
+.x-axis path, .y-axis path,
+.x-axis line, .y-axis line {
+    stroke: #ccc;
+}
+
+.x-axis text, .y-axis text {
+    fill: #666;
 } 
