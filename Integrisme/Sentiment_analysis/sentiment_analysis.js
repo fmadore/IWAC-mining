@@ -9,8 +9,10 @@ const svg = d3.select('#visualization')
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom)
     .attr('role', 'img')  // Accessibility
-    .attr('aria-label', 'Sentiment Analysis Over Time')
-  .append('g')
+    .attr('aria-label', 'Sentiment Analysis Over Time');
+
+// Create a group for zoom
+const g = svg.append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
 
 // Create scales
@@ -20,11 +22,6 @@ const x = d3.scaleTime()
 const y = d3.scaleLinear()
   .range([height, 0]);
 
-// Create line generator
-const line = d3.line()
-  .x(d => x(d.date))
-  .y(d => y(d[currentSentiment]));
-
 // Add axes
 const xAxis = d3.axisBottom(x);
 const yAxis = d3.axisLeft(y);
@@ -32,6 +29,66 @@ const yAxis = d3.axisLeft(y);
 // Initialize current sentiment type and data store
 let currentSentiment = 'compound';
 let sentimentData = [];
+
+// Create zoom behavior
+const zoom = d3.zoom()
+    .scaleExtent([0.5, 20])  // Set zoom limits
+    .extent([[0, 0], [width, height]])
+    .on('zoom', zoomed);
+
+// Add zoom functionality to SVG
+svg.call(zoom);
+
+// Zoom function
+function zoomed(event) {
+    // Update x and y scales according to zoom
+    const newX = event.transform.rescaleX(x);
+    const newY = event.transform.rescaleY(y);
+    
+    // Update axes
+    g.select('.x-axis').call(xAxis.scale(newX));
+    g.select('.y-axis').call(yAxis.scale(newY));
+    
+    // Update dots
+    g.selectAll('.dot')
+        .attr('cx', d => newX(d.date))
+        .attr('cy', d => newY(d[currentSentiment]));
+}
+
+// Add zoom controls
+const zoomControls = d3.select('#visualization')
+    .append('div')
+    .attr('class', 'zoom-controls')
+    .style('position', 'absolute')
+    .style('top', '10px')
+    .style('right', '10px');
+
+zoomControls.append('button')
+    .attr('class', 'zoom-button')
+    .text('+')
+    .on('click', () => zoomBy(1.5));
+
+zoomControls.append('button')
+    .attr('class', 'zoom-button')
+    .text('-')
+    .on('click', () => zoomBy(0.67));
+
+zoomControls.append('button')
+    .attr('class', 'zoom-button')
+    .text('Reset')
+    .on('click', resetZoom);
+
+function zoomBy(factor) {
+    svg.transition()
+        .duration(750)
+        .call(zoom.scaleBy, factor);
+}
+
+function resetZoom() {
+    svg.transition()
+        .duration(750)
+        .call(zoom.transform, d3.zoomIdentity);
+}
 
 // Function to update the visualization
 function updateVisualization() {
@@ -41,13 +98,13 @@ function updateVisualization() {
     y.domain(d3.extent(sentimentData, d => d[currentSentiment]));
     
     // Update y-axis
-    svg.select('.y-axis')
+    g.select('.y-axis')
         .transition()
         .duration(750)
         .call(yAxis);
     
     // Update dots
-    svg.selectAll('.dot')
+    g.selectAll('.dot')
         .transition()
         .duration(750)
         .attr('cy', d => y(d[currentSentiment]));
@@ -76,24 +133,24 @@ async function visualizeSentiment() {
         y.domain(d3.extent(sentimentData, d => d[currentSentiment]));
 
         // Add axes to SVG
-        svg.append('g')
+        g.append('g')
             .attr('class', 'x-axis')
             .attr('transform', `translate(0,${height})`)
             .call(xAxis);
 
-        svg.append('g')
+        g.append('g')
             .attr('class', 'y-axis')
             .call(yAxis);
 
         // Add axis labels
-        svg.append('text')
+        g.append('text')
             .attr('class', 'x-label')
             .attr('text-anchor', 'middle')
             .attr('x', width / 2)
             .attr('y', height + 40)
             .text('Date');
 
-        svg.append('text')
+        g.append('text')
             .attr('class', 'y-label')
             .attr('text-anchor', 'middle')
             .attr('transform', 'rotate(-90)')
@@ -107,20 +164,20 @@ async function visualizeSentiment() {
             .attr('class', 'tooltip')
             .style('opacity', 0);
 
-        // Add interactive dots with larger radius
-        svg.selectAll('.dot')
+        // Add interactive dots
+        g.selectAll('.dot')
             .data(sentimentData)
             .enter()
             .append('circle')
             .attr('class', 'dot')
             .attr('cx', d => x(d.date))
             .attr('cy', d => y(d[currentSentiment]))
-            .attr('r', 6)  // Increased dot size for better visibility
+            .attr('r', 6)
             .on('mouseover', function(event, d) {
                 d3.select(this)
                     .transition()
                     .duration(200)
-                    .attr('r', 9);  // Larger hover size
+                    .attr('r', 9);
                 
                 tooltip.transition()
                     .duration(200)
@@ -141,7 +198,7 @@ async function visualizeSentiment() {
                 d3.select(this)
                     .transition()
                     .duration(200)
-                    .attr('r', 6);  // Return to original size
+                    .attr('r', 6);
                 
                 tooltip.transition()
                     .duration(500)
