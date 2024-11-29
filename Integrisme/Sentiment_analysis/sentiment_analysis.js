@@ -172,8 +172,3 @@ async function visualizeSentiment() {
 
 // Initialize visualization when DOM is loaded
 document.addEventListener('DOMContentLoaded', visualizeSentiment);
-    
-  } catch (error) {
-    console.error('Error loading or processing data:', error);
-  }
-} 
