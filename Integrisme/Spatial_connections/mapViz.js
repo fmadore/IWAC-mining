@@ -206,31 +206,28 @@ export default class MapViz {
     }
 
     drawLegend(countryMentions) {
-        const legendWidth = 200;
-        const legendHeight = 50;
+        const legendWidth = 300;  // Increased width for better spacing
+        const legendHeight = 40;
         const padding = 10;
+        const boxWidth = 35;  // Width of each color box
         
         this.svg.selectAll(".legend").remove();
         
         const legend = this.svg.append("g")
             .attr("class", "legend")
-            .attr("transform", `translate(${padding}, ${this.height - legendHeight - padding})`);
+            .attr("transform", `translate(${this.width - legendWidth - padding}, ${this.height - legendHeight - padding})`);
 
-        // Use threshold scale breakpoints for legend
-        const legendScale = d3.scaleLinear()
-            .domain([0, 150])  // Match the max threshold
-            .range([0, legendWidth]);
-
-        const legendAxis = d3.axisBottom(legendScale)
-            .tickValues([0, 1, 5, 10, 25, 50, 100, 150])  // Show all threshold values
-            .tickFormat(d3.format("d")); 
-
-        // Add title
-        legend.append("text")
-            .attr("x", 0)
-            .attr("y", -5)
-            .style("font-size", "12px")
-            .text("Number of mentions");
+        // Define the legend data with ranges
+        const legendData = [
+            { range: "0", color: MapConfig.colors.choropleth.noData },
+            { range: "1-4", color: MapConfig.colors.choropleth.scale[0] },
+            { range: "5-9", color: MapConfig.colors.choropleth.scale[1] },
+            { range: "10-24", color: MapConfig.colors.choropleth.scale[2] },
+            { range: "25-49", color: MapConfig.colors.choropleth.scale[3] },
+            { range: "50-99", color: MapConfig.colors.choropleth.scale[4] },
+            { range: "100-149", color: MapConfig.colors.choropleth.scale[5] },
+            { range: "150+", color: MapConfig.colors.choropleth.scale[6] }
+        ];
 
         // Add white background
         legend.append("rect")
@@ -239,34 +236,40 @@ export default class MapViz {
             .attr("width", legendWidth + (padding * 2))
             .attr("height", legendHeight + (padding * 2))
             .attr("fill", "white")
-            .attr("opacity", 0.8);
+            .attr("opacity", 0.9)
+            .attr("rx", 5)  // Rounded corners
+            .attr("ry", 5);
 
-        // Create gradient
-        const gradient = legend.append("defs")
-            .append("linearGradient")
-            .attr("id", "legend-gradient")
-            .attr("x1", "0%")
-            .attr("x2", "100%")
-            .attr("y1", "0%")
-            .attr("y2", "0%");
+        // Add title
+        legend.append("text")
+            .attr("x", 0)
+            .attr("y", 15)
+            .style("font-size", "12px")
+            .style("font-weight", "bold")
+            .text("Number of mentions");
 
-        // Create gradient stops
-        gradient.selectAll("stop")
-            .data(MapConfig.colors.choropleth.scale)
+        // Create legend items
+        const legendItems = legend.selectAll(".legend-item")
+            .data(legendData)
             .enter()
-            .append("stop")
-            .attr("offset", (d, i) => `${(i * 100) / (MapConfig.colors.choropleth.scale.length - 1)}%`)
-            .attr("stop-color", d => d);
+            .append("g")
+            .attr("class", "legend-item")
+            .attr("transform", (d, i) => `translate(${i * boxWidth}, 25)`);
 
-        // Add gradient rect
-        legend.append("rect")
-            .attr("width", legendWidth)
+        // Add color boxes
+        legendItems.append("rect")
+            .attr("width", boxWidth - 2)
             .attr("height", 10)
-            .style("fill", "url(#legend-gradient)");
+            .attr("fill", d => d.color)
+            .attr("stroke", "#999")
+            .attr("stroke-width", 0.5);
 
-        // Add axis
-        legend.append("g")
-            .attr("transform", `translate(0, 10)`)
-            .call(legendAxis);
+        // Add labels
+        legendItems.append("text")
+            .attr("x", boxWidth/2 - 1)
+            .attr("y", 25)
+            .attr("text-anchor", "middle")
+            .style("font-size", "10px")
+            .text(d => d.range);
     }
 } 
