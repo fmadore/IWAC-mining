@@ -94,4 +94,29 @@ select {
 
 .x-axis text, .y-axis text {
     fill: #666;
+}
+
+.zoom-controls {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.zoom-button {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin: 0 2px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.zoom-button:hover {
+    background: #f0f0f0;
+}
+
+.zoom-button:active {
+    background: #e0e0e0;
 } 
