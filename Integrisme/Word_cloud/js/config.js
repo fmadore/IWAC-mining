@@ -1,6 +1,6 @@
 // Configuration constants
 window.CONFIG = {
-    dataUrl: 'https://github.com/fmadore/Mining_IWAC/raw/refs/heads/main/Integrisme/Word_cloud/data/word_frequencies.json',
+    dataUrl: 'https://raw.githubusercontent.com/fmadore/Mining_IWAC/main/Integrisme/Word_cloud/data/word_frequencies.json',
     width: 800,
     height: 600,
     padding: 5,
