@@ -46,12 +46,6 @@ function updateVisualization() {
         .duration(750)
         .call(yAxis);
     
-    // Update line
-    svg.select('.line')
-        .transition()
-        .duration(750)
-        .attr('d', line(sentimentData));
-    
     // Update dots
     svg.selectAll('.dot')
         .transition()
@@ -107,22 +101,13 @@ async function visualizeSentiment() {
             .attr('x', -height / 2)
             .text('Sentiment');
 
-        // Add the line path
-        svg.append('path')
-            .datum(sentimentData)
-            .attr('class', 'line')
-            .attr('d', line)
-            .attr('fill', 'none')
-            .attr('stroke', 'steelblue')
-            .attr('stroke-width', 2);
-
         // Add interactive tooltip
         const tooltip = d3.select('body')
             .append('div')
             .attr('class', 'tooltip')
             .style('opacity', 0);
 
-        // Add interactive dots
+        // Add interactive dots with larger radius
         svg.selectAll('.dot')
             .data(sentimentData)
             .enter()
@@ -130,12 +115,12 @@ async function visualizeSentiment() {
             .attr('class', 'dot')
             .attr('cx', d => x(d.date))
             .attr('cy', d => y(d[currentSentiment]))
-            .attr('r', 5)
+            .attr('r', 6)  // Increased dot size for better visibility
             .on('mouseover', function(event, d) {
                 d3.select(this)
                     .transition()
                     .duration(200)
-                    .attr('r', 8);
+                    .attr('r', 9);  // Larger hover size
                 
                 tooltip.transition()
                     .duration(200)
@@ -156,7 +141,7 @@ async function visualizeSentiment() {
                 d3.select(this)
                     .transition()
                     .duration(200)
-                    .attr('r', 5);
+                    .attr('r', 6);  // Return to original size
                 
                 tooltip.transition()
                     .duration(500)
