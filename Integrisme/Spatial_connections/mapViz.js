@@ -47,7 +47,9 @@ export default class MapViz {
         this.g.selectAll("circle")
             .attr("r", d => this.radiusScale(d.properties.mentions) / event.transform.k);
         this.g.selectAll("path")
-            .style("stroke-width", 0.5 / event.transform.k);
+            .style("stroke-width", `${0.5 / event.transform.k}px`);
+        this.svg.select(".legend")
+            .attr("transform", `translate(${(this.width - 220) / event.transform.k}, ${(this.height - 70) / event.transform.k})`);
     }
 
     createScales(maxMentions) {
@@ -60,30 +62,79 @@ export default class MapViz {
             .range([MapConfig.circle.minOpacity, MapConfig.circle.maxOpacity]);
     }
 
-    drawMap(topoData) {
+    createChoroplethScale(data, topoData) {
+        // Create map of country mentions
+        const countryMentions = new Map();
+        
+        // Function to find which country contains a point
+        const findCountry = (coords) => {
+            const point = this.projection(coords);
+            let containingCountry = null;
+            
+            topoData.features.forEach(feature => {
+                if (d3.geoContains(feature, coords)) {
+                    containingCountry = feature.properties.name;
+                }
+            });
+            
+            return containingCountry;
+        };
+
+        // Count mentions for each location
+        data.features.forEach(feature => {
+            const coords = feature.geometry.coordinates;
+            const country = findCountry(coords);
+            if (country) {
+                const mentions = feature.properties.mentions;
+                countryMentions.set(country, (countryMentions.get(country) || 0) + mentions);
+            }
+        });
+
+        // Create color scale
+        this.choroplethScale = d3.scaleQuantile()
+            .domain([0, ...countryMentions.values()])
+            .range(MapConfig.colors.choropleth.scale);
+
+        return countryMentions;
+    }
+
+    drawMap(topoData, locationData) {
         console.log("Drawing map with data:", topoData);
         
-        // Clear existing paths
+        const countryMentions = this.createChoroplethScale(locationData, topoData);
+        
         this.g.selectAll("path").remove();
         
-        // Draw map paths
         this.g.selectAll("path")
             .data(topoData.features)
             .join("path")
             .attr("d", this.path)
-            .attr("fill", MapConfig.colors.land)
+            .attr("fill", d => {
+                const mentions = countryMentions.get(d.properties.name);
+                return mentions ? this.choroplethScale(mentions) : MapConfig.colors.choropleth.noData;
+            })
             .attr("stroke", MapConfig.colors.stroke)
             .attr("stroke-width", "0.5px")
-            .attr("vector-effect", "non-scaling-stroke");
+            .attr("vector-effect", "non-scaling-stroke")
+            .on("mouseover", (event, d) => {
+                const mentions = countryMentions.get(d.properties.name) || 0;
+                this.tooltip.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                this.tooltip.html(`<strong>${d.properties.name}</strong><br/>${mentions} mentions`)
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 28) + "px");
+            })
+            .on("mouseout", () => this.handleMouseOut());
+
+        this.drawLegend(countryMentions);
     }
 
     drawCircles(data) {
         console.log("Drawing circles with data:", data);
-        // Clear any existing circles
         this.g.selectAll("circle").remove();
 
         const maxMentions = d3.max(data.features, d => d.properties.mentions);
-        console.log("Max mentions:", maxMentions);
         this.createScales(maxMentions);
 
         this.g.selectAll("circle")
@@ -95,14 +146,35 @@ export default class MapViz {
             .attr("r", d => this.radiusScale(d.properties.mentions))
             .style("fill", MapConfig.colors.circles)
             .style("fill-opacity", d => this.opacityScale(d.properties.mentions))
-            .on("mouseover", (event, d) => this.handleMouseOver(event, d))
+            .on("mouseover", (event, d) => this.handleCircleMouseOver(event, d))
             .on("mouseout", () => this.handleMouseOut());
-        console.log("Circles drawn");
+    }
+
+    handleMouseOver(event, d, countryMentions) {
+        const mentions = countryMentions.get(d.properties.name) || 0;
+        this.tooltip.transition()
+            .duration(200)
+            .style("opacity", .9);
+        this.tooltip.html(`<strong>${d.properties.name}</strong><br/>${mentions} mentions`)
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 28) + "px");
+    }
+
+    handleCircleMouseOver(event, d) {
+        d3.select(event.target)
+            .style("stroke", "#000")
+            .style("stroke-width", "2px");
+        
+        this.tooltip.transition()
+            .duration(200)
+            .style("opacity", .9);
+        this.tooltip.html(`<strong>${d.properties.name}</strong><br/>${d.properties.mentions} mentions`)
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 28) + "px");
     }
 
     handleMouseOut() {
-        // Fix the event target reference
-        d3.select(this.lastHoveredElement)
+        d3.select(event.target)
             .style("stroke", "#fff")
             .style("stroke-width", "1px");
         
@@ -111,20 +183,46 @@ export default class MapViz {
             .style("opacity", 0);
     }
 
-    handleMouseOver(event, d) {
-        // Store the last hovered element
-        this.lastHoveredElement = event.target;
+    drawLegend(countryMentions) {
+        const legendWidth = 200;
+        const legendHeight = 50;
+        
+        const legend = this.svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", `translate(${this.width - legendWidth - 20}, ${this.height - legendHeight - 20})`);
 
-        d3.select(event.target)
-            .style("stroke", "#000")
-            .style("stroke-width", "2px");
+        const extent = d3.extent([...countryMentions.values()]);
+        const legendScale = d3.scaleLinear()
+            .domain(extent)
+            .range([0, legendWidth]);
+
+        const legendAxis = d3.axisBottom(legendScale)
+            .ticks(5);
+
+        const gradientData = MapConfig.colors.choropleth.scale;
         
-        this.tooltip.transition()
-            .duration(200)
-            .style("opacity", .9);
-        
-        this.tooltip.html(`<strong>${d.properties.name}</strong><br/>${d.properties.mentions} mentions`)
-            .style("left", (event.pageX + 10) + "px")
-            .style("top", (event.pageY - 28) + "px");
+        const gradient = legend.append("defs")
+            .append("linearGradient")
+            .attr("id", "legend-gradient")
+            .attr("x1", "0%")
+            .attr("x2", "100%")
+            .attr("y1", "0%")
+            .attr("y2", "0%");
+
+        gradient.selectAll("stop")
+            .data(gradientData)
+            .enter()
+            .append("stop")
+            .attr("offset", (d, i) => `${(i * 100) / (gradientData.length - 1)}%`)
+            .attr("stop-color", d => d);
+
+        legend.append("rect")
+            .attr("width", legendWidth)
+            .attr("height", 10)
+            .style("fill", "url(#legend-gradient)");
+
+        legend.append("g")
+            .attr("transform", `translate(0, 10)`)
+            .call(legendAxis);
     }
 } 

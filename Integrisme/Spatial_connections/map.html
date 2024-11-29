@@ -46,7 +46,7 @@
             const projected = map.projection(firstLocation.geometry.coordinates);
             console.log("First location projected coordinates:", projected);
             
-            map.drawMap(topoData);
+            map.drawMap(topoData, locationData);
             map.drawCircles(locationData);
         }).catch(error => {
             console.error("Error loading the data:", error);
