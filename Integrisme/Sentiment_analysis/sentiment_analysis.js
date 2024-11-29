@@ -94,6 +94,9 @@ function resetZoom() {
 function updateVisualization() {
     currentSentiment = d3.select('#sentimentType').property('value');
     
+    // Reset zoom first
+    resetZoom();
+    
     // Update y-axis domain for the selected sentiment
     y.domain(d3.extent(sentimentData, d => d[currentSentiment]));
     
