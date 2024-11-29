@@ -1,29 +1,23 @@
+// Configuration constants
 const CONFIG = {
-    dataUrl: './data/word_frequencies.json',
-    wordCloud: {
-        width: 800,
-        height: 600,
-        padding: 5,
-        rotationAngles: [-60, -30, 0, 30, 60],
-        fontSizeScale: [12, 80],
-        fontFamily: 'Arial'
-    },
-    colors: {
-        default: d3.scaleLinear()
-            .domain([0, 1])
-            .range(['#4a90e2', '#357abd']),
-        religious: d3.scaleLinear()
-            .domain([0, 1])
-            .range(['#e24a4a', '#bd3535']),
-        political: d3.scaleLinear()
-            .domain([0, 1])
-            .range(['#4ae24a', '#35bd35'])
-    }
+    width: 1000,
+    height: 600,
+    minFontSize: 12,
+    maxFontSize: 80,
+    transitionDuration: 200
 };
 
 const WORD_CATEGORIES = {
-    religious: ['musulman', 'religieux', 'islam', 'islamique', 'religion', 'dieu', 'imam', 'mosquée', 'coran', 'prophète', 'foi', 'allah'],
-    political: ['politique', 'président', 'pouvoir', 'état', 'gouvernement', 'ministre', 'parti']
+    religious: ['religieux', 'musulman', 'islam', 'islamique', 'religion', 'imam', 'mosquée', 'prophète', 'coran', 'dieu', 'foi'],
+    political: ['politique', 'président', 'ministre', 'gouvernement', 'état', 'national', 'parti'],
+    social: ['dialogue', 'communauté', 'association', 'social', 'culture'],
+    places: ['ivoire', 'burkina', 'pays', 'monde', 'faso', 'bénin']
 };
 
-const CATEGORY_COLORS = CONFIG.colors; 
+const CATEGORY_COLORS = {
+    religious: d3.interpolateReds,
+    political: d3.interpolateBlues,
+    social: d3.interpolateGreens,
+    places: d3.interpolateOranges,
+    default: d3.interpolatePurples
+}; 
