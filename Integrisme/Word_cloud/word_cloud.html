@@ -35,14 +35,6 @@
     <script src="js/wordcloud.js"></script>
     <script src="js/sidebar.js"></script>
     <script>
-        // Configuration
-        const CONFIG = {
-            dataUrl: 'https://raw.githubusercontent.com/fmadore/Mining_IWAC/main/Integrisme/Word_cloud/data/word_frequencies.json',
-            width: 800,
-            height: 600,
-            padding: 5
-        };
-
         // Add loading state handling
         const loadingDiv = document.getElementById('loading');
         const wordCloudDiv = document.getElementById('word-cloud');
@@ -57,20 +49,41 @@
                 }
                 const data = await response.json();
                 
+                console.log('Data loaded:', data); // Debug log
+                
+                if (!data || !Array.isArray(data)) {
+                    throw new Error('Invalid data format');
+                }
+
+                // Process the data into the required format
+                const processedData = data.map(d => ({
+                    text: d.word,
+                    size: d.frequency,
+                    frequency: d.frequency
+                }));
+
                 // Hide loading, show visualization
                 loadingDiv.style.display = 'none';
                 wordCloudDiv.style.display = 'block';
                 
-                // Initialize visualization with the loaded data
-                initializeVisualization(data);
+                // Initialize visualization with the processed data
+                if (typeof initializeVisualization === 'function') {
+                    initializeVisualization(processedData);
+                } else {
+                    console.error('initializeVisualization function not found');
+                    loadingDiv.textContent = 'Error: Visualization module not loaded';
+                }
             } catch (error) {
-                console.error('Error loading the data:', error);
-                loadingDiv.textContent = 'Error loading data. Please try again later.';
+                console.error('Error loading or processing the data:', error);
+                loadingDiv.textContent = 'Error loading data. Please try again later. ' + error.message;
             }
         }
 
         // Start loading when the page is ready
-        document.addEventListener('DOMContentLoaded', loadData);
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM Content Loaded'); // Debug log
+            loadData();
+        });
     </script>
 </body>
 </html> 

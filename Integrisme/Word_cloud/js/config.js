@@ -1,10 +1,11 @@
 // Configuration constants
 const CONFIG = {
-    width: 1000,
+    dataUrl: 'https://raw.githubusercontent.com/fmadore/Mining_IWAC/main/Integrisme/Word_cloud/data/word_frequencies.json',
+    width: 800,
     height: 600,
-    minFontSize: 12,
-    maxFontSize: 80,
-    transitionDuration: 200
+    padding: 5,
+    minFontSize: 10,
+    maxFontSize: 60
 };
 
 const WORD_CATEGORIES = {

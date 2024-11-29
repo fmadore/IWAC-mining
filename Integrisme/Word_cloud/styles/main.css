@@ -60,16 +60,14 @@
 #visualization-container {
     flex: 1;
     min-width: 0;
-    position: relative; /* For positioning the controls */
+    position: relative;
+    height: 80vh;
 }
 
 /* Word cloud container */
 #word-cloud {
     width: 100%;
-    height: 80vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    height: 100%;
     background: var(--primary-gradient);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
@@ -222,13 +220,12 @@
 }
 
 #loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     text-align: center;
     padding: 2em;
     font-size: 1.2em;
     color: #666;
-}
-
-#word-cloud {
-    width: 100%;
-    height: 100%;
 } 
