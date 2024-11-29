@@ -16,25 +16,41 @@ def load_integrisme_data():
         return json.load(f)
 
 def get_top_terms(word_frequencies_path, n_terms=50):
-    """Load and get top N terms from word frequencies"""
+    """Load and get top N terms from word frequencies with TF-IDF scoring"""
     # Get the current script's directory
     current_dir = Path(__file__).parent
-    # Construct path to word frequencies file
     word_frequencies_file = current_dir.parent / 'Word_cloud/data/word_frequencies.json'
     
     with open(word_frequencies_file, 'r', encoding='utf-8') as f:
         word_freq = json.load(f)
     
-    # Filter out potentially problematic terms
+    # First filter: remove problematic terms
     filtered_freq = {
         word: freq for word, freq in word_freq.items() 
         if len(word) > 2  # Filter out very short words
         and not any(c.isdigit() for c in word)  # Filter out words with numbers
         and word not in ['celer', 'célér']  # Explicitly exclude problematic words
+        and word.isalpha()  # Only keep purely alphabetic words
     }
     
-    # Get top N terms
-    return list(dict(sorted(filtered_freq.items(), 
+    # Calculate TF-IDF scores
+    articles = load_integrisme_data()
+    total_articles = len(articles)
+    word_importance = {}
+    
+    for word, freq in filtered_freq.items():
+        # Count documents containing this word
+        doc_count = sum(1 for article in articles 
+                       if word in article.get('bibo:content', [{}])[0].get('@value', '').lower())
+        
+        # Calculate importance score (TF-IDF)
+        # TF = freq (we already have term frequencies)
+        # IDF = log(total_docs / (1 + docs_containing_term))
+        importance = freq * np.log(total_articles / (1 + doc_count))
+        word_importance[word] = importance
+    
+    # Get top N terms by importance score
+    return list(dict(sorted(word_importance.items(), 
                           key=lambda x: x[1], 
                           reverse=True)[:n_terms]).keys())
 
