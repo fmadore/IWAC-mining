@@ -149,12 +149,19 @@ semaphore = asyncio.Semaphore(10)  # Limit to 10 concurrent requests
 
 async def fetch_data_async(session, url):
     """Fetch data from a given URL with authentication asynchronously."""
+    # Add key_identity and key_credential as URL parameters
+    if '?' in url:
+        auth_url = f"{url}&key_identity={OMEKA_KEY_IDENTITY}&key_credential={OMEKA_KEY_CREDENTIAL}"
+    else:
+        auth_url = f"{url}?key_identity={OMEKA_KEY_IDENTITY}&key_credential={OMEKA_KEY_CREDENTIAL}"
+    
     headers = {
         'Authorization': f'ApiKey {OMEKA_KEY_IDENTITY}:{OMEKA_KEY_CREDENTIAL}'
     }
+    
     try:
-        async with semaphore:  # Add this line to limit concurrent requests
-            async with session.get(url, headers=headers) as response:
+        async with semaphore:
+            async with session.get(auth_url, headers=headers) as response:
                 response.raise_for_status()
                 return await response.json()
     except Exception as e:
@@ -238,7 +245,9 @@ async def process_urls_async(urls):
         return all_data, successful_fetches, failed_fetches
 
 async def main_async():
-    item_url = f"{OMEKA_BASE_URL}/items/59"
+    base_item_url = f"{OMEKA_BASE_URL}/items/59"
+    # Add authentication parameters to the initial URL
+    item_url = f"{base_item_url}?key_identity={OMEKA_KEY_IDENTITY}&key_credential={OMEKA_KEY_CREDENTIAL}"
     
     logging.info("Starting data collection process")
     
