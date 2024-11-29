@@ -1,14 +1,11 @@
 import torch
-from transformers import CamembertForSequenceClassification, CamembertTokenizer
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import json
 import os
 from tqdm import tqdm
 import logging
-from datetime import datetime
-import numpy as np
-from torch.nn.functional import softmax
-from typing import Dict, List, Union
 import pandas as pd
+from typing import Dict, List
 
 # Set up logging
 logging.basicConfig(
@@ -17,45 +14,24 @@ logging.basicConfig(
 )
 
 class SentimentAnalyzer:
-    def __init__(self, model_name: str = 'camembert/camembert-base'):
+    def __init__(self, model_name: str = 'cmarkea/distilcamembert-base-sentiment'):
         """
-        Initialize the sentiment analyzer with a CamemBERT model.
-        
-        Args:
-            model_name: The name of the pre-trained model to use
+        Initialize the sentiment analyzer with a pre-trained French model.
+        Specifically tuned for news articles and formal text.
         """
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         logging.info(f"Using device: {self.device}")
         
         # Load tokenizer and model
-        self.tokenizer = CamembertTokenizer.from_pretrained(model_name)
-        self.model = CamembertForSequenceClassification.from_pretrained(model_name, num_labels=3)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.model = AutoModelForSequenceClassification.from_pretrained(model_name)
         self.model.to(self.device)
-        
-        # Fine-tune the model if not already fine-tuned
-        self._ensure_model_fine_tuned()
-
-    def _ensure_model_fine_tuned(self):
-        """Checks if the model needs fine-tuning and performs it if necessary."""
-        model_path = 'sentiment_model_state.pt'
-        if not os.path.exists(model_path):
-            logging.info("Fine-tuned model not found. Starting fine-tuning process...")
-            self._fine_tune_model()
-            torch.save(self.model.state_dict(), model_path)
-        else:
-            logging.info("Loading fine-tuned model...")
-            self.model.load_state_dict(torch.load(model_path))
         self.model.eval()
 
     def analyze_text(self, text: str) -> Dict[str, float]:
         """
         Analyze the sentiment of a single text.
-        
-        Args:
-            text: The text to analyze
-            
-        Returns:
-            Dictionary containing sentiment scores
+        Returns scores for negative, neutral, and positive sentiments.
         """
         # Prepare input
         inputs = self.tokenizer(
@@ -69,7 +45,7 @@ class SentimentAnalyzer:
         # Get prediction
         with torch.no_grad():
             outputs = self.model(**inputs)
-            probabilities = softmax(outputs.logits, dim=1)
+            probabilities = torch.nn.functional.softmax(outputs.logits, dim=1)
             
         # Convert to sentiment scores
         scores = probabilities[0].cpu().numpy()
@@ -168,6 +144,12 @@ def generate_summary_statistics(data: List[Dict]):
             'positive_ratio': float((df['compound'] > 0).mean()),
             'negative_ratio': float((df['compound'] < 0).mean()),
             'neutral_ratio': float((df['compound'] == 0).mean())
+        },
+        'topic_sentiment': {
+            'overall_tone': 'neutral' if abs(df['compound'].mean()) < 0.1 else 
+                          'positive' if df['compound'].mean() > 0 else 'negative',
+            'sentiment_stability': float(df['compound'].std()),  # Lower means more consistent tone
+            'neutrality_ratio': float(df['neutral'].mean())  # Higher means more neutral coverage
         }
     }
     
