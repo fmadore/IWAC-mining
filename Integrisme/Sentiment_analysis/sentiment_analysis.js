@@ -132,7 +132,7 @@ async function visualizeSentiment() {
         sentimentData = data
             .filter(article => article.date && article.sentiment_analysis)
             .map(article => ({
-                date: new Date(article.date),
+                date: new Date(article.date.split('/')[0]),
                 compound: article.sentiment_analysis.compound,
                 positive: article.sentiment_analysis.positive,
                 negative: article.sentiment_analysis.negative,
