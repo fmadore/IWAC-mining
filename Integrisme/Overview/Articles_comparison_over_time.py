@@ -2,17 +2,52 @@ import pandas as pd
 from datetime import datetime
 import os
 import json
+import asyncio
+import aiohttp
+from dotenv import load_dotenv
+import logging
+from tqdm import tqdm
+from asyncio import gather
 
-def parse_date(date_str):
-    """Convert string date to datetime, handling both YYYY-MM-DD and YYYY-MM formats."""
-    try:
-        if pd.isna(date_str):
-            return None
-        if len(date_str.split('-')) == 2:
-            return datetime.strptime(date_str + '-01', '%Y-%m-%d')
-        return datetime.strptime(date_str, '%Y-%m-%d')
-    except:
-        return None
+# Load environment variables
+load_dotenv()
+
+OMEKA_BASE_URL = os.getenv('OMEKA_BASE_URL')
+OMEKA_KEY_IDENTITY = os.getenv('OMEKA_KEY_IDENTITY')
+OMEKA_KEY_CREDENTIAL = os.getenv('OMEKA_KEY_CREDENTIAL')
+
+# Enhanced logging configuration
+def setup_logging():
+    """Configure logging with both file and console output."""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    logs_dir = os.path.join(script_dir, 'logs')
+    os.makedirs(logs_dir, exist_ok=True)
+    
+    log_file = os.path.join(logs_dir, f'article_comparison_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log')
+    
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler(log_file, encoding='utf-8'),
+            logging.StreamHandler()
+        ]
+    )
+    return log_file
+
+def get_keyword_mapping():
+    """Return dictionary mapping concept IDs to keywords."""
+    return {
+        '59': 'Intégrisme',
+        '21': 'Fondamentalisme islamique',
+        '24': 'Islamisme',
+        '63530': 'Radicalisation',
+        '63372': 'Extrémisme',
+        '63445': 'Obscurantisme',
+        '33': 'Terrorisme',
+        '63531': 'Djihadisme',
+        '43': 'Salafisme'
+    }
 
 def get_newspaper_country_mapping():
     """Return dictionary mapping newspapers to their countries."""
@@ -70,50 +105,207 @@ def get_newspaper_country_mapping():
         'Togo-Presse': 'Togo'
     }
 
-def load_and_prepare_data(url):
-    """Load data from URL and prepare it for analysis."""
-    df = pd.read_csv(url)
+async def fetch_data_async(session, url):
+    """Fetch data from Omeka S API with enhanced logging."""
+    if '?' in url:
+        auth_url = f"{url}&key_identity={OMEKA_KEY_IDENTITY}&key_credential={OMEKA_KEY_CREDENTIAL}"
+    else:
+        auth_url = f"{url}?key_identity={OMEKA_KEY_IDENTITY}&key_credential={OMEKA_KEY_CREDENTIAL}"
     
-    # Convert dates and add country information
-    df['date'] = df['dcterms:date'].apply(parse_date)
+    try:
+        async with session.get(auth_url) as response:
+            response.raise_for_status()
+            data = await response.json()
+            logging.debug(f"Successfully fetched data from {url}")
+            return data
+    except aiohttp.ClientError as e:
+        logging.error(f"Network error fetching {url}: {str(e)}")
+        return None
+    except json.JSONDecodeError as e:
+        logging.error(f"JSON decode error for {url}: {str(e)}")
+        return None
+    except Exception as e:
+        logging.error(f"Unexpected error fetching {url}: {str(e)}")
+        return None
+
+async def fetch_articles_for_concept(session, concept_id, keyword):
+    """Fetch all articles related to a concept ID with progress tracking."""
+    url = f"{OMEKA_BASE_URL}/items/{concept_id}"
+    logging.info(f"Fetching articles for concept: {keyword} (ID: {concept_id})")
+    
+    data = await fetch_data_async(session, url)
+    if not data:
+        logging.error(f"Failed to fetch concept data for {keyword}")
+        return []
+    
+    if '@reverse' not in data or 'dcterms:subject' not in data['@reverse']:
+        logging.warning(f"No articles found for concept: {keyword}")
+        return []
+    
+    related_items = data['@reverse']['dcterms:subject']
+    logging.info(f"Found {len(related_items)} potential items for {keyword}")
+    
+    # Create tasks for all article fetches
+    tasks = [fetch_data_async(session, item['@id']) for item in related_items]
+    
+    # Fetch all articles concurrently
+    articles_data = await gather(*tasks)
+    
+    # Filter and process articles
+    articles = []
+    for article_data in articles_data:
+        if article_data and 'bibo:Article' in article_data.get('@type', []):
+            articles.append(article_data)
+    
+    logging.info(f"Successfully processed {len(articles)} articles for {keyword}")
+    return articles
+
+async def load_and_prepare_data():
+    """Load data from Omeka S API and prepare it for analysis with enhanced logging."""
+    keyword_mapping = get_keyword_mapping()
+    newspaper_mapping = get_newspaper_country_mapping()
+    
+    stats = {
+        'total_fetched': 0,
+        'successful': 0,
+        'failed': 0,
+        'by_keyword': {},
+        'unmapped_publishers': set()
+    }
+    
+    all_articles = []
+    async with aiohttp.ClientSession() as session:
+        # Create tasks for all concepts
+        tasks = [
+            fetch_articles_for_concept(session, concept_id, keyword) 
+            for concept_id, keyword in keyword_mapping.items()
+        ]
+        
+        # Fetch all concepts' articles concurrently
+        articles_by_keyword = await gather(*tasks)
+        
+        # Process results
+        for (concept_id, keyword), articles in zip(keyword_mapping.items(), articles_by_keyword):
+            stats['by_keyword'][keyword] = {'found': 0, 'processed': 0}
+            stats['by_keyword'][keyword]['found'] = len(articles)
+            
+            for article in articles:
+                try:
+                    publisher = next((p.get('display_title') for p in article.get('dcterms:publisher', [])), None)
+                    date_value = next((d.get('@value') for d in article.get('dcterms:date', [])), None)
+                    
+                    if publisher and date_value:
+                        # Handle different date formats
+                        if '/' in date_value:
+                            # For ranges like "1995-01/1995-02", take the first date
+                            date_value = date_value.split('/')[0]
+                        
+                        # For partial dates like "1995-01", append "-01" for the day
+                        if len(date_value.split('-')) == 2:
+                            date_value = f"{date_value}-01"
+                        
+                        if publisher not in newspaper_mapping:
+                            stats['unmapped_publishers'].add(publisher)
+                        
+                        all_articles.append({
+                            'publisher': publisher,
+                            'date': date_value,
+                            'keyword': keyword,
+                            'country': newspaper_mapping.get(publisher)
+                        })
+                        stats['by_keyword'][keyword]['processed'] += 1
+                        stats['successful'] += 1
+                    else:
+                        stats['failed'] += 1
+                        logging.warning(f"Missing required data for article: publisher={publisher}, date={date_value}")
+                except Exception as e:
+                    stats['failed'] += 1
+                    logging.error(f"Error processing article for {keyword}: {str(e)}")
+    
+    stats['total_fetched'] = stats['successful'] + stats['failed']
+    
+    # Log comprehensive statistics
+    logging.info("\n=== Data Collection Statistics ===")
+    logging.info(f"Total articles fetched: {stats['total_fetched']}")
+    logging.info(f"Successfully processed: {stats['successful']}")
+    logging.info(f"Failed to process: {stats['failed']}")
+    logging.info("\nBy keyword:")
+    for keyword, counts in stats['by_keyword'].items():
+        logging.info(f"  {keyword}:")
+        logging.info(f"    Found: {counts['found']}")
+        logging.info(f"    Processed: {counts['processed']}")
+    
+    if stats['unmapped_publishers']:
+        logging.warning("\nUnmapped publishers found:")
+        for publisher in sorted(stats['unmapped_publishers']):
+            logging.warning(f"  - {publisher}")
+    
+    # Create and process DataFrame
+    df = pd.DataFrame(all_articles)
+    df['date'] = pd.to_datetime(df['date'], errors='coerce')
     df['year'] = df['date'].dt.year
-    df['country'] = df['dcterms:publisher'].map(get_newspaper_country_mapping())
     
-    # Check for multiple keywords
-    keywords = ['Intégrisme', 'Fondamentalisme islamique', 'Islamisme', 'Radicalisation', 
-               'Extrémisme', 'Obscurantisme', 'Terrorisme', 'Djihadisme', 'Salafisme']
-    for keyword in keywords:
-        df[f'has_{keyword.lower().replace(" ", "_")}'] = df['dcterms:subject'].fillna('').str.contains(keyword, case=False)
-    
-    # Print validation information
-    print("Newspapers in data but not in mapping:")
-    print(set(df['dcterms:publisher'].unique()) - set(get_newspaper_country_mapping().keys()))
-    print("\nRows with unmapped countries:")
-    print(df[df['country'].isna()]['dcterms:publisher'].unique())
+    # Log date range information
+    logging.info(f"\nDate range: {df['date'].min()} to {df['date'].max()}")
+    logging.info(f"Total unique publishers: {df['publisher'].nunique()}")
+    logging.info(f"Total unique countries: {df['country'].nunique()}")
     
     return df
 
 def prepare_combined_yearly_counts(df):
-    """Prepare combined yearly counts data for visualization."""
-    # Define the range of years
-    min_year = int(df['year'].min())
-    max_year = int(df['year'].max())
-    keywords = ['Intégrisme', 'Fondamentalisme islamique', 'Islamisme', 
-                'Radicalisation', 'Extrémisme', 'Obscurantisme', 'Terrorisme', 'Djihadisme', 'Salafisme']
+    """Prepare combined yearly counts data with enhanced validation."""
+    keywords = list(get_keyword_mapping().values())
+    
+    # Add detailed logging for Intégrisme
+    integrisme_total = len(df[df['keyword'] == 'Intégrisme'])
+    logging.info(f"\nValidating Intégrisme data:")
+    logging.info(f"Total Intégrisme articles in DataFrame: {integrisme_total}")
+    
+    # Log distribution by year
+    yearly_dist = df[df['keyword'] == 'Intégrisme'].groupby('year').size()
+    logging.info("\nIntégrisme articles by year:")
+    for year, count in yearly_dist.items():
+        logging.info(f"  {year}: {count} articles")
+    
+    # Log distribution by country
+    country_dist = df[df['keyword'] == 'Intégrisme'].groupby('country').size()
+    logging.info("\nIntégrisme articles by country:")
+    for country, count in country_dist.items():
+        logging.info(f"  {country}: {count} articles")
+    
+    # Check for any null values
+    null_dates = df[df['keyword'] == 'Intégrisme']['date'].isnull().sum()
+    null_countries = df[df['keyword'] == 'Intégrisme']['country'].isnull().sum()
+    logging.info(f"\nNull values check:")
+    logging.info(f"  Articles with null dates: {null_dates}")
+    logging.info(f"  Articles with null countries: {null_countries}")
+    
+    # Get all unique years from the data
+    all_years = sorted(df['year'].unique())
     
     # Initialize list to store results
     results = []
+    total_processed = 0
     
     # For each year and keyword combination
-    for year in range(min_year, max_year + 1):
+    for year in all_years:
+        if pd.isna(year):
+            logging.warning(f"Skipping records with null year value")
+            continue
+            
         year_data = {}
-        year_data['year'] = year
+        year_data['year'] = int(year)  # Convert to int for JSON serialization
         year_data['keywords'] = []
         
         for keyword in keywords:
             # Filter data for this year and keyword
-            mask = (df['year'] == year) & (df[f'has_{keyword.lower().replace(" ", "_")}'])
+            mask = (df['year'] == year) & (df['keyword'] == keyword)
             articles = df[mask]
+            
+            if keyword == 'Intégrisme':
+                total_processed += len(articles)
+                if len(articles) > 0:
+                    logging.debug(f"Processing {len(articles)} Intégrisme articles for year {year}")
             
             if len(articles) > 0:
                 # Group by country and count
@@ -125,6 +317,7 @@ def prepare_combined_yearly_counts(df):
                     'countries': [
                         {'name': country, 'count': count}
                         for country, count in country_counts.items()
+                        if pd.notna(country)  # Filter out NaN countries
                     ]
                 }
                 year_data['keywords'].append(keyword_data)
@@ -138,29 +331,47 @@ def prepare_combined_yearly_counts(df):
         
         results.append(year_data)
     
+    logging.info(f"\nValidation summary:")
+    logging.info(f"Total Intégrisme articles in raw data: {integrisme_total}")
+    logging.info(f"Total Intégrisme articles processed in yearly counts: {total_processed}")
+    
+    # Validate the final JSON structure
+    integrisme_in_json = sum(
+        keyword_data['total_count']
+        for year_data in results
+        for keyword_data in year_data['keywords']
+        if keyword_data['keyword'] == 'Intégrisme'
+    )
+    logging.info(f"Total Intégrisme articles in final JSON: {integrisme_in_json}")
+    
     return results
 
-def main():
+async def main():
     """Main function to run the analysis."""
-    # URL for the data
-    url = "https://raw.githubusercontent.com/fmadore/Islam-West-Africa-Collection/main/Metadata/CSV/newspaper_articles.csv"
+    # Setup logging
+    log_file = setup_logging()
+    logging.info("Starting article comparison analysis")
     
-    # Load and prepare data
-    df = load_and_prepare_data(url)
-    
-    # Prepare combined yearly counts
-    yearly_counts = prepare_combined_yearly_counts(df)
-    
-    # Get the directory of the current script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # Save the data to a JSON file in the same directory as the script
-    json_output_path = os.path.join(script_dir, 'yearly_counts.json')
-    with open(json_output_path, 'w', encoding='utf-8') as f:
-        json.dump(yearly_counts, f, ensure_ascii=False, indent=2)
-    
-    # Inform the user that the data has been saved
-    print(f"Data has been saved to '{json_output_path}' for D3.js visualization.")
+    try:
+        # Load and prepare data
+        df = await load_and_prepare_data()
+        
+        # Prepare combined yearly counts
+        yearly_counts = prepare_combined_yearly_counts(df)
+        
+        # Save the data
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        json_output_path = os.path.join(script_dir, 'yearly_counts.json')
+        
+        with open(json_output_path, 'w', encoding='utf-8') as f:
+            json.dump(yearly_counts, f, ensure_ascii=False, indent=2)
+        
+        logging.info(f"Analysis complete. Results saved to '{json_output_path}'")
+        logging.info(f"Log file available at: {log_file}")
+        
+    except Exception as e:
+        logging.error(f"Fatal error during analysis: {str(e)}", exc_info=True)
+        raise
 
 if __name__ == "__main__":
-    main() 
+    asyncio.run(main()) 
