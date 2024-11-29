@@ -1,24 +1,29 @@
-// Configuration constants
-window.CONFIG = {
-    dataUrl: 'https://raw.githubusercontent.com/fmadore/Mining_IWAC/main/Integrisme/Word_cloud/data/word_frequencies.json',
-    width: 800,
-    height: 600,
-    padding: 5,
-    minFontSize: 10,
-    maxFontSize: 60
+const CONFIG = {
+    dataUrl: './data/word_frequencies.json',
+    wordCloud: {
+        width: 800,
+        height: 600,
+        padding: 5,
+        rotationAngles: [-60, -30, 0, 30, 60],
+        fontSizeScale: [12, 80],
+        fontFamily: 'Arial'
+    },
+    colors: {
+        default: d3.scaleLinear()
+            .domain([0, 1])
+            .range(['#4a90e2', '#357abd']),
+        religious: d3.scaleLinear()
+            .domain([0, 1])
+            .range(['#e24a4a', '#bd3535']),
+        political: d3.scaleLinear()
+            .domain([0, 1])
+            .range(['#4ae24a', '#35bd35'])
+    }
 };
 
-window.WORD_CATEGORIES = {
-    religious: ['religieux', 'musulman', 'islam', 'islamique', 'religion', 'imam', 'mosquée', 'prophète', 'coran', 'dieu', 'foi'],
-    political: ['politique', 'président', 'ministre', 'gouvernement', 'état', 'national', 'parti'],
-    social: ['dialogue', 'communauté', 'association', 'social', 'culture'],
-    places: ['ivoire', 'burkina', 'pays', 'monde', 'faso', 'bénin']
+const WORD_CATEGORIES = {
+    religious: ['musulman', 'religieux', 'islam', 'islamique', 'religion', 'dieu', 'imam', 'mosquée', 'coran', 'prophète', 'foi', 'allah'],
+    political: ['politique', 'président', 'pouvoir', 'état', 'gouvernement', 'ministre', 'parti']
 };
 
-window.CATEGORY_COLORS = {
-    religious: d3.interpolateReds,
-    political: d3.interpolateBlues,
-    social: d3.interpolateGreens,
-    places: d3.interpolateOranges,
-    default: d3.interpolatePurples
-}; 
+const CATEGORY_COLORS = CONFIG.colors; 

@@ -35,56 +35,37 @@
     <script src="./js/wordcloud.js"></script>
     <script src="./js/sidebar.js"></script>
     <script>
-        // Add loading state handling
-        const loadingDiv = document.getElementById('loading');
-        const wordCloudDiv = document.getElementById('word-cloud');
-        wordCloudDiv.style.display = 'none';
-
-        // Fetch data from local JSON file
-        async function loadData() {
-            try {
-                const response = await fetch(CONFIG.dataUrl);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                
-                console.log('Data loaded:', data); // Debug log
-                
-                if (!data || typeof data !== 'object') {
-                    throw new Error('Invalid data format');
-                }
-
-                // Process the data into the required format
-                const processedData = Object.entries(data)
-                    .map(([word, frequency]) => ({
-                        text: word,
-                        size: frequency,
-                        frequency: frequency
-                    }))
-                    .sort((a, b) => b.frequency - a.frequency); // Sort by frequency descending
-
-                // Hide loading, show visualization
-                loadingDiv.style.display = 'none';
-                wordCloudDiv.style.display = 'block';
-                
-                // Initialize visualization with the processed data
-                if (typeof initializeVisualization === 'function') {
-                    initializeVisualization(processedData);
-                } else {
-                    console.error('initializeVisualization function not found');
-                    loadingDiv.textContent = 'Error: Visualization module not loaded';
-                }
-            } catch (error) {
-                console.error('Error loading or processing the data:', error);
-                loadingDiv.textContent = 'Error loading data. Please try again later. ' + error.message;
-            }
-        }
-
-        // Start loading when the page is ready
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM Content Loaded'); // Debug log
-            loadData();
+            const wordCloud = new WordCloud();
+            
+            // Add slider listener
+            const slider = document.getElementById('word-slider');
+            const wordCount = document.getElementById('word-count');
+            
+            slider.addEventListener('input', () => {
+                const numWords = parseInt(slider.value);
+                wordCount.textContent = numWords;
+                wordCloud.update(numWords);
+            });
+
+            // Load initial data
+            d3.json(CONFIG.dataUrl)
+                .then(data => {
+                    if (!data || Object.keys(data).length === 0) {
+                        throw new Error('No data available');
+                    }
+                    wordCloud.allWords = Object.entries(data)
+                        .sort((a, b) => b[1] - a[1]);
+                    wordCloud.update(parseInt(slider.value));
+                    
+                    // Hide loading indicator
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('word-cloud').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error loading data:', error);
+                    Utils.showError("Failed to load word cloud data. Please try again later.");
+                });
         });
     </script>
 </body>
