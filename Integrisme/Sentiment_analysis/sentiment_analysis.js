@@ -137,7 +137,8 @@ async function visualizeSentiment() {
                 positive: article.sentiment_analysis.positive,
                 negative: article.sentiment_analysis.negative,
                 neutral: article.sentiment_analysis.neutral,
-                title: article['o:title'] || 'Sans titre'
+                title: article['o:title'] || 'Sans titre',
+                newspaper: article['dcterms:publisher']?.[0]?.['display_title'] || 'Unknown newspaper'
             }))
             .sort((a, b) => a.date - b.date);
 
@@ -198,6 +199,7 @@ async function visualizeSentiment() {
                 
                 tooltip.html(`
                     <strong>${d.title}</strong><br/>
+                    <em>${d.newspaper}</em><br/>
                     Date: ${d3.timeFormat('%Y-%m-%d')(d.date)}<br/>
                     Compound: ${d.compound.toFixed(2)}<br/>
                     Positive: ${d.positive.toFixed(2)}<br/>
