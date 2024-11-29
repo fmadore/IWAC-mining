@@ -54,6 +54,9 @@ export default class MapViz {
     }
 
     drawMap(topoData) {
+        // Clear any existing paths
+        this.g.selectAll("path").remove();
+
         this.g.append("g")
             .selectAll("path")
             .data(topoData.features)
@@ -65,6 +68,9 @@ export default class MapViz {
     }
 
     drawCircles(data) {
+        // Clear any existing circles
+        this.g.selectAll("circle").remove();
+
         const maxMentions = d3.max(data.features, d => d.properties.mentions);
         this.createScales(maxMentions);
 
@@ -81,7 +87,21 @@ export default class MapViz {
             .on("mouseout", () => this.handleMouseOut());
     }
 
+    handleMouseOut() {
+        // Fix the event target reference
+        d3.select(this.lastHoveredElement)
+            .style("stroke", "#fff")
+            .style("stroke-width", "1px");
+        
+        this.tooltip.transition()
+            .duration(500)
+            .style("opacity", 0);
+    }
+
     handleMouseOver(event, d) {
+        // Store the last hovered element
+        this.lastHoveredElement = event.target;
+
         d3.select(event.target)
             .style("stroke", "#000")
             .style("stroke-width", "2px");
@@ -93,15 +113,5 @@ export default class MapViz {
         this.tooltip.html(`<strong>${d.properties.name}</strong><br/>${d.properties.mentions} mentions`)
             .style("left", (event.pageX + 10) + "px")
             .style("top", (event.pageY - 28) + "px");
-    }
-
-    handleMouseOut() {
-        d3.select(event.target)
-            .style("stroke", "#fff")
-            .style("stroke-width", "1px");
-        
-        this.tooltip.transition()
-            .duration(500)
-            .style("opacity", 0);
     }
 } 
