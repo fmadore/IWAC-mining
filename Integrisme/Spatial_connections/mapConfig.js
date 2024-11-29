@@ -2,7 +2,7 @@ const MapConfig = {
     width: 960,
     height: 600,
     projection: {
-        scale: 1000,
+        scale: 150,
         center: [-4, 12],  // Center on West Africa
     },
     colors: {
