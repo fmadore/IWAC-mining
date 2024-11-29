@@ -13,7 +13,16 @@ const MapConfig = {
         circles: "red",
         choropleth: {
             noData: "#f0f0f0",
-            scale: ["#fee5d9", "#fcbba1", "#fc9272", "#fb6a4a", "#ef3b2c", "#cb181d", "#99000d"]
+            scale: [
+                "#fee5d9",  // 1-4
+                "#fcbba1",  // 5-9
+                "#fc9272",  // 10-24
+                "#fb6a4a",  // 25-49
+                "#ef3b2c",  // 50-99
+                "#cb181d",  // 100-149
+                "#99000d",  // 150+
+                "#67000d"   // Adding an extra darker color for 150+
+            ]
         }
     },
     zoom: {
