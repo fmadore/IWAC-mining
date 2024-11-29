@@ -206,16 +206,16 @@ export default class MapViz {
     }
 
     drawLegend(countryMentions) {
-        const legendWidth = 300;  // Increased width for better spacing
+        const legendWidth = 300;
         const legendHeight = 40;
         const padding = 10;
-        const boxWidth = 35;  // Width of each color box
+        const boxWidth = 35;
         
         this.svg.selectAll(".legend").remove();
         
         const legend = this.svg.append("g")
             .attr("class", "legend")
-            .attr("transform", `translate(${this.width - legendWidth - padding}, ${this.height - legendHeight - padding})`);
+            .attr("transform", `translate(${this.width - legendWidth - padding}, ${this.height - legendHeight - padding - 20})`);
 
         // Define the legend data with ranges
         const legendData = [
