@@ -1,0 +1,46 @@
+.circle-marker {
+    fill: red;
+    stroke: #fff;
+    stroke-width: 1px;
+    cursor: pointer;
+}
+
+.circle-marker:hover {
+    stroke: #000;
+    stroke-width: 2px;
+}
+
+.tooltip {
+    position: absolute;
+    padding: 10px;
+    font: 12px sans-serif;
+    background: white;
+    border: 1px solid #999;
+    border-radius: 4px;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.legend {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    width: 150px;
+    padding: 10px;
+    background: white;
+    border: 2px solid grey;
+    font-size: 14px;
+}
+
+.legend-circle {
+    fill: red;
+    opacity: 0.6;
+}
+
+.zoom-button {
+    cursor: pointer;
+}
+
+.zoom-button:hover {
+    stroke: #666;
+} 
