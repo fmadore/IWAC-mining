@@ -40,7 +40,7 @@
         const wordCloudDiv = document.getElementById('word-cloud');
         wordCloudDiv.style.display = 'none';
 
-        // Fetch data from GitHub
+        // Fetch data from local JSON file
         async function loadData() {
             try {
                 const response = await fetch(CONFIG.dataUrl);
@@ -51,16 +51,18 @@
                 
                 console.log('Data loaded:', data); // Debug log
                 
-                if (!data || !Array.isArray(data)) {
+                if (!data || typeof data !== 'object') {
                     throw new Error('Invalid data format');
                 }
 
                 // Process the data into the required format
-                const processedData = data.map(d => ({
-                    text: d.word,
-                    size: d.frequency,
-                    frequency: d.frequency
-                }));
+                const processedData = Object.entries(data)
+                    .map(([word, frequency]) => ({
+                        text: word,
+                        size: frequency,
+                        frequency: frequency
+                    }))
+                    .sort((a, b) => b.frequency - a.frequency); // Sort by frequency descending
 
                 // Hide loading, show visualization
                 loadingDiv.style.display = 'none';
