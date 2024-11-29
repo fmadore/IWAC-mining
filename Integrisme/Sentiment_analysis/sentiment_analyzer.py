@@ -109,6 +109,23 @@ def process_integrisme_data():
     # Generate summary statistics
     generate_summary_statistics(processed_data)
 
+def clean_date(date_str: str) -> str:
+    """Clean and standardize date strings."""
+    if not date_str:
+        return None
+    
+    # Handle month ranges by taking the first date
+    if '/' in date_str:
+        date_str = date_str.split('/')[0]
+    
+    # Handle different date formats
+    if len(date_str) == 7:  # YYYY-MM format
+        return f"{date_str}-01"  # Add first day of month
+    elif len(date_str) == 4:  # YYYY format
+        return f"{date_str}-01-01"  # Add first day of year
+    
+    return date_str
+
 def generate_summary_statistics(data: List[Dict]):
     """Generate and save summary statistics of the sentiment analysis."""
     sentiments = []
@@ -117,7 +134,11 @@ def generate_summary_statistics(data: List[Dict]):
     for article in data:
         if 'sentiment_analysis' in article and 'date' in article:
             sentiments.append(article['sentiment_analysis'])
-            dates.append(article['date'])
+            cleaned_date = clean_date(article['date'])
+            if cleaned_date:
+                dates.append(cleaned_date)
+            else:
+                continue  # Skip articles with invalid dates
     
     df = pd.DataFrame({
         'date': dates,
@@ -128,14 +149,19 @@ def generate_summary_statistics(data: List[Dict]):
     })
     
     # Convert date strings to datetime and sort
-    df['date'] = pd.to_datetime(df['date'])
+    df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d', errors='coerce')
+    df = df.dropna(subset=['date'])  # Remove rows with invalid dates
     df = df.sort_values('date')
     
     # Calculate monthly averages
-    monthly_avg = df.set_index('date').resample('M').mean()
+    monthly_avg = df.set_index('date').resample('ME').mean()
     
     # Calculate yearly averages
-    yearly_avg = df.set_index('date').resample('Y').mean()
+    yearly_avg = df.set_index('date').resample('YE').mean()
+    
+    # Convert timestamps to strings for JSON serialization
+    monthly_averages = {k.strftime('%Y-%m'): v for k, v in monthly_avg.to_dict(orient='index').items()}
+    yearly_averages = {k.strftime('%Y'): v for k, v in yearly_avg.to_dict(orient='index').items()}
     
     # Save statistics
     stats_file = os.path.join(os.path.dirname(__file__), 'sentiment_statistics.json')
@@ -144,11 +170,16 @@ def generate_summary_statistics(data: List[Dict]):
             'mean_compound': float(df['compound'].mean()),
             'std_compound': float(df['compound'].std()),
             'median_compound': float(df['compound'].median()),
-            'most_positive_date': str(df.loc[df['compound'].idxmax(), 'date']),
-            'most_negative_date': str(df.loc[df['compound'].idxmin(), 'date'])
+            'most_positive_date': df.loc[df['compound'].idxmax(), 'date'].strftime('%Y-%m-%d'),
+            'most_negative_date': df.loc[df['compound'].idxmin(), 'date'].strftime('%Y-%m-%d'),
+            'date_range': {
+                'start': df['date'].min().strftime('%Y-%m-%d'),
+                'end': df['date'].max().strftime('%Y-%m-%d'),
+                'total_articles': len(df)
+            }
         },
-        'monthly_averages': monthly_avg.to_dict(orient='index'),
-        'yearly_averages': yearly_avg.to_dict(orient='index'),
+        'monthly_averages': monthly_averages,
+        'yearly_averages': yearly_averages,
         'sentiment_distribution': {
             'positive_ratio': float((df['compound'] > 0).mean()),
             'negative_ratio': float((df['compound'] < 0).mean()),
