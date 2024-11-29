@@ -1,0 +1,41 @@
+.tooltip {
+  position: absolute;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  pointer-events: none;
+  font-size: 12px;
+}
+
+.line {
+  transition: stroke-width 0.2s;
+}
+
+.line:hover {
+  stroke-width: 3px;
+}
+
+.dot {
+  fill: steelblue;
+  transition: r 0.2s;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .line,
+  .dot {
+    transition: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .line {
+    stroke: #000;
+  }
+  
+  .dot {
+    fill: #000;
+  }
+} 
