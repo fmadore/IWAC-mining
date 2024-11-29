@@ -92,15 +92,22 @@ export default class MapViz {
         this.choroplethScale = d3.scaleThreshold()
             .domain([1, 5, 10, 25, 50, 100, 150])  // Explicit thresholds
             .range([
-                MapConfig.colors.choropleth.scale[0],  // 0-1
-                MapConfig.colors.choropleth.scale[1],  // 1-5
-                MapConfig.colors.choropleth.scale[2],  // 5-10
-                MapConfig.colors.choropleth.scale[3],  // 10-25
-                MapConfig.colors.choropleth.scale[4],  // 25-50
-                MapConfig.colors.choropleth.scale[5],  // 50-100
-                MapConfig.colors.choropleth.scale[6],  // 100-150
-                MapConfig.colors.choropleth.scale[6]   // 150+
+                MapConfig.colors.choropleth.scale[0],  // for values between 0 and 1
+                MapConfig.colors.choropleth.scale[1],  // for values between 1 and 5
+                MapConfig.colors.choropleth.scale[2],  // for values between 5 and 10
+                MapConfig.colors.choropleth.scale[3],  // for values between 10 and 25
+                MapConfig.colors.choropleth.scale[4],  // for values between 25 and 50
+                MapConfig.colors.choropleth.scale[5],  // for values between 50 and 100
+                MapConfig.colors.choropleth.scale[6],  // for values between 100 and 150
+                MapConfig.colors.choropleth.scale[7]   // for values 150 and above
             ]);
+
+        // Log some values to verify the scale
+        console.log("Scale test:");
+        console.log("0 mentions ->", this.choroplethScale(0));
+        console.log("3 mentions ->", this.choroplethScale(3));
+        console.log("142 mentions ->", this.choroplethScale(142));
+        console.log("151 mentions ->", this.choroplethScale(151));
 
         return countryMentions;
     }
