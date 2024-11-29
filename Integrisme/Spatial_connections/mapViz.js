@@ -48,8 +48,6 @@ export default class MapViz {
             .attr("r", d => this.radiusScale(d.properties.mentions) / event.transform.k);
         this.g.selectAll("path")
             .style("stroke-width", `${0.5 / event.transform.k}px`);
-        this.svg.select(".legend")
-            .attr("transform", `translate(${(this.width - 220) / event.transform.k}, ${(this.height - 70) / event.transform.k})`);
     }
 
     createScales(maxMentions) {
@@ -90,9 +88,12 @@ export default class MapViz {
             }
         });
 
-        // Create color scale
-        this.choroplethScale = d3.scaleQuantile()
-            .domain([0, ...countryMentions.values()])
+        // Create color scale using threshold scale
+        const values = [...countryMentions.values()];
+        const max = d3.max(values);
+        
+        this.choroplethScale = d3.scaleThreshold()
+            .domain([1, 5, 10, 25, 50, 100, 150]) // Custom breakpoints for better distribution
             .range(MapConfig.colors.choropleth.scale);
 
         return countryMentions;
@@ -147,7 +148,7 @@ export default class MapViz {
                 "Canada", "Royaume-Uni", "Angleterre", "Irlande du Nord", "Allemagne",
                 "Belgique", "Suisse", "Espagne", "Suède", "Somalie", "Rwanda",
                 "Burundi", "Île Maurice", "Afrique du Sud", "France", "Algérie",
-                "République centrafricaine", "République du Congo"
+                "République centrafricaine", "République du Congo", "Bosnie-Herzégovine"
             ];
             
             const isCityLevel = !feature.properties.name.includes("République") && 
@@ -207,21 +208,40 @@ export default class MapViz {
     drawLegend(countryMentions) {
         const legendWidth = 200;
         const legendHeight = 50;
+        const padding = 10;
+        
+        this.svg.selectAll(".legend").remove();
         
         const legend = this.svg.append("g")
             .attr("class", "legend")
-            .attr("transform", `translate(${this.width - legendWidth - 20}, ${this.height - legendHeight - 20})`);
+            .attr("transform", `translate(${padding}, ${this.height - legendHeight - padding})`);
 
-        const extent = d3.extent([...countryMentions.values()]);
+        // Use threshold scale breakpoints for legend
         const legendScale = d3.scaleLinear()
-            .domain(extent)
+            .domain([0, 150])  // Match the max threshold
             .range([0, legendWidth]);
 
         const legendAxis = d3.axisBottom(legendScale)
-            .ticks(5);
+            .tickValues([0, 1, 5, 10, 25, 50, 100, 150])  // Show all threshold values
+            .tickFormat(d3.format("d")); 
 
-        const gradientData = MapConfig.colors.choropleth.scale;
-        
+        // Add title
+        legend.append("text")
+            .attr("x", 0)
+            .attr("y", -5)
+            .style("font-size", "12px")
+            .text("Number of mentions");
+
+        // Add white background
+        legend.append("rect")
+            .attr("x", -padding)
+            .attr("y", -padding)
+            .attr("width", legendWidth + (padding * 2))
+            .attr("height", legendHeight + (padding * 2))
+            .attr("fill", "white")
+            .attr("opacity", 0.8);
+
+        // Create gradient
         const gradient = legend.append("defs")
             .append("linearGradient")
             .attr("id", "legend-gradient")
@@ -230,18 +250,21 @@ export default class MapViz {
             .attr("y1", "0%")
             .attr("y2", "0%");
 
+        // Create gradient stops
         gradient.selectAll("stop")
-            .data(gradientData)
+            .data(MapConfig.colors.choropleth.scale)
             .enter()
             .append("stop")
-            .attr("offset", (d, i) => `${(i * 100) / (gradientData.length - 1)}%`)
+            .attr("offset", (d, i) => `${(i * 100) / (MapConfig.colors.choropleth.scale.length - 1)}%`)
             .attr("stop-color", d => d);
 
+        // Add gradient rect
         legend.append("rect")
             .attr("width", legendWidth)
             .attr("height", 10)
             .style("fill", "url(#legend-gradient)");
 
+        // Add axis
         legend.append("g")
             .attr("transform", `translate(0, 10)`)
             .call(legendAxis);
