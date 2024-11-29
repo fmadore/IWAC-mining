@@ -219,4 +219,16 @@
     #word-slider {
         width: 200px;
     }
+}
+
+#loading {
+    text-align: center;
+    padding: 2em;
+    font-size: 1.2em;
+    color: #666;
+}
+
+#word-cloud {
+    width: 100%;
+    height: 100%;
 } 
