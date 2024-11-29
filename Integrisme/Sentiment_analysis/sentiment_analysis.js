@@ -29,8 +29,9 @@ const line = d3.line()
 const xAxis = d3.axisBottom(x);
 const yAxis = d3.axisLeft(y);
 
-// Initialize current sentiment type
+// Initialize current sentiment type and data store
 let currentSentiment = 'compound';
+let sentimentData = [];
 
 // Function to update the visualization
 function updateVisualization() {
@@ -49,7 +50,7 @@ function updateVisualization() {
     svg.select('.line')
         .transition()
         .duration(750)
-        .attr('d', line);
+        .attr('d', line(sentimentData));
     
     // Update dots
     svg.selectAll('.dot')
@@ -64,7 +65,7 @@ async function visualizeSentiment() {
         const data = await d3.json('integrisme_data_with_sentiment.json');
         
         // Process sentiment data
-        const sentimentData = data
+        sentimentData = data
             .filter(article => article.date && article.sentiment_analysis)
             .map(article => ({
                 date: new Date(article.date),
