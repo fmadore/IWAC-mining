@@ -1,14 +1,14 @@
 {
   "overall_stats": {
-    "mean_compound": -0.058771416824311015,
-    "std_compound": 0.27453320553386823,
+    "mean_compound": -0.05690986960138561,
+    "std_compound": 0.27294518976752596,
     "median_compound": 0.044210346415638924,
     "most_positive_date": "1995-02-01",
     "most_negative_date": "1998-01-02",
     "date_range": {
       "start": "1979-07-27",
       "end": "2019-05-01",
-      "total_articles": 130
+      "total_articles": 132
     }
   },
   "monthly_averages": {
@@ -553,10 +553,10 @@
       "neutral": NaN
     },
     "1987-01": {
-      "compound": NaN,
-      "positive": NaN,
-      "negative": NaN,
-      "neutral": NaN
+      "compound": 0.004457557573914528,
+      "positive": 0.005704632494598627,
+      "negative": 0.0012470749206840992,
+      "neutral": 0.0012767702573910356
     },
     "1987-02": {
       "compound": NaN,
@@ -1567,10 +1567,10 @@
       "neutral": NaN
     },
     "2001-02": {
-      "compound": NaN,
-      "positive": NaN,
-      "negative": NaN,
-      "neutral": NaN
+      "compound": 0.1237238422036171,
+      "positive": 0.1787736713886261,
+      "negative": 0.055049829185009,
+      "neutral": 0.10734990239143372
     },
     "2001-03": {
       "compound": NaN,
@@ -2937,10 +2937,10 @@
       "neutral": 0.12701115012168884
     },
     "1987": {
-      "compound": NaN,
-      "positive": NaN,
-      "negative": NaN,
-      "neutral": NaN
+      "compound": 0.004457557573914528,
+      "positive": 0.005704632494598627,
+      "negative": 0.0012470749206840992,
+      "neutral": 0.0012767702573910356
     },
     "1988": {
       "compound": 0.07691032439470291,
@@ -3021,10 +3021,10 @@
       "neutral": 0.144538807682693
     },
     "2001": {
-      "compound": -0.2964921882376075,
-      "positive": 0.05654186010360718,
-      "negative": 0.3530340502038598,
-      "neutral": 0.12205746630206704
+      "compound": -0.21244898214936256,
+      "positive": 0.08098822236061096,
+      "negative": 0.29343720600008966,
+      "neutral": 0.11911595351994038
     },
     "2002": {
       "compound": 0.09388293077548344,
@@ -3136,13 +3136,13 @@
     }
   },
   "sentiment_distribution": {
-    "positive_ratio": 0.6076923076923076,
-    "negative_ratio": 0.3923076923076923,
+    "positive_ratio": 0.6136363636363636,
+    "negative_ratio": 0.38636363636363635,
     "neutral_ratio": 0.0
   },
   "topic_sentiment": {
     "overall_tone": "neutral",
-    "sentiment_stability": 0.27453320553386823,
-    "neutrality_ratio": 0.12627393660457947
+    "sentiment_stability": 0.27294518976752596,
+    "neutrality_ratio": 0.1251836244791224
   }
 }
