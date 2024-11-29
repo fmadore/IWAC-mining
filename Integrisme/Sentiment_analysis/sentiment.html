@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyse des Sentiments</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="visualization" role="main" aria-label="Visualisation de l'analyse des sentiments">
+        <!-- D3 visualization will be inserted here -->
+    </div>
+    
+    <div class="controls">
+        <label for="sentimentType">Sentiment Type:</label>
+        <select id="sentimentType">
+            <option value="compound">Compound</option>
+            <option value="positive">Positive</option>
+            <option value="negative">Negative</option>
+            <option value="neutral">Neutral</option>
+        </select>
+    </div>
+    
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="sentiment_analysis.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', visualizeSentiment);
+    </script>
+</body>
+</html> 
