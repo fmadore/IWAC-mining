@@ -4,137 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spatial Connections Map</title>
-    <style>
-        .circle-marker {
-            fill: red;
-            stroke: #fff;
-            stroke-width: 1px;
-            cursor: pointer;
-        }
-        .circle-marker:hover {
-            stroke: #000;
-            stroke-width: 2px;
-        }
-        .tooltip {
-            position: absolute;
-            padding: 10px;
-            font: 12px sans-serif;
-            background: white;
-            border: 1px solid #999;
-            border-radius: 4px;
-            pointer-events: none;
-            opacity: 0;
-        }
-        .legend {
-            position: fixed;
-            bottom: 50px;
-            right: 50px;
-            width: 150px;
-            padding: 10px;
-            background: white;
-            border: 2px solid grey;
-            font-size: 14px;
-        }
-        .legend-circle {
-            fill: red;
-            opacity: 0.6;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://d3js.org/d3-geo-projection.v4.min.js"></script>
 </head>
 <body>
-    <svg width="960" height="600"></svg>
+    <svg id="map" width="960" height="600"></svg>
     <div class="tooltip"></div>
     <div class="legend">
         <p><strong>Mentions</strong></p>
         <p>Size and opacity of circles indicate frequency of mentions</p>
         <svg width="140" height="60"></svg>
     </div>
-    <script>
-        const svg = d3.select("svg");
-        const tooltip = d3.select(".tooltip");
-        const width = +svg.attr("width");
-        const height = +svg.attr("height");
 
-        // Create projection
-        const projection = d3.geoMercator()
-            .scale(150)
-            .translate([width / 2, height / 2]);
+    <script type="module">
+        import MapViz from './mapViz.js';
 
-        const path = d3.geoPath().projection(projection);
+        // Initialize the map
+        const map = new MapViz('svg#map');
 
-        // Load and process data
-        d3.json("integrisme_locations.geojson").then(function(data) {
-            // Calculate scales based on mentions
-            const maxMentions = d3.max(data.features, d => d.properties.mentions);
-            
-            const radiusScale = d3.scaleSqrt()
-                .domain([1, maxMentions])
-                .range([10, 50]);
-
-            const opacityScale = d3.scaleLinear()
-                .domain([1, maxMentions])
-                .range([0.4, 0.8]);
-
-            // Add circle markers
-            svg.selectAll("circle")
-                .data(data.features)
-                .join("circle")
-                .attr("class", "circle-marker")
-                .attr("cx", d => projection(d.geometry.coordinates)[0])
-                .attr("cy", d => projection(d.geometry.coordinates)[1])
-                .attr("r", d => radiusScale(d.properties.mentions))
-                .style("fill-opacity", d => opacityScale(d.properties.mentions))
-                .on("mouseover", function(event, d) {
-                    d3.select(this)
-                        .style("stroke", "#000")
-                        .style("stroke-width", "2px");
-                    
-                    tooltip.transition()
-                        .duration(200)
-                        .style("opacity", 0.9);
-                    
-                    tooltip.html(`
-                        <strong>${d.properties.name}</strong><br/>
-                        ${d.properties.mentions} mentions
-                    `)
-                    .style("left", (event.pageX + 10) + "px")
-                    .style("top", (event.pageY - 28) + "px");
-                })
-                .on("mouseout", function() {
-                    d3.select(this)
-                        .style("stroke", "#fff")
-                        .style("stroke-width", "1px");
-                    
-                    tooltip.transition()
-                        .duration(500)
-                        .style("opacity", 0);
-                });
-
-            // Add legend
-            const legendSvg = d3.select(".legend svg");
-            const legendData = [
-                { mentions: maxMentions, label: "Many mentions" },
-                { mentions: maxMentions/2, label: "Medium" },
-                { mentions: 1, label: "Few mentions" }
-            ];
-
-            const legendGroups = legendSvg.selectAll("g")
-                .data(legendData)
-                .join("g")
-                .attr("transform", (d, i) => `translate(30, ${20 + i * 20})`);
-
-            legendGroups.append("circle")
-                .attr("class", "legend-circle")
-                .attr("r", d => radiusScale(d.mentions) / 3)
-                .style("opacity", d => opacityScale(d.mentions));
-
-            legendGroups.append("text")
-                .attr("x", 20)
-                .attr("y", 5)
-                .style("font-size", "12px")
-                .text(d => d.label);
+        // Load data and render visualization
+        Promise.all([
+            d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson"),
+            d3.json("integrisme_locations.geojson")
+        ]).then(([topoData, locationData]) => {
+            map.drawMap(topoData);
+            map.drawCircles(locationData);
+        }).catch(error => {
+            console.error("Error loading the data:", error);
         });
     </script>
 </body>
