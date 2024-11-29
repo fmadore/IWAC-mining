@@ -20,7 +20,6 @@ export default class MapViz {
     }
 
     setupMap() {
-        // Create projection
         this.projection = d3.geoMercator()
             .scale(MapConfig.projection.scale)
             .center(MapConfig.projection.center)

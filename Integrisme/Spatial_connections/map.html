@@ -35,6 +35,8 @@
             d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson"),
             d3.json("https://raw.githubusercontent.com/fmadore/Mining_IWAC/main/Integrisme/Spatial_connections/integrisme_locations.geojson")
         ]).then(([topoData, locationData]) => {
+            console.log("World GeoJSON data:", topoData);
+            console.log("Location GeoJSON data:", locationData);
             console.log("Data loaded:");
             console.log("World GeoJSON features:", topoData.features.length);
             console.log("Locations features:", locationData.features.length);
@@ -47,12 +49,7 @@
             map.drawMap(topoData);
             map.drawCircles(locationData);
         }).catch(error => {
-            console.error("Error loading the data:", error.stack);
-            console.error("Error details:", {
-                name: error.name,
-                message: error.message,
-                stack: error.stack
-            });
+            console.error("Error loading the data:", error);
             document.body.innerHTML += `<div style="color: red">Error: ${error.message}</div>`;
         });
     </script>
