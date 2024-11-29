@@ -9,7 +9,7 @@ const svg = d3.select('#visualization')
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom)
     .attr('role', 'img')  // Accessibility
-    .attr('aria-label', 'Analyse des Sentiments au fil du temps')
+    .attr('aria-label', 'Sentiment Analysis Over Time')
   .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
 
@@ -144,10 +144,10 @@ async function visualizeSentiment() {
                 tooltip.html(`
                     <strong>${d.title}</strong><br/>
                     Date: ${d3.timeFormat('%Y-%m-%d')(d.date)}<br/>
-                    Composé: ${d.compound.toFixed(2)}<br/>
-                    Positif: ${d.positive.toFixed(2)}<br/>
-                    Négatif: ${d.negative.toFixed(2)}<br/>
-                    Neutre: ${d.neutral.toFixed(2)}
+                    Compound: ${d.compound.toFixed(2)}<br/>
+                    Positive: ${d.positive.toFixed(2)}<br/>
+                    Negative: ${d.negative.toFixed(2)}<br/>
+                    Neutral: ${d.neutral.toFixed(2)}
                 `)
                     .style('left', (event.pageX + 10) + 'px')
                     .style('top', (event.pageY - 28) + 'px');
