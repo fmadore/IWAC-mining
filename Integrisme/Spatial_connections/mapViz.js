@@ -63,17 +63,17 @@ export default class MapViz {
     }
 
     createChoroplethScale(data, topoData) {
-        // Create map of country mentions
+        // Create map of country mentions using ISO codes
         const countryMentions = new Map();
         
         // Function to find which country contains a point
         const findCountry = (coords) => {
-            const point = this.projection(coords);
             let containingCountry = null;
             
             topoData.features.forEach(feature => {
                 if (d3.geoContains(feature, coords)) {
-                    containingCountry = feature.properties.name;
+                    // Use ISO code instead of name
+                    containingCountry = feature.id || feature.properties.iso_a3;
                 }
             });
             
@@ -83,10 +83,10 @@ export default class MapViz {
         // Count mentions for each location
         data.features.forEach(feature => {
             const coords = feature.geometry.coordinates;
-            const country = findCountry(coords);
-            if (country) {
+            const countryCode = findCountry(coords);
+            if (countryCode) {
                 const mentions = feature.properties.mentions;
-                countryMentions.set(country, (countryMentions.get(country) || 0) + mentions);
+                countryMentions.set(countryCode, (countryMentions.get(countryCode) || 0) + mentions);
             }
         });
 
@@ -110,14 +110,14 @@ export default class MapViz {
             .join("path")
             .attr("d", this.path)
             .attr("fill", d => {
-                const mentions = countryMentions.get(d.properties.name);
+                const mentions = countryMentions.get(d.id || d.properties.iso_a3);
                 return mentions ? this.choroplethScale(mentions) : MapConfig.colors.choropleth.noData;
             })
             .attr("stroke", MapConfig.colors.stroke)
             .attr("stroke-width", "0.5px")
             .attr("vector-effect", "non-scaling-stroke")
             .on("mouseover", (event, d) => {
-                const mentions = countryMentions.get(d.properties.name) || 0;
+                const mentions = countryMentions.get(d.id || d.properties.iso_a3) || 0;
                 this.tooltip.transition()
                     .duration(200)
                     .style("opacity", .9);
@@ -134,11 +134,32 @@ export default class MapViz {
         console.log("Drawing circles with data:", data);
         this.g.selectAll("circle").remove();
 
-        const maxMentions = d3.max(data.features, d => d.properties.mentions);
+        // Filter out country-level locations
+        const cityData = data.features.filter(feature => {
+            // List of location types that should be considered as cities
+            const countryNames = [
+                "Burkina Faso", "Mali", "Côte d'Ivoire", "Bénin", "Togo", "Ghana", 
+                "Nigéria", "Niger", "Tchad", "Libye", "Tunisie", "Maroc", "Mauritanie",
+                "Sénégal", "Gambie", "Guinée", "Sierra Leone", "Liberia", "Cameroun",
+                "Soudan", "Égypte", "Arabie saoudite", "Iran", "Irak", "Syrie", "Turquie",
+                "Liban", "Israël", "Palestine", "Koweït", "Qatar", "Émirats arabes unis",
+                "Afghanistan", "Pakistan", "Inde", "Bangladesh", "Chine", "États-Unis",
+                "Canada", "Royaume-Uni", "Angleterre", "Irlande du Nord", "Allemagne",
+                "Belgique", "Suisse", "Espagne", "Suède", "Somalie", "Rwanda",
+                "Burundi", "Île Maurice", "Afrique du Sud", "France", "Algérie",
+                "République centrafricaine", "République du Congo"
+            ];
+            
+            const isCityLevel = !feature.properties.name.includes("République") && 
+                !countryNames.includes(feature.properties.name);
+            return isCityLevel;
+        });
+
+        const maxMentions = d3.max(cityData, d => d.properties.mentions);
         this.createScales(maxMentions);
 
         this.g.selectAll("circle")
-            .data(data.features)
+            .data(cityData)
             .join("circle")
             .attr("class", "circle-marker")
             .attr("cx", d => this.projection(d.geometry.coordinates)[0])
