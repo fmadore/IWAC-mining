@@ -2,14 +2,14 @@ const MapConfig = {
     width: 960,
     height: 600,
     projection: {
-        scale: 300,
-        center: [-4, 12],  // Center on West Africa
-        translate: [480, 350]  // Adjusted for better centering
+        scale: 150,
+        center: [0, 20],
+        translate: [480, 300]
     },
     colors: {
         background: "#f0f0f0",
-        land: "#f0f0f0",
-        stroke: "#fff",
+        land: "#d3d3d3",
+        stroke: "#999",
         circles: "red"
     },
     zoom: {

@@ -8,14 +8,19 @@ export default class MapViz {
             throw new Error(`Could not find element: ${container}`);
         }
         this.svg.selectAll("*").remove();
-        this.tooltip = d3.select(".tooltip");
-        this.width = MapConfig.width;
-        this.height = MapConfig.height;
-        this.g = this.svg.append("g");
+        
+        // Add background rect first
         this.svg.append("rect")
             .attr("width", "100%")
             .attr("height", "100%")
             .attr("fill", MapConfig.colors.background);
+        
+        // Then create the group for map elements
+        this.g = this.svg.append("g");
+        
+        this.tooltip = d3.select(".tooltip");
+        this.width = MapConfig.width;
+        this.height = MapConfig.height;
         this.setupMap();
     }
 
@@ -57,31 +62,19 @@ export default class MapViz {
 
     drawMap(topoData) {
         console.log("Drawing map with data:", topoData);
-        console.log("Projection settings:", {
-            scale: this.projection.scale(),
-            center: this.projection.center(),
-            translate: this.projection.translate()
-        });
-
-        // Clear any existing paths
+        
+        // Clear existing paths
         this.g.selectAll("path").remove();
-
-        // Test if path generator is working
-        const firstFeature = topoData.features[0];
-        const pathData = this.path(firstFeature);
-        console.log("First feature path data:", pathData);
-
-        this.g.append("g")
-            .selectAll("path")
+        
+        // Draw map paths
+        this.g.selectAll("path")
             .data(topoData.features)
             .join("path")
             .attr("d", this.path)
             .attr("fill", MapConfig.colors.land)
-            .style("stroke", MapConfig.colors.stroke)
-            .style("stroke-width", 0.5);
-        
-        console.log("Map drawn");
-        console.log("Number of paths:", this.g.selectAll("path").size());
+            .attr("stroke", MapConfig.colors.stroke)
+            .attr("stroke-width", "0.5px")
+            .attr("vector-effect", "non-scaling-stroke");
     }
 
     drawCircles(data) {
