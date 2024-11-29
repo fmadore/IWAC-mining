@@ -1,0 +1,3148 @@
+{
+  "overall_stats": {
+    "mean_compound": -0.058771416824311015,
+    "std_compound": 0.27453320553386823,
+    "median_compound": 0.044210346415638924,
+    "most_positive_date": "1995-02-01",
+    "most_negative_date": "1998-01-02",
+    "date_range": {
+      "start": "1979-07-27",
+      "end": "2019-05-01",
+      "total_articles": 130
+    }
+  },
+  "monthly_averages": {
+    "1979-07": {
+      "compound": 0.0777943953871727,
+      "positive": 0.09698902070522308,
+      "negative": 0.019194625318050385,
+      "neutral": 0.04636368900537491
+    },
+    "1979-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1979-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1979-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1979-11": {
+      "compound": 0.05497201532125473,
+      "positive": 0.07283439487218857,
+      "negative": 0.017862379550933838,
+      "neutral": 0.024167843163013458
+    },
+    "1979-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1980-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1980-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1980-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1980-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1980-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1980-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1980-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1980-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1980-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1980-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1980-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1980-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1981-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1981-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1981-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1981-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1981-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1981-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1981-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1981-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1981-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1981-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1981-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1981-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1982-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1982-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1982-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1982-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1982-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1982-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1982-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1982-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1982-09": {
+      "compound": 0.20074447989463806,
+      "positive": 0.21229450404644012,
+      "negative": 0.01155002135783434,
+      "neutral": 0.0643099844455719
+    },
+    "1982-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1982-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1982-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1983-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1983-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1983-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1983-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1983-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1983-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1983-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1983-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1983-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1983-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1983-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1983-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1984-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1984-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1984-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1984-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1984-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1984-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1984-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1984-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1984-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1984-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1984-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1984-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1985-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1985-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1985-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1985-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1985-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1985-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1985-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1985-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1985-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1985-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1985-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1985-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1986-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1986-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1986-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1986-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1986-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1986-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1986-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1986-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1986-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1986-10": {
+      "compound": 0.2554679214954376,
+      "positive": 0.28362423181533813,
+      "negative": 0.028156323358416557,
+      "neutral": 0.12701115012168884
+    },
+    "1986-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1986-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1987-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1987-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1987-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1987-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1987-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1987-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1987-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1987-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1987-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1987-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1987-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1987-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1988-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1988-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1988-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1988-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1988-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1988-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1988-07": {
+      "compound": 0.07691032439470291,
+      "positive": 0.08725327998399734,
+      "negative": 0.010342957451939583,
+      "neutral": 0.029776670038700104
+    },
+    "1988-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1988-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1988-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1988-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1988-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1989-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1989-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1989-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1989-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1989-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1989-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1989-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1989-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1989-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1989-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1989-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1989-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1990-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1990-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1990-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1990-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1990-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1990-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1990-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1990-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1990-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1990-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1990-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1990-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1991-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1991-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1991-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1991-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1991-05": {
+      "compound": 0.0747046172618866,
+      "positive": 0.2425738275051117,
+      "negative": 0.1678692102432251,
+      "neutral": 0.31696590781211853
+    },
+    "1991-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1991-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1991-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1991-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1991-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1991-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1991-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1992-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1992-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1992-03": {
+      "compound": -0.39678055234253407,
+      "positive": 0.07790169818326831,
+      "negative": 0.47468224551994354,
+      "neutral": 0.14389044186100364
+    },
+    "1992-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1992-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1992-06": {
+      "compound": -0.7676900029182434,
+      "positive": 0.025509776547551155,
+      "negative": 0.7931997776031494,
+      "neutral": 0.16253462433815002
+    },
+    "1992-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1992-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1992-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1992-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1992-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1992-12": {
+      "compound": -0.18382905423641205,
+      "positive": 0.09341984987258911,
+      "negative": 0.277248902246356,
+      "neutral": 0.10789029486477375
+    },
+    "1993-01": {
+      "compound": 0.08085503801703453,
+      "positive": 0.14627711474895477,
+      "negative": 0.06542207673192024,
+      "neutral": 0.0983099676668644
+    },
+    "1993-02": {
+      "compound": -0.1516378978267312,
+      "positive": 0.06704354006797075,
+      "negative": 0.2186814413871616,
+      "neutral": 0.19881319697014987
+    },
+    "1993-03": {
+      "compound": 0.003394891507923603,
+      "positive": 0.018892250955104828,
+      "negative": 0.015497359447181225,
+      "neutral": 0.008026172406971455
+    },
+    "1993-04": {
+      "compound": -0.06226310878992081,
+      "positive": 0.07772008329629898,
+      "negative": 0.1399831920862198,
+      "neutral": 0.10463284701108932
+    },
+    "1993-05": {
+      "compound": -0.2831088900566101,
+      "positive": 0.14007459580898285,
+      "negative": 0.42318350076675415,
+      "neutral": 0.243657186627388
+    },
+    "1993-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1993-07": {
+      "compound": -0.3248041346669197,
+      "positive": 0.13621572218835354,
+      "negative": 0.4610198587179184,
+      "neutral": 0.2569008246064186
+    },
+    "1993-08": {
+      "compound": 0.03318370506167412,
+      "positive": 0.05047097057104111,
+      "negative": 0.01728726550936699,
+      "neutral": 0.020083678886294365
+    },
+    "1993-09": {
+      "compound": 0.09150411188602448,
+      "positive": 0.10681121051311493,
+      "negative": 0.015307101421058178,
+      "neutral": 0.04407338425517082
+    },
+    "1993-10": {
+      "compound": -0.03238162398338318,
+      "positive": 0.19896818697452545,
+      "negative": 0.23134981095790863,
+      "neutral": 0.410052627325058
+    },
+    "1993-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1993-12": {
+      "compound": -0.38509788922965527,
+      "positive": 0.04517194442451,
+      "negative": 0.4302698317915201,
+      "neutral": 0.07429612800478935
+    },
+    "1994-01": {
+      "compound": -0.31926333089359105,
+      "positive": 0.06051109079271555,
+      "negative": 0.379774414235726,
+      "neutral": 0.14499151846393943
+    },
+    "1994-02": {
+      "compound": 0.11132125556468964,
+      "positive": 0.13019593060016632,
+      "negative": 0.018874673172831535,
+      "neutral": 0.04509202763438225
+    },
+    "1994-03": {
+      "compound": -0.07640283554792404,
+      "positive": 0.13789840787649155,
+      "negative": 0.2143012434244156,
+      "neutral": 0.20476708933711052
+    },
+    "1994-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1994-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1994-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1994-07": {
+      "compound": -0.1391230175892512,
+      "positive": 0.0961312564710776,
+      "negative": 0.23525427281856537,
+      "neutral": 0.1686677671968937
+    },
+    "1994-08": {
+      "compound": -0.10185795798897743,
+      "positive": 0.11127595007419586,
+      "negative": 0.21313390210270883,
+      "neutral": 0.1519856072962284
+    },
+    "1994-09": {
+      "compound": -0.15238077845424414,
+      "positive": 0.03640867583453655,
+      "negative": 0.1887894505634904,
+      "neutral": 0.06188612524420023
+    },
+    "1994-10": {
+      "compound": 0.10049783314267795,
+      "positive": 0.12657107568035522,
+      "negative": 0.026073241839185357,
+      "neutral": 0.05717210378497839
+    },
+    "1994-11": {
+      "compound": -0.029400963336229324,
+      "positive": 0.0945020243525505,
+      "negative": 0.12390298768877983,
+      "neutral": 0.1092531681060791
+    },
+    "1994-12": {
+      "compound": 0.1968628466129303,
+      "positive": 0.21649526059627533,
+      "negative": 0.019632410258054733,
+      "neutral": 0.10872570425271988
+    },
+    "1995-01": {
+      "compound": -0.03585573076270521,
+      "positive": 0.10781318065710366,
+      "negative": 0.1436689091497101,
+      "neutral": 0.14659546816255897
+    },
+    "1995-02": {
+      "compound": 0.06160742789506912,
+      "positive": 0.2318374551832676,
+      "negative": 0.17023002868518233,
+      "neutral": 0.21408823691308498
+    },
+    "1995-03": {
+      "compound": 0.009050136165959495,
+      "positive": 0.18006481123822077,
+      "negative": 0.17101467826536723,
+      "neutral": 0.16245988277452333
+    },
+    "1995-04": {
+      "compound": -0.0456744022667408,
+      "positive": 0.15238216891884804,
+      "negative": 0.19805656792595983,
+      "neutral": 0.12715963181108236
+    },
+    "1995-05": {
+      "compound": 0.09047345072031021,
+      "positive": 0.13021790981292725,
+      "negative": 0.039744459092617035,
+      "neutral": 0.05467996746301651
+    },
+    "1995-06": {
+      "compound": 0.09884902834892273,
+      "positive": 0.1254734843969345,
+      "negative": 0.026624459773302078,
+      "neutral": 0.06752397865056992
+    },
+    "1995-07": {
+      "compound": -0.47204924933612347,
+      "positive": 0.021015448961406946,
+      "negative": 0.49306470900774,
+      "neutral": 0.054576585069298744
+    },
+    "1995-08": {
+      "compound": 0.0963834747672081,
+      "positive": 0.11910908669233322,
+      "negative": 0.022725611925125122,
+      "neutral": 0.0510561540722847
+    },
+    "1995-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1995-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1995-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1995-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1996-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1996-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1996-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1996-04": {
+      "compound": 0.15886439383029938,
+      "positive": 0.20265725255012512,
+      "negative": 0.04379286244511604,
+      "neutral": 0.10351565480232239
+    },
+    "1996-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1996-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1996-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1996-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1996-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1996-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1996-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1996-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1997-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1997-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1997-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1997-04": {
+      "compound": -0.06324838101863861,
+      "positive": 0.20395804941654205,
+      "negative": 0.26720643043518066,
+      "neutral": 0.4617532193660736
+    },
+    "1997-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1997-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1997-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1997-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1997-09": {
+      "compound": 0.08157627284526825,
+      "positive": 0.08898850530385971,
+      "negative": 0.007412233855575323,
+      "neutral": 0.019910868257284164
+    },
+    "1997-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1997-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1997-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1998-01": {
+      "compound": -0.20572726925214133,
+      "positive": 0.1225984535800914,
+      "negative": 0.32832571491599083,
+      "neutral": 0.055691659450531006
+    },
+    "1998-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1998-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1998-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1998-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1998-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1998-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1998-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1998-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1998-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1998-11": {
+      "compound": 0.09630055725574493,
+      "positive": 0.23410330712795258,
+      "negative": 0.13780274987220764,
+      "neutral": 0.1732215036948522
+    },
+    "1998-12": {
+      "compound": 0.08878389745950699,
+      "positive": 0.11433140188455582,
+      "negative": 0.025547506287693977,
+      "neutral": 0.04229220747947693
+    },
+    "1999-01": {
+      "compound": -0.5559930801391602,
+      "positive": 0.04784659296274185,
+      "negative": 0.6038396954536438,
+      "neutral": 0.33194392919540405
+    },
+    "1999-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1999-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1999-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1999-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1999-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1999-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1999-08": {
+      "compound": -0.10592057307561238,
+      "positive": 0.11086673786242802,
+      "negative": 0.2167873171468576,
+      "neutral": 0.11886859685182571
+    },
+    "1999-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1999-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1999-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1999-12": {
+      "compound": 0.1455574482679367,
+      "positive": 0.207243412733078,
+      "negative": 0.061685960739851,
+      "neutral": 0.11338390409946442
+    },
+    "2000-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2000-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2000-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2000-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2000-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2000-06": {
+      "compound": -0.4454151391983032,
+      "positive": 0.093489870429039,
+      "negative": 0.5389050245285034,
+      "neutral": 0.25400644540786743
+    },
+    "2000-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2000-08": {
+      "compound": 0.03644545376300812,
+      "positive": 0.17173556238412857,
+      "negative": 0.1352901072241366,
+      "neutral": 0.14572914689779282
+    },
+    "2000-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2000-10": {
+      "compound": 0.04042119160294533,
+      "positive": 0.06312680244445801,
+      "negative": 0.02270561084151268,
+      "neutral": 0.032690491527318954
+    },
+    "2000-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2000-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2001-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2001-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2001-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2001-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2001-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2001-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2001-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2001-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2001-09": {
+      "compound": -0.71754390001297,
+      "positive": 0.03307335078716278,
+      "negative": 0.750617265701294,
+      "neutral": 0.20171989500522614
+    },
+    "2001-10": {
+      "compound": -0.15614161764582,
+      "positive": 0.06436469654242198,
+      "negative": 0.2205063117047151,
+      "neutral": 0.09550332340101401
+    },
+    "2001-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2001-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2002-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2002-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2002-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2002-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2002-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2002-06": {
+      "compound": -0.06548702716827393,
+      "positive": 0.1588412970304489,
+      "negative": 0.22432832419872284,
+      "neutral": 0.21532084047794342
+    },
+    "2002-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2002-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2002-09": {
+      "compound": 0.2384016364812851,
+      "positive": 0.26176828145980835,
+      "negative": 0.023366650566458702,
+      "neutral": 0.09054368734359741
+    },
+    "2002-10": {
+      "compound": 0.10873418301343918,
+      "positive": 0.11984774470329285,
+      "negative": 0.011113559827208519,
+      "neutral": 0.028502870351076126
+    },
+    "2002-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2002-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2003-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2003-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2003-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2003-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2003-05": {
+      "compound": 0.05726480856537819,
+      "positive": 0.06120580807328224,
+      "negative": 0.003940998110920191,
+      "neutral": 0.011566629633307457
+    },
+    "2003-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2003-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2003-08": {
+      "compound": 0.1411668062210083,
+      "positive": 0.15156856179237366,
+      "negative": 0.010401762090623379,
+      "neutral": 0.03713276609778404
+    },
+    "2003-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2003-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2003-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2003-12": {
+      "compound": 0.07203851640224457,
+      "positive": 0.22042283415794373,
+      "negative": 0.14838431775569916,
+      "neutral": 0.24676862359046936
+    },
+    "2004-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2004-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2004-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2004-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2004-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2004-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2004-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2004-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2004-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2004-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2004-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2004-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2005-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2005-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2005-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2005-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2005-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2005-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2005-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2005-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2005-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2005-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2005-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2005-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2006-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2006-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2006-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2006-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2006-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2006-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2006-07": {
+      "compound": 0.18761224299669266,
+      "positive": 0.20726203545928001,
+      "negative": 0.019649796071462333,
+      "neutral": 0.10214351303875446
+    },
+    "2006-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2006-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2006-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2006-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2006-12": {
+      "compound": 0.010954218916594982,
+      "positive": 0.012294094078242779,
+      "negative": 0.001339874928817153,
+      "neutral": 0.002116466173902154
+    },
+    "2007-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2007-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2007-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2007-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2007-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2007-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2007-07": {
+      "compound": 0.11717687547206879,
+      "positive": 0.1495497226715088,
+      "negative": 0.03237284719944,
+      "neutral": 0.06837518513202667
+    },
+    "2007-08": {
+      "compound": 0.10165686905384064,
+      "positive": 0.1602964848279953,
+      "negative": 0.05863961949944496,
+      "neutral": 0.09784401208162308
+    },
+    "2007-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2007-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2007-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2007-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2008-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2008-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2008-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2008-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2008-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2008-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2008-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2008-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2008-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2008-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2008-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2008-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2009-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2009-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2009-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2009-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2009-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2009-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2009-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2009-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2009-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2009-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2009-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2009-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2010-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2010-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2010-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2010-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2010-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2010-06": {
+      "compound": 0.13189435005187988,
+      "positive": 0.14814212918281555,
+      "negative": 0.01624777354300022,
+      "neutral": 0.04707999527454376
+    },
+    "2010-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2010-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2010-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2010-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2010-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2010-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2011-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2011-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2011-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2011-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2011-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2011-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2011-07": {
+      "compound": 0.08971293270587921,
+      "positive": 0.09576337784528732,
+      "negative": 0.006050444208085537,
+      "neutral": 0.018637765198946
+    },
+    "2011-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2011-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2011-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2011-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2011-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2012-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2012-02": {
+      "compound": 0.05488507077097893,
+      "positive": 0.059071168303489685,
+      "negative": 0.004186097998172045,
+      "neutral": 0.010251575149595737
+    },
+    "2012-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2012-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2012-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2012-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2012-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2012-08": {
+      "compound": 0.06128603219985962,
+      "positive": 0.08514516800642014,
+      "negative": 0.023859137669205666,
+      "neutral": 0.034566886723041534
+    },
+    "2012-09": {
+      "compound": -0.10675179958343506,
+      "positive": 0.16400294502576193,
+      "negative": 0.2707547390212615,
+      "neutral": 0.14828949918349585
+    },
+    "2012-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2012-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2012-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2013-01": {
+      "compound": -0.12959931790828705,
+      "positive": 0.1665584333240986,
+      "negative": 0.29615775495767593,
+      "neutral": 0.3164309561252594
+    },
+    "2013-02": {
+      "compound": -0.11140474677085876,
+      "positive": 0.15012648701667786,
+      "negative": 0.2615312337875366,
+      "neutral": 0.23580528795719147
+    },
+    "2013-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2013-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2013-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2013-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2013-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2013-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2013-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2013-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2013-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2013-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2014-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2014-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2014-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2014-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2014-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2014-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2014-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2014-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2014-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2014-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2014-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2014-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2015-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2015-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2015-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2015-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2015-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2015-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2015-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2015-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2015-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2015-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2015-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2015-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2016-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2016-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2016-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2016-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2016-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2016-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2016-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2016-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2016-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2016-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2016-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2016-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2017-01": {
+      "compound": 0.09418165683746338,
+      "positive": 0.09884460270404816,
+      "negative": 0.004662942606955767,
+      "neutral": 0.01880892552435398
+    },
+    "2017-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2017-03": {
+      "compound": 0.02882646769285202,
+      "positive": 0.07096074149012566,
+      "negative": 0.04213427403010428,
+      "neutral": 0.036695411428809166
+    },
+    "2017-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2017-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2017-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2017-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2017-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2017-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2017-10": {
+      "compound": 0.12386612594127655,
+      "positive": 0.14560279250144958,
+      "negative": 0.021736666560173035,
+      "neutral": 0.046364929527044296
+    },
+    "2017-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2017-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2018-01": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2018-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2018-03": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2018-04": {
+      "compound": 0.02272801846265793,
+      "positive": 0.06905462592840195,
+      "negative": 0.04632660746574402,
+      "neutral": 0.05470326170325279
+    },
+    "2018-05": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2018-06": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2018-07": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2018-08": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2018-09": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2018-10": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2018-11": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2018-12": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2019-01": {
+      "compound": 0.0744231566786766,
+      "positive": 0.08110004663467407,
+      "negative": 0.0066768876276910305,
+      "neutral": 0.018924560397863388
+    },
+    "2019-02": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2019-03": {
+      "compound": 0.10187685489654541,
+      "positive": 0.11030048131942749,
+      "negative": 0.00842362642288208,
+      "neutral": 0.0320235900580883
+    },
+    "2019-04": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2019-05": {
+      "compound": 0.11098548769950867,
+      "positive": 0.12811312079429626,
+      "negative": 0.017127634957432747,
+      "neutral": 0.03226523473858833
+    }
+  },
+  "yearly_averages": {
+    "1979": {
+      "compound": 0.06638320535421371,
+      "positive": 0.08491170778870583,
+      "negative": 0.01852850243449211,
+      "neutral": 0.03526576608419418
+    },
+    "1980": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1981": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1982": {
+      "compound": 0.20074447989463806,
+      "positive": 0.21229450404644012,
+      "negative": 0.01155002135783434,
+      "neutral": 0.0643099844455719
+    },
+    "1983": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1984": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1985": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1986": {
+      "compound": 0.2554679214954376,
+      "positive": 0.28362423181533813,
+      "negative": 0.028156323358416557,
+      "neutral": 0.12701115012168884
+    },
+    "1987": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1988": {
+      "compound": 0.07691032439470291,
+      "positive": 0.08725327998399734,
+      "negative": 0.010342957451939583,
+      "neutral": 0.029776670038700104
+    },
+    "1989": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1990": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "1991": {
+      "compound": 0.0747046172618866,
+      "positive": 0.2425738275051117,
+      "negative": 0.1678692102432251,
+      "neutral": 0.31696590781211853
+    },
+    "1992": {
+      "compound": -0.3889243315373148,
+      "positive": 0.07485089557511466,
+      "negative": 0.46377522345366223,
+      "neutral": 0.13626814021595887
+    },
+    "1993": {
+      "compound": -0.12936004869905965,
+      "positive": 0.09873956721276045,
+      "negative": 0.2280996176746807,
+      "neutral": 0.14908329507202975
+    },
+    "1994": {
+      "compound": -0.09175668345035418,
+      "positive": 0.10221045727477125,
+      "negative": 0.19396713731365037,
+      "neutral": 0.12708887915410425
+    },
+    "1995": {
+      "compound": -0.029219833402229205,
+      "positive": 0.1455953213984945,
+      "negative": 0.17481515558236943,
+      "neutral": 0.14133527392654546
+    },
+    "1996": {
+      "compound": 0.15886439383029938,
+      "positive": 0.20265725255012512,
+      "negative": 0.04379286244511604,
+      "neutral": 0.10351565480232239
+    },
+    "1997": {
+      "compound": 0.00916394591331482,
+      "positive": 0.14647327736020088,
+      "negative": 0.137309332145378,
+      "neutral": 0.2408320438116789
+    },
+    "1998": {
+      "compound": -0.03421374836138317,
+      "positive": 0.16920524057266967,
+      "negative": 0.20341898580746992,
+      "neutral": 0.10414738527366094
+    },
+    "1999": {
+      "compound": -0.14563947021961213,
+      "positive": 0.11753804385662078,
+      "negative": 0.2631775215268135,
+      "neutral": 0.16038672477006913
+    },
+    "2000": {
+      "compound": -0.08302576001733541,
+      "positive": 0.12502194941043854,
+      "negative": 0.20804771245457232,
+      "neutral": 0.144538807682693
+    },
+    "2001": {
+      "compound": -0.2964921882376075,
+      "positive": 0.05654186010360718,
+      "negative": 0.3530340502038598,
+      "neutral": 0.12205746630206704
+    },
+    "2002": {
+      "compound": 0.09388293077548344,
+      "positive": 0.1801524410645167,
+      "negative": 0.08626951153079669,
+      "neutral": 0.11145579939087231
+    },
+    "2003": {
+      "compound": 0.09015671039621036,
+      "positive": 0.14439906800786653,
+      "negative": 0.05424235931908091,
+      "neutral": 0.09848933977385362
+    },
+    "2004": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2005": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2006": {
+      "compound": 0.12872623496999344,
+      "positive": 0.14227272166560093,
+      "negative": 0.01354648902391394,
+      "neutral": 0.0688011640838037
+    },
+    "2007": {
+      "compound": 0.10941687226295471,
+      "positive": 0.15492310374975204,
+      "negative": 0.04550623334944248,
+      "neutral": 0.08310959860682487
+    },
+    "2008": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2009": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2010": {
+      "compound": 0.13189435005187988,
+      "positive": 0.14814212918281555,
+      "negative": 0.01624777354300022,
+      "neutral": 0.04707999527454376
+    },
+    "2011": {
+      "compound": 0.08971293270587921,
+      "positive": 0.09576337784528732,
+      "negative": 0.006050444208085537,
+      "neutral": 0.018637765198946
+    },
+    "2012": {
+      "compound": -0.04081685915589332,
+      "positive": 0.1272450342774391,
+      "negative": 0.16806189054623247,
+      "neutral": 0.09793739188462496
+    },
+    "2013": {
+      "compound": -0.12353446086247762,
+      "positive": 0.16108111788829169,
+      "negative": 0.28461558123429614,
+      "neutral": 0.28955573340257007
+    },
+    "2014": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2015": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2016": {
+      "compound": NaN,
+      "positive": NaN,
+      "negative": NaN,
+      "neutral": NaN
+    },
+    "2017": {
+      "compound": 0.06892517954111099,
+      "positive": 0.09659221954643726,
+      "negative": 0.02766703930683434,
+      "neutral": 0.03464116947725415
+    },
+    "2018": {
+      "compound": 0.02272801846265793,
+      "positive": 0.06905462592840195,
+      "negative": 0.04632660746574402,
+      "neutral": 0.05470326170325279
+    },
+    "2019": {
+      "compound": 0.09576183309157689,
+      "positive": 0.10650454958279927,
+      "negative": 0.010742716336001953,
+      "neutral": 0.027737795064846676
+    }
+  },
+  "sentiment_distribution": {
+    "positive_ratio": 0.6076923076923076,
+    "negative_ratio": 0.3923076923076923,
+    "neutral_ratio": 0.0
+  },
+  "topic_sentiment": {
+    "overall_tone": "neutral",
+    "sentiment_stability": 0.27453320553386823,
+    "neutrality_ratio": 0.12627393660457947
+  }
+}
