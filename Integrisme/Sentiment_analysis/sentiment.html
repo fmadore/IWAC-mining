@@ -1,30 +1,47 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analyse des Sentiments</title>
+    <title>Sentiment Analysis</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="visualization" role="main" aria-label="Visualisation de l'analyse des sentiments">
-        <!-- D3 visualization will be inserted here -->
-    </div>
-    
-    <div class="controls">
-        <label for="sentimentType">Sentiment Type:</label>
-        <select id="sentimentType">
-            <option value="compound">Compound</option>
-            <option value="positive">Positive</option>
-            <option value="negative">Negative</option>
-            <option value="neutral">Neutral</option>
-        </select>
+    <div class="container">
+        <h1>Article Sentiment Analysis</h1>
+        
+        <div class="sentiment-explanation">
+            <h2>Sentiment Types</h2>
+            <ul>
+                <li><strong>Compound</strong>: Normalized score between -1 and 1 that combines all aspects. 
+                    <ul>
+                        <li>-1 = very negative</li>
+                        <li>0 = neutral</li>
+                        <li>1 = very positive</li>
+                    </ul>
+                </li>
+                <li><strong>Positive</strong>: Proportion (0-1) of text expressing positive sentiment</li>
+                <li><strong>Negative</strong>: Proportion (0-1) of text expressing negative sentiment</li>
+                <li><strong>Neutral</strong>: Proportion (0-1) of text expressing neutral sentiment</li>
+            </ul>
+        </div>
+
+        <div id="visualization" role="main" aria-label="Sentiment analysis visualization">
+            <!-- D3 visualization will be inserted here -->
+        </div>
+        
+        <div class="controls">
+            <label for="sentimentType">Sentiment Type:</label>
+            <select id="sentimentType">
+                <option value="compound">Compound</option>
+                <option value="positive">Positive</option>
+                <option value="negative">Negative</option>
+                <option value="neutral">Neutral</option>
+            </select>
+        </div>
     </div>
     
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="sentiment_analysis.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', visualizeSentiment);
-    </script>
 </body>
 </html> 
