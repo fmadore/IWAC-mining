@@ -87,8 +87,17 @@ def process_integrisme_data():
             
             # Add sentiment analysis and date to the article
             article['sentiment_analysis'] = sentiment_scores
+            
+            # Extract date from dcterms:date structure
             if 'dcterms:date' in article:
-                article['date'] = article['dcterms:date'].get('@value', '')
+                date_info = article['dcterms:date']
+                if isinstance(date_info, list) and len(date_info) > 0:
+                    # Get the first date entry's @value
+                    article['date'] = date_info[0].get('@value', '')
+                elif isinstance(date_info, dict):
+                    article['date'] = date_info.get('@value', '')
+                else:
+                    article['date'] = ''
             
         processed_data.append(article)
     
