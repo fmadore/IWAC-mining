@@ -26,18 +26,30 @@ async function loadData() {
 }
 
 function processData(data) {
+    // Create nodes with consistent IDs
     const nodes = [
-        ...data.topics.map(t => ({...t, type: 'topic'})),
-        ...data.documents.map(d => ({...d, type: 'document'}))
+        // Topics with their original IDs
+        ...data.topics.map(t => ({
+            ...t,
+            type: 'topic',
+            nodeId: `t${t.id}` // Prefix topic IDs with 't'
+        })),
+        // Documents with prefixed IDs
+        ...data.documents.map(d => ({
+            ...d,
+            type: 'document',
+            nodeId: `d${d.id}` // Prefix document IDs with 'd'
+        }))
     ];
     
+    // Create links with the new ID format
     const links = [];
     data.documents.forEach(doc => {
         doc.topic_weights.forEach((weight, topicIdx) => {
             if (weight > 0.2) { // Initial threshold
                 links.push({
-                    source: topicIdx,
-                    target: data.topics.length + doc.id,
+                    source: `t${topicIdx}`, // Reference topic ID
+                    target: `d${doc.id}`,   // Reference document ID
                     weight: weight
                 });
             }
@@ -51,10 +63,10 @@ function updateVisualization(data, threshold = 0.2) {
     // Filter links based on threshold
     const filteredLinks = data.links.filter(l => l.weight > threshold);
     
-    // Create force simulation
+    // Create force simulation with nodeId as the identifier
     const simulation = d3.forceSimulation(data.nodes)
         .force('link', d3.forceLink(filteredLinks)
-            .id(d => d.id)
+            .id(d => d.nodeId)  // Use nodeId instead of id
             .strength(d => d.weight))
         .force('charge', d3.forceManyBody().strength(-100))
         .force('center', d3.forceCenter(config.width / 2, config.height / 2))
