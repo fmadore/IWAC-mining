@@ -21,7 +21,7 @@ const tooltip = d3.select('body')
 
 // Load and process data
 async function loadData() {
-    const data = await d3.json('../topic_modeling_results.json');
+    const data = await d3.json('./topic_modeling_results.json');
     return processData(data);
 }
 
