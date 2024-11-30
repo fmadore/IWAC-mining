@@ -66,15 +66,36 @@ def extract_article_texts(data):
 
 def perform_topic_modeling(texts, n_topics=10, n_words=10):
     """Perform LDA topic modeling on the texts."""
-    # Create document-term matrix
-    vectorizer = CountVectorizer(max_df=0.95, min_df=2)
+    # Create document-term matrix with better French preprocessing
+    vectorizer = CountVectorizer(
+        max_df=0.95,  # Remove terms that appear in >95% of docs
+        min_df=2,     # Remove terms that appear in <2 docs
+        stop_words=[  # Add French stop words and common contractions
+            'qu', 'être', 'avoir', 'faire', 'pouvoir', 'falloir', 'aller',
+            'le', 'la', 'les', 'un', 'une', 'des', 'du', 'de', 'ce', 'ces',
+            'il', 'elle', 'ils', 'elles', 'nous', 'vous', 'leur', 'leurs',
+            'qui', 'que', 'quoi', 'dont', 'où', 'quand', 'comment',
+            'pourquoi', 'car', 'si', 'tout', 'plus', 'même', 'aussi',
+            'autre', 'autres', 'encore', 'toujours', 'alors', 'après',
+            'avant', 'bien', 'comme', 'dans', 'pour', 'par', 'sur', 'avec',
+            'sans', 'sous', 'entre', 'vers', 'chez', 'donc', 'quand', 'mais',
+            'ou', 'et', 'donc', 'or', 'ni', 'car', 'qu'
+        ],
+        token_pattern=r'[a-zA-ZÀ-ÿ][a-zA-ZÀ-ÿ]+',  # Include French accents
+        max_features=1000  # Limit vocabulary size
+    )
+    
     doc_term_matrix = vectorizer.fit_transform(texts)
     
-    # Create and fit LDA model
+    # Create and fit LDA model with better parameters
     lda_model = LatentDirichletAllocation(
         n_components=n_topics,
         random_state=42,
-        learning_method='batch'
+        learning_method='batch',
+        max_iter=100,
+        learning_offset=50.,
+        doc_topic_prior=1/n_topics,  # Symmetric prior
+        topic_word_prior=1/n_topics   # Symmetric prior
     )
     
     # Fit the model and transform documents
@@ -86,12 +107,17 @@ def perform_topic_modeling(texts, n_topics=10, n_words=10):
     # Extract top words for each topic
     topics = []
     for topic_idx, topic in enumerate(lda_model.components_):
+        # Get top words indices sorted by importance
         top_words_idx = topic.argsort()[:-n_words-1:-1]
-        top_words = [feature_names[i] for i in top_words_idx]
+        # Filter out very short words and get the actual words
+        top_words = [
+            feature_names[i] for i in top_words_idx 
+            if len(feature_names[i]) > 2  # Filter out very short words
+        ]
         topics.append({
             'id': topic_idx,
             'words': top_words,
-            'weight': float(topic.sum())  # Convert to float for JSON serialization
+            'weight': float(topic.sum())
         })
     
     return topics, doc_topics.tolist()
