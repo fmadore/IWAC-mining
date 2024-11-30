@@ -32,23 +32,37 @@ def extract_article_texts(data):
     texts = []
     dates = []
     titles = []
+    publishers = []
     
     for article in data:
         if 'bibo:content' in article:
             content = article['bibo:content']
+            # Extract publisher from dcterms:publisher display_title
+            publisher = "Unknown"
+            if 'dcterms:publisher' in article:
+                pub_info = article['dcterms:publisher']
+                if isinstance(pub_info, list) and pub_info:
+                    # Get the first publisher's display_title
+                    if 'display_title' in pub_info[0]:
+                        publisher = pub_info[0]['display_title']
+                    elif '@value' in pub_info[0]:
+                        publisher = pub_info[0]['@value']
+            
             if isinstance(content, list):
                 for item in content:
                     if '@value' in item and 'processed_text' in item:
                         texts.append(item['processed_text']['article'])
                         dates.append(article.get('dcterms:date', [{'@value': 'unknown'}])[0]['@value'])
                         titles.append(article.get('o:title', 'Untitled'))
+                        publishers.append(publisher)
             elif isinstance(content, dict):
                 if '@value' in content and 'processed_text' in content:
                     texts.append(content['processed_text']['article'])
                     dates.append(article.get('dcterms:date', [{'@value': 'unknown'}])[0]['@value'])
                     titles.append(article.get('o:title', 'Untitled'))
+                    publishers.append(publisher)
     
-    return texts, dates, titles
+    return texts, dates, titles, publishers
 
 def perform_topic_modeling(texts, n_topics=10, n_words=10):
     """Perform LDA topic modeling on the texts."""
@@ -85,7 +99,7 @@ def perform_topic_modeling(texts, n_topics=10, n_words=10):
 def main():
     # Load and process data
     data = load_processed_data()
-    texts, dates, titles = extract_article_texts(data)
+    texts, dates, titles, publishers = extract_article_texts(data)
     
     # Perform topic modeling
     topics, doc_topics = perform_topic_modeling(texts)
@@ -98,9 +112,10 @@ def main():
                 'id': idx,
                 'title': title,
                 'date': date,
+                'publisher': publisher,
                 'topic_weights': weights
             }
-            for idx, (title, date, weights) in enumerate(zip(titles, dates, doc_topics))
+            for idx, (title, date, publisher, weights) in enumerate(zip(titles, dates, publishers, doc_topics))
         ]
     }
     
