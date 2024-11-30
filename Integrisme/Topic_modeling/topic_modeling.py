@@ -15,10 +15,17 @@ logging.basicConfig(
 def load_processed_data():
     """Load the processed articles from the JSON file."""
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    data_path = os.path.join(script_dir, 'integrisme_data.json')
+    parent_dir = os.path.dirname(script_dir)  # Get parent directory
+    data_path = os.path.join(parent_dir, 'integrisme_data.json')
     
-    with open(data_path, 'r', encoding='utf-8') as f:
-        return json.load(f)
+    logging.info(f"Looking for data file at: {data_path}")
+    
+    try:
+        with open(data_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        logging.error(f"Data file not found at {data_path}")
+        raise
 
 def extract_article_texts(data):
     """Extract processed article texts from the data."""
