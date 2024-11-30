@@ -54,10 +54,11 @@ select {
     fill: #f8f9fa;
     stroke: #fff;
     stroke-width: 0.5px;
+    transition: opacity 0.2s;
 }
 
 .cell:hover {
-    stroke: #000;
+    stroke: #333;
     stroke-width: 1px;
     cursor: pointer;
 }
@@ -83,4 +84,28 @@ select {
     font-family: sans-serif;
     font-size: 9px;
     text-anchor: start;
+}
+
+#matrix {
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin: 20px auto;
+}
+
+.label {
+    font-family: sans-serif;
+    fill: #333;
+}
+
+#tooltip {
+    position: absolute;
+    padding: 8px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none;
+    display: none;
 } 

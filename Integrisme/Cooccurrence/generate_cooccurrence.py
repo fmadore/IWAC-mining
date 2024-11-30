@@ -71,10 +71,8 @@ def calculate_cooccurrence(articles, top_terms, window_type='article'):
         if window_type == 'article':
             windows = [content]
         elif window_type == 'paragraph':
-            # Split on double newlines or other paragraph markers
             windows = [p.strip() for p in content.split('\n\n') if p.strip()]
         elif window_type == 'sentence':
-            # Simple sentence splitting - could be improved with nltk
             windows = [s.strip() for s in content.split('.') if s.strip()]
             
         for window in windows:
@@ -87,7 +85,14 @@ def calculate_cooccurrence(articles, top_terms, window_type='article'):
                     matrix[idx1][idx2] += 1
                     if idx1 != idx2:
                         matrix[idx2][idx1] += 1
-                        
+    
+    # Filter out weak connections
+    # Calculate mean and std of non-zero values
+    non_zero_vals = matrix[matrix > 0]
+    if len(non_zero_vals) > 0:
+        threshold = np.mean(non_zero_vals) - 0.5 * np.std(non_zero_vals)
+        matrix[matrix < threshold] = 0
+        
     return matrix
 
 def generate_matrix_data():

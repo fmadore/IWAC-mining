@@ -1,286 +1,109 @@
-// Matrix visualization
-class MatrixVisualization {
-    constructor() {
-        this.margin = {top: 100, right: 100, bottom: 10, left: 100};
-        this.width = 800;
-        this.height = 800;
-        this.data = null;
-        this.transitionDuration = 750;
-        this.windowType = 'article';
-        this.minColor = "#f8f9fa";  // Very light grey/white for zero values
-        this.maxColor = "#0d47a1";  // Deep blue for maximum values
-    }
+// Add these configurations at the top
+const config = {
+    margin: { top: 80, right: 20, bottom: 10, left: 100 },
+    cellSize: 10,
+    cellPadding: 1,
+    maxOpacity: 0.8,
+    minOpacity: 0.2
+};
 
-    async initialize() {
-        try {
-            // Load the data from GitHub raw content instead of local file
-            const allData = await d3.json('https://raw.githubusercontent.com/fmadore/Mining_IWAC/main/Integrisme/Cooccurrence/data/cooccurrence.json');
-            this.data = allData[this.windowType];
-            
-            // Create the SVG container
-            this.svg = d3.select('#matrix')
-                .append('svg')
-                .attr('width', this.width + this.margin.left + this.margin.right)
-                .attr('height', this.height + this.margin.top + this.margin.bottom)
-                .append('g')
-                .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
+function createMatrix(data, windowType) {
+    // Clear previous visualization
+    d3.select("#matrix").selectAll("*").remove();
 
-            // Add tooltip div if it doesn't exist
-            if (!d3.select('body').select('.tooltip').size()) {
-                d3.select('body').append('div')
-                    .attr('class', 'tooltip')
-                    .style('opacity', 0);
-            }
+    const nodes = data[windowType].nodes;
+    const links = data[windowType].links;
 
-            // Create scales
-            this.x = d3.scaleBand().range([0, this.width]).padding(0.05);
-            this.y = d3.scaleBand().range([0, this.height]).padding(0.05);
-            this.color = d3.scaleSequential()
-                .interpolator(d3.interpolateBlues)
-                .domain([0, d3.max(this.data.links, d => d.value)]);
+    // Create an adjacency matrix from links
+    const matrix = Array(nodes.length).fill().map(() => Array(nodes.length).fill(0));
+    links.forEach(link => {
+        matrix[link.source][link.target] = link.value;
+    });
 
-            // Initialize the visualization
-            this.updateVisualization('name');
+    // Find max value for scaling
+    const maxValue = d3.max(links, d => d.value);
 
-            // Add event listeners for ordering
-            d3.select('#order').on('change', (event) => {
-                this.updateVisualization(event.target.value);
-            });
+    // Create color scale
+    const colorScale = d3.scaleSequential()
+        .domain([0, maxValue])
+        .interpolator(d3.interpolateBlues);
 
-            // Add event listener for window type
-            d3.select('#window-type').on('change', async (event) => {
-                this.windowType = event.target.value;
-                const allData = await d3.json('https://raw.githubusercontent.com/fmadore/Mining_IWAC/main/Integrisme/Cooccurrence/data/cooccurrence.json');
-                this.data = allData[this.windowType];
-                this.color.domain([0, d3.max(this.data.links, d => d.value)]);
-                this.updateVisualization(d3.select('#order').property('value'));
-            });
-        } catch (error) {
-            console.error('Error initializing visualization:', error);
-        }
-    }
+    // Calculate size based on number of nodes
+    const size = nodes.length * (config.cellSize + config.cellPadding);
+    const width = size + config.margin.left + config.margin.right;
+    const height = size + config.margin.top + config.margin.bottom;
 
-    computeNodeDegrees() {
-        const degrees = new Map();
-        this.data.nodes.forEach(node => {
-            const links = this.data.links.filter(l => 
-                l.source === node.id || l.target === node.id
-            );
-            degrees.set(node.id, d3.sum(links, l => l.value));
-        });
-        return degrees;
-    }
+    // Create SVG
+    const svg = d3.select("#matrix")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${config.margin.left},${config.margin.top})`);
 
-    updateVisualization(orderBy) {
-        try {
-            // Order nodes
-            const nodes = [...this.data.nodes];
-            const degrees = this.computeNodeDegrees();
+    // Add rows
+    const rows = svg.selectAll(".row")
+        .data(nodes)
+        .enter()
+        .append("g")
+        .attr("class", "row")
+        .attr("transform", (d, i) => `translate(0,${i * (config.cellSize + config.cellPadding)})`);
 
-            switch(orderBy) {
-                case 'frequency':
-                    nodes.sort((a, b) => degrees.get(b.id) - degrees.get(a.id));
-                    break;
-                default: // 'name'
-                    nodes.sort((a, b) => a.name.localeCompare(b.name));
-            }
+    // Add cells
+    rows.selectAll(".cell")
+        .data((d, i) => matrix[i].map((value, j) => ({value, i, j})))
+        .enter()
+        .append("rect")
+        .attr("class", "cell")
+        .attr("x", (d, i) => i * (config.cellSize + config.cellPadding))
+        .attr("width", config.cellSize)
+        .attr("height", config.cellSize)
+        .style("fill", d => d.value > 0 ? colorScale(d.value) : "#f8f9fa")
+        .style("opacity", d => {
+            if (d.value === 0) return 0.1;
+            const normalizedValue = d.value / maxValue;
+            return config.minOpacity + normalizedValue * (config.maxOpacity - config.minOpacity);
+        })
+        .on("mouseover", showTooltip)
+        .on("mouseout", hideTooltip);
 
-            // Update scales
-            this.x.domain(nodes.map(d => d.id));
-            this.y.domain(nodes.map(d => d.id));
+    // Add row labels
+    rows.append("text")
+        .attr("class", "label")
+        .attr("x", -5)
+        .attr("y", config.cellSize / 2)
+        .attr("text-anchor", "end")
+        .attr("alignment-baseline", "middle")
+        .text(d => d.name)
+        .style("font-size", "10px");
 
-            // Update color scale based on non-zero values
-            const nonZeroValues = this.data.links
-                .map(d => d.value)
-                .filter(v => v > 0);
-                
-            const minValue = d3.min(nonZeroValues) || 0;
-            const maxValue = d3.max(nonZeroValues) || 1;
+    // Add column labels
+    svg.selectAll(".column-label")
+        .data(nodes)
+        .enter()
+        .append("text")
+        .attr("class", "label")
+        .attr("x", (d, i) => i * (config.cellSize + config.cellPadding) + config.cellSize / 2)
+        .attr("y", -5)
+        .attr("transform", (d, i) => {
+            const x = i * (config.cellSize + config.cellPadding) + config.cellSize / 2;
+            return `rotate(-45,${x},-5)`;
+        })
+        .attr("text-anchor", "end")
+        .text(d => d.name)
+        .style("font-size", "10px");
+}
 
-            // Create logarithmic scale for better distribution of colors
-            this.color = d3.scaleSequential()
-                .interpolator(d3.interpolate(this.minColor, this.maxColor))
-                .domain([
-                    minValue, 
-                    maxValue
-                ]);
-
-            // Create normalized color mapping function
-            const getNormalizedColor = (value) => {
-                if (value === 0) return this.minColor;
-                // Use log scale to better distribute colors
-                const normalizedValue = Math.log(value - minValue + 1) / Math.log(maxValue - minValue + 1);
-                return d3.interpolate(this.minColor, this.maxColor)(normalizedValue);
-            };
-
-            // Update rows with transition
-            const rows = this.svg.selectAll('.row')
-                .data(nodes, d => d.id);
-
-            // Exit old rows
-            rows.exit().remove();
-
-            // Enter new rows
-            const rowsEnter = rows.enter()
-                .append('g')
-                .attr('class', 'row');
-
-            // Update all rows with transition
-            rows.merge(rowsEnter)
-                .transition()
-                .duration(this.transitionDuration)
-                .attr('transform', d => `translate(0,${this.y(d.id)})`);
-
-            // Update row labels
-            const rowLabels = rows.merge(rowsEnter).selectAll('text')
-                .data(d => [d]);
-
-            rowLabels.enter()
-                .append('text')
-                .merge(rowLabels)
-                .attr('x', -6)
-                .attr('y', this.y.bandwidth() / 2)
-                .attr('dy', '.32em')
-                .attr('class', 'row-label')
-                .attr('alignment-baseline', 'middle')
-                .text(d => d.name);
-
-            // Update columns with transition
-            const columns = this.svg.selectAll('.column')
-                .data(nodes, d => d.id);
-
-            // Exit old columns
-            columns.exit().remove();
-
-            // Enter new columns
-            const columnsEnter = columns.enter()
-                .append('g')
-                .attr('class', 'column');
-
-            // Update all columns with transition
-            columns.merge(columnsEnter)
-                .transition()
-                .duration(this.transitionDuration)
-                .attr('transform', d => `translate(${this.x(d.id)},-6)`);
-
-            // Update column labels
-            const columnLabels = columns.merge(columnsEnter).selectAll('text')
-                .data(d => [d]);
-
-            columnLabels.enter()
-                .append('text')
-                .merge(columnLabels)
-                .attr('x', 5)
-                .attr('y', -5)
-                .attr('class', 'column-label')
-                .attr('alignment-baseline', 'hanging')
-                .attr('transform', 'rotate(-45)')
-                .text(d => d.name);
-
-            // Create cell data with new ordering
-            const cellData = [];
-            nodes.forEach((source, i) => {
-                nodes.forEach((target, j) => {
-                    const link = this.data.links.find(l => 
-                        (l.source === source.id && l.target === target.id) ||
-                        (l.source === target.id && l.target === source.id)
-                    );
-                    cellData.push({
-                        source: source.id,
-                        target: target.id,
-                        value: link ? link.value : 0,
-                        x: i,
-                        y: j
-                    });
-                });
-            });
-
-            // Update cells with transition
-            const cells = this.svg.selectAll('.cell')
-                .data(cellData, d => `${d.source}-${d.target}`);
-
-            // Exit old cells
-            cells.exit().remove();
-
-            // Enter new cells
-            const cellsEnter = cells.enter()
-                .append('rect')
-                .attr('class', 'cell')
-                .style('fill', d => d.value > 0 ? this.color(d.value) : '#f8f9fa')
-                .style('opacity', d => d.value > 0 ? 1 : 0.1);
-
-            // Update all cells with transition
-            cells.merge(cellsEnter)
-                .transition()
-                .duration(this.transitionDuration)
-                .attr('x', d => this.x(d.source))
-                .attr('y', d => this.y(d.target))
-                .attr('width', this.x.bandwidth())
-                .attr('height', this.y.bandwidth())
-                .style('fill', d => getNormalizedColor(d.value))
-                .style('opacity', d => d.value > 0 ? 1 : 0.1);
-
-            // Add tooltips (needs to be outside transition)
-            this.svg.selectAll('.cell')
-                .on('mouseover', (event, d) => {
-                    if (d.value > 0) {
-                        const sourceName = nodes.find(n => n.id === d.source).name;
-                        const targetName = nodes.find(n => n.id === d.target).name;
-                        
-                        // Highlight the labels
-                        this.highlightLabels(sourceName, targetName, true);
-                        
-                        // Show tooltip
-                        d3.select('.tooltip')
-                            .transition()
-                            .duration(200)
-                            .style('opacity', .9);
-                        d3.select('.tooltip')
-                            .html(`${sourceName} - ${targetName}<br/>Cooccurrences: ${d.value}`)
-                            .style('left', (event.pageX + 10) + 'px')
-                            .style('top', (event.pageY - 28) + 'px');
-                    }
-                })
-                .on('mouseout', (event, d) => {
-                    if (d.value > 0) {
-                        const sourceName = nodes.find(n => n.id === d.source).name;
-                        const targetName = nodes.find(n => n.id === d.target).name;
-                        
-                        // Remove highlighting
-                        this.highlightLabels(sourceName, targetName, false);
-                        
-                        // Hide tooltip
-                        d3.select('.tooltip')
-                            .transition()
-                            .duration(500)
-                            .style('opacity', 0);
-                    }
-                });
-
-        } catch (error) {
-            console.error('Error updating visualization:', error);
-        }
-    }
-
-    highlightLabels(sourceName, targetName, highlight = true) {
-        const opacity = highlight ? 1 : 0.5;
-        const fontWeight = highlight ? 'bold' : 'normal';
-        const color = highlight ? '#0d47a1' : 'black';  // Use the same blue as maxColor
-
-        this.svg.selectAll('.row-label')
-            .style('opacity', d => d.name === sourceName || d.name === targetName ? 1 : opacity)
-            .style('font-weight', d => d.name === sourceName || d.name === targetName ? fontWeight : 'normal')
-            .style('fill', d => d.name === sourceName || d.name === targetName ? color : 'black');
-
-        this.svg.selectAll('.column-label')
-            .style('opacity', d => d.name === sourceName || d.name === targetName ? 1 : opacity)
-            .style('font-weight', d => d.name === sourceName || d.name === targetName ? fontWeight : 'normal')
-            .style('fill', d => d.name === sourceName || d.name === targetName ? color : 'black');
+function showTooltip(event, d) {
+    if (d.value > 0) {
+        const tooltip = d3.select("#tooltip");
+        tooltip.style("display", "block")
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 10) + "px")
+            .html(`Co-occurrence: ${d.value}`);
     }
 }
 
-// Initialize the visualization when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    const matrix = new MatrixVisualization();
-    matrix.initialize();
-}); 
+function hideTooltip() {
+    d3.select("#tooltip").style("display", "none");
+} 
