@@ -49,20 +49,56 @@
             margin-top: 20px;
             font-family: Arial, sans-serif;
         }
+        
+        /* Add styles for the explanation */
+        .control-group {
+            margin-bottom: 20px;
+        }
+        
+        .threshold-explanation {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .info-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background: #666;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 16px;
+            font-size: 12px;
+            margin-left: 5px;
+            cursor: help;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Topic Model Visualization</h1>
         <div class="controls">
-            <label for="threshold">Link Threshold: </label>
-            <input type="range" id="threshold" min="0" max="100" value="20">
-            <span id="threshold-value">0.2</span>
+            <div class="control-group">
+                <label for="threshold">
+                    Link Threshold: 
+                    <span class="info-icon" title="Higher values show stronger topic-document relationships only. Lower values show more relationships but may create visual clutter.">?</span>
+                </label>
+                <input type="range" id="threshold" min="0" max="100" value="20">
+                <span id="threshold-value">0.2</span>
+                <div class="threshold-explanation">
+                    Adjust this slider to filter the strength of connections between topics and documents. 
+                    A higher threshold shows only the strongest relationships.
+                </div>
+            </div>
         </div>
         <div id="visualization"></div>
         <div class="legend">
-            <p>🟢 Topics</p>
-            <p>🔵 Documents</p>
+            <p>🟢 Topics: Main themes identified in the corpus</p>
+            <p>🔵 Documents: Individual articles</p>
+            <p>Lines: Connections between topics and documents (thickness indicates strength)</p>
         </div>
     </div>
     <script src="topic_visualization.js"></script>
