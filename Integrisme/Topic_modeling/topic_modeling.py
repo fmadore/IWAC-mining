@@ -104,22 +104,28 @@ def perform_topic_modeling(texts, n_topics=10, n_words=10):
     # Get feature names (words)
     feature_names = vectorizer.get_feature_names_out()
     
-    # Extract top words for each topic
+    # Extract top words for each topic with their weights
     topics = []
     for topic_idx, topic in enumerate(lda_model.components_):
-        # Get top words indices sorted by importance
-        top_words_idx = topic.argsort()[:-n_words-1:-1]
-        # Filter out very short words and get the actual words
-        top_words = [
-            feature_names[i] for i in top_words_idx 
-            if len(feature_names[i]) > 2  # Filter out very short words
-        ]
+        # Get word indices and weights sorted by importance
+        word_weights = [(feature_names[i], float(topic[i])) 
+                       for i in topic.argsort()[:-n_words-1:-1]
+                       if len(feature_names[i]) > 2]
+        
+        # Calculate topic prevalence (percentage of corpus)
+        topic_prevalence = float(topic.sum() / lda_model.components_.sum())
+        
         topics.append({
             'id': topic_idx,
-            'words': top_words,
-            'weight': float(topic.sum())
+            'words': [w for w, _ in word_weights],
+            'word_weights': word_weights,
+            'weight': float(topic.sum()),
+            'prevalence': topic_prevalence,
+            'label': f"Topic {topic_idx + 1}"  # We can manually label these later
         })
     
+    # Sort topics by prevalence
+    topics.sort(key=lambda x: x['prevalence'], reverse=True)
     return topics, doc_topics.tolist()
 
 def main():

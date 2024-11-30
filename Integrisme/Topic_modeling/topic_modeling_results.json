@@ -1,37 +1,6 @@
 {
   "topics": [
     {
-      "id": 0,
-      "words": [
-        "religieux",
-        "dialogue",
-        "ensuite",
-        "politique",
-        "homme",
-        "musulman",
-        "dire",
-        "vouloir",
-        "ivoirien",
-        "fofana"
-      ],
-      "weight": 4382.793655177029
-    },
-    {
-      "id": 1,
-      "words": [
-        "arabe",
-        "école",
-        "hadj",
-        "étude",
-        "homme",
-        "drogue",
-        "enseignement",
-        "bon",
-        "enfant"
-      ],
-      "weight": 955.4209771047656
-    },
-    {
       "id": 2,
       "words": [
         "musulman",
@@ -44,87 +13,47 @@
         "mosquée",
         "communauté"
       ],
-      "weight": 12798.886060783883
-    },
-    {
-      "id": 3,
-      "words": [
-        "rdr",
-        "parti",
-        "aeemci",
-        "militant",
-        "pdci",
-        "vouloir",
-        "élève",
-        "républicain",
-        "question",
-        "contre"
+      "word_weights": [
+        [
+          "musulman",
+          393.33328865616716
+        ],
+        [
+          "islamique",
+          323.5058662053764
+        ],
+        [
+          "président",
+          317.7610087955271
+        ],
+        [
+          "imam",
+          277.4880872504787
+        ],
+        [
+          "ivoire",
+          250.87913134808963
+        ],
+        [
+          "côte",
+          243.4764913563133
+        ],
+        [
+          "conseil",
+          238.00809242785368
+        ],
+        [
+          "mosquée",
+          183.81624955471966
+        ],
+        [
+          "communauté",
+          174.89382529272154
+        ]
       ],
-      "weight": 1530.2571635699967
-    },
-    {
-      "id": 4,
-      "words": [
-        "islam",
-        "musulman",
-        "dieu",
-        "prophète",
-        "femme",
-        "coran",
-        "homme",
-        "religion",
-        "pèlerin",
-        "vie"
-      ],
-      "weight": 7399.788197976289
-    },
-    {
-      "id": 5,
-      "words": [
-        "eglise",
-        "burkina",
-        "colloque",
-        "bénin",
-        "culture",
-        "formation",
-        "séminaire",
-        "président",
-        "intégrisme",
-        "pays"
-      ],
-      "weight": 1953.586521252985
-    },
-    {
-      "id": 6,
-      "words": [
-        "diaby",
-        "politique",
-        "csi",
-        "religion",
-        "moustapha",
-        "koweit",
-        "musulman",
-        "religieux",
-        "vouloir",
-        "supérieur"
-      ],
-      "weight": 2622.042452850227
-    },
-    {
-      "id": 7,
-      "words": [
-        "islam",
-        "musulman",
-        "monde",
-        "religion",
-        "arabe",
-        "pays",
-        "islamique",
-        "intégrisme",
-        "contre",
-        "politique"
-      ],
-      "weight": 8898.283016535639
+      "weight": 12798.886060783883,
+      "prevalence": 0.2215068285558673,
+      "label": "Topic 3"
     },
     {
       "id": 8,
@@ -140,7 +69,171 @@
         "savoir",
         "comprendre"
       ],
-      "weight": 11125.108755252331
+      "word_weights": [
+        [
+          "musulman",
+          378.0935842231095
+        ],
+        [
+          "côte",
+          190.93835852595714
+        ],
+        [
+          "ivoire",
+          188.8589109444444
+        ],
+        [
+          "politique",
+          180.7709402771817
+        ],
+        [
+          "vouloir",
+          171.97777160932606
+        ],
+        [
+          "communauté",
+          132.68286416993638
+        ],
+        [
+          "ivoirien",
+          105.86662010877403
+        ],
+        [
+          "aujourd",
+          90.90841286719277
+        ],
+        [
+          "savoir",
+          78.79917381072666
+        ],
+        [
+          "comprendre",
+          78.66861026208068
+        ]
+      ],
+      "weight": 11125.108755252331,
+      "prevalence": 0.19253922146128774,
+      "label": "Topic 9"
+    },
+    {
+      "id": 7,
+      "words": [
+        "islam",
+        "musulman",
+        "monde",
+        "religion",
+        "arabe",
+        "pays",
+        "islamique",
+        "intégrisme",
+        "contre",
+        "politique"
+      ],
+      "word_weights": [
+        [
+          "islam",
+          274.77187875842293
+        ],
+        [
+          "musulman",
+          215.33631891959317
+        ],
+        [
+          "monde",
+          127.56830658788043
+        ],
+        [
+          "religion",
+          116.32017883295683
+        ],
+        [
+          "arabe",
+          95.47672153557214
+        ],
+        [
+          "pays",
+          93.35218865733908
+        ],
+        [
+          "islamique",
+          90.46726139092392
+        ],
+        [
+          "intégrisme",
+          82.92345173660947
+        ],
+        [
+          "contre",
+          78.20997724076331
+        ],
+        [
+          "politique",
+          70.15017710276764
+        ]
+      ],
+      "weight": 8898.283016535639,
+      "prevalence": 0.15400015604675424,
+      "label": "Topic 8"
+    },
+    {
+      "id": 4,
+      "words": [
+        "islam",
+        "musulman",
+        "dieu",
+        "prophète",
+        "femme",
+        "coran",
+        "homme",
+        "religion",
+        "pèlerin",
+        "vie"
+      ],
+      "word_weights": [
+        [
+          "islam",
+          258.18316723046223
+        ],
+        [
+          "musulman",
+          254.57882361560135
+        ],
+        [
+          "dieu",
+          233.22998992364555
+        ],
+        [
+          "prophète",
+          125.58454509763634
+        ],
+        [
+          "femme",
+          108.37077537018801
+        ],
+        [
+          "coran",
+          108.11708343618822
+        ],
+        [
+          "homme",
+          104.88710448474957
+        ],
+        [
+          "religion",
+          104.50088909743906
+        ],
+        [
+          "pèlerin",
+          79.13265407337218
+        ],
+        [
+          "vie",
+          76.70525065954132
+        ]
+      ],
+      "weight": 7399.788197976289,
+      "prevalence": 0.12806611512396535,
+      "label": "Topic 5"
     },
     {
       "id": 9,
@@ -156,7 +249,346 @@
         "faso",
         "vivre"
       ],
-      "weight": 6114.833199484725
+      "word_weights": [
+        [
+          "religieux",
+          145.38687351595965
+        ],
+        [
+          "religion",
+          141.37751578623252
+        ],
+        [
+          "etat",
+          124.65311624867222
+        ],
+        [
+          "pays",
+          124.4504316314396
+        ],
+        [
+          "paix",
+          123.70888756860006
+        ],
+        [
+          "burkina",
+          90.43475239685645
+        ],
+        [
+          "laïcité",
+          89.01719293261839
+        ],
+        [
+          "social",
+          79.90175293982179
+        ],
+        [
+          "faso",
+          76.81413229589377
+        ],
+        [
+          "vivre",
+          59.11350061513124
+        ]
+      ],
+      "weight": 6114.833199484725,
+      "prevalence": 0.10582774959737645,
+      "label": "Topic 10"
+    },
+    {
+      "id": 0,
+      "words": [
+        "religieux",
+        "dialogue",
+        "ensuite",
+        "politique",
+        "homme",
+        "musulman",
+        "dire",
+        "vouloir",
+        "ivoirien",
+        "fofana"
+      ],
+      "word_weights": [
+        [
+          "religieux",
+          713.3426100363334
+        ],
+        [
+          "dialogue",
+          658.2814718195299
+        ],
+        [
+          "ensuite",
+          637.2039509103402
+        ],
+        [
+          "politique",
+          83.27202438818225
+        ],
+        [
+          "homme",
+          53.77286685613553
+        ],
+        [
+          "musulman",
+          51.25435265025089
+        ],
+        [
+          "dire",
+          38.33244066670291
+        ],
+        [
+          "vouloir",
+          32.920000948944775
+        ],
+        [
+          "ivoirien",
+          26.563735522412994
+        ],
+        [
+          "fofana",
+          26.383339778667864
+        ]
+      ],
+      "weight": 4382.793655177029,
+      "prevalence": 0.07585181383461603,
+      "label": "Topic 1"
+    },
+    {
+      "id": 6,
+      "words": [
+        "diaby",
+        "politique",
+        "csi",
+        "religion",
+        "moustapha",
+        "koweit",
+        "musulman",
+        "religieux",
+        "vouloir",
+        "supérieur"
+      ],
+      "word_weights": [
+        [
+          "diaby",
+          157.03186730885653
+        ],
+        [
+          "politique",
+          87.44952615136535
+        ],
+        [
+          "csi",
+          62.33040443317269
+        ],
+        [
+          "religion",
+          53.130605964760655
+        ],
+        [
+          "moustapha",
+          48.56696059499381
+        ],
+        [
+          "koweit",
+          44.68554574340119
+        ],
+        [
+          "musulman",
+          33.672743549419856
+        ],
+        [
+          "religieux",
+          32.61334107428721
+        ],
+        [
+          "vouloir",
+          26.594079444673508
+        ],
+        [
+          "supérieur",
+          24.318405727887843
+        ]
+      ],
+      "weight": 2622.042452850227,
+      "prevalence": 0.04537897324121731,
+      "label": "Topic 7"
+    },
+    {
+      "id": 5,
+      "words": [
+        "eglise",
+        "burkina",
+        "colloque",
+        "bénin",
+        "culture",
+        "formation",
+        "séminaire",
+        "président",
+        "intégrisme",
+        "pays"
+      ],
+      "word_weights": [
+        [
+          "eglise",
+          37.36059331565926
+        ],
+        [
+          "burkina",
+          36.149742752159824
+        ],
+        [
+          "colloque",
+          35.919195611645726
+        ],
+        [
+          "bénin",
+          30.59784191590925
+        ],
+        [
+          "culture",
+          29.955823450978905
+        ],
+        [
+          "formation",
+          28.144668749578724
+        ],
+        [
+          "séminaire",
+          28.07171149168905
+        ],
+        [
+          "président",
+          27.492501224167178
+        ],
+        [
+          "intégrisme",
+          25.827962314619484
+        ],
+        [
+          "pays",
+          23.954710666099363
+        ]
+      ],
+      "weight": 1953.586521252985,
+      "prevalence": 0.0338101888380851,
+      "label": "Topic 6"
+    },
+    {
+      "id": 3,
+      "words": [
+        "rdr",
+        "parti",
+        "aeemci",
+        "militant",
+        "pdci",
+        "vouloir",
+        "élève",
+        "républicain",
+        "question",
+        "contre"
+      ],
+      "word_weights": [
+        [
+          "rdr",
+          92.51975823044363
+        ],
+        [
+          "parti",
+          52.30680790215391
+        ],
+        [
+          "aeemci",
+          32.92538149816832
+        ],
+        [
+          "militant",
+          30.74640570995616
+        ],
+        [
+          "pdci",
+          29.21707619883306
+        ],
+        [
+          "vouloir",
+          28.670526024153798
+        ],
+        [
+          "élève",
+          19.92786771289642
+        ],
+        [
+          "républicain",
+          18.08168658102174
+        ],
+        [
+          "question",
+          17.778530289175933
+        ],
+        [
+          "contre",
+          17.56242345742272
+        ]
+      ],
+      "weight": 1530.2571635699967,
+      "prevalence": 0.026483743160733077,
+      "label": "Topic 4"
+    },
+    {
+      "id": 1,
+      "words": [
+        "arabe",
+        "école",
+        "hadj",
+        "étude",
+        "homme",
+        "drogue",
+        "enseignement",
+        "bon",
+        "enfant"
+      ],
+      "word_weights": [
+        [
+          "arabe",
+          20.016494143202713
+        ],
+        [
+          "école",
+          19.03695417164894
+        ],
+        [
+          "hadj",
+          16.84745893294397
+        ],
+        [
+          "étude",
+          15.022152226040372
+        ],
+        [
+          "homme",
+          14.972194416766156
+        ],
+        [
+          "drogue",
+          13.578016590392913
+        ],
+        [
+          "enseignement",
+          13.449154543397078
+        ],
+        [
+          "bon",
+          13.372011027245277
+        ],
+        [
+          "enfant",
+          11.941882976987836
+        ]
+      ],
+      "weight": 955.4209771047656,
+      "prevalence": 0.01653521014009737,
+      "label": "Topic 2"
     }
   ],
   "documents": [

@@ -135,10 +135,33 @@ function updateVisualization(data, threshold = 0.2) {
 
     // Add tooltips
     node.on('mouseover', (event, d) => {
-        let content = d.type === 'topic' 
-            ? `Topic ${d.id + 1}<br>Keywords: ${d.words.join(', ')}`
-            : `Document: ${d.title}<br>Date: ${d.date}<br>Publisher: ${d.publisher}`;
-            
+        let content;
+        if (d.type === 'topic') {
+            content = `
+                <div class="tooltip-topic">
+                    <h4>${d.label}</h4>
+                    <div class="tooltip-prevalence">
+                        Corpus coverage: ${(d.prevalence * 100).toFixed(1)}%
+                    </div>
+                    <div class="tooltip-words">
+                        ${d.word_weights.map(([word, weight]) => 
+                            `<span class="tooltip-word" style="opacity: ${weight}">${word}</span>`
+                        ).join(' ')}
+                    </div>
+                </div>
+            `;
+        } else {
+            content = `
+                <div class="tooltip-document">
+                    <h4>${d.title}</h4>
+                    <div class="tooltip-meta">
+                        Published: ${d.date}<br>
+                        Source: ${d.publisher}
+                    </div>
+                </div>
+            `;
+        }
+        
         tooltip.transition()
             .duration(200)
             .style('opacity', .9);
