@@ -4,14 +4,59 @@ const config = {
     height: 800,
     topicRadius: 20,
     documentRadius: 5,
-    linkStrengthScale: d3.scaleLinear().range([0, 1])
+    linkStrengthScale: d3.scaleLinear().range([0, 1]),
+    minZoom: 0.1,
+    maxZoom: 4
 };
 
-// Create SVG
+// Create SVG with zoom container
 const svg = d3.select('#visualization')
     .append('svg')
     .attr('width', config.width)
     .attr('height', config.height);
+
+// Add zoom container
+const g = svg.append('g');
+
+// Create zoom behavior
+const zoom = d3.zoom()
+    .scaleExtent([config.minZoom, config.maxZoom])
+    .on('zoom', (event) => {
+        g.attr('transform', event.transform);
+    });
+
+// Enable zoom
+svg.call(zoom);
+
+// Add zoom controls to HTML
+const zoomControls = d3.select('.controls')
+    .append('div')
+    .attr('class', 'zoom-controls')
+    .style('margin-top', '10px');
+
+zoomControls.append('button')
+    .text('Zoom In')
+    .on('click', () => {
+        svg.transition()
+            .duration(750)
+            .call(zoom.scaleBy, 1.3);
+    });
+
+zoomControls.append('button')
+    .text('Zoom Out')
+    .on('click', () => {
+        svg.transition()
+            .duration(750)
+            .call(zoom.scaleBy, 1 / 1.3);
+    });
+
+zoomControls.append('button')
+    .text('Reset')
+    .on('click', () => {
+        svg.transition()
+            .duration(750)
+            .call(zoom.transform, d3.zoomIdentity);
+    });
 
 // Create tooltip
 const tooltip = d3.select('body')
@@ -63,10 +108,10 @@ function updateVisualization(data, threshold = 0.2) {
     // Filter links based on threshold
     const filteredLinks = data.links.filter(l => l.weight > threshold);
     
-    // Create force simulation with nodeId as the identifier
+    // Create force simulation
     const simulation = d3.forceSimulation(data.nodes)
         .force('link', d3.forceLink(filteredLinks)
-            .id(d => d.nodeId)  // Use nodeId instead of id
+            .id(d => d.nodeId)
             .strength(d => d.weight))
         .force('charge', d3.forceManyBody().strength(-100))
         .force('center', d3.forceCenter(config.width / 2, config.height / 2))
@@ -74,14 +119,14 @@ function updateVisualization(data, threshold = 0.2) {
             d.type === 'topic' ? config.topicRadius : config.documentRadius));
 
     // Draw links
-    const link = svg.selectAll('.link')
+    const link = g.selectAll('.link')  // Use g instead of svg
         .data(filteredLinks)
         .join('line')
         .attr('class', 'link')
         .attr('stroke-width', d => d.weight * 2);
 
     // Draw nodes
-    const node = svg.selectAll('.node')
+    const node = g.selectAll('.node')  // Use g instead of svg
         .data(data.nodes)
         .join('circle')
         .attr('class', d => `node node-${d.type}`)
