@@ -72,12 +72,6 @@
     "with_integriste": 1
   },
   {
-    "word": "peut",
-    "total_associations": 11,
-    "with_integrisme": 3,
-    "with_integriste": 8
-  },
-  {
     "word": "été",
     "total_associations": 10,
     "with_integrisme": 4,
@@ -108,31 +102,7 @@
     "with_integriste": 3
   },
   {
-    "word": "certains",
-    "total_associations": 8,
-    "with_integrisme": 3,
-    "with_integriste": 5
-  },
-  {
-    "word": "contre",
-    "total_associations": 8,
-    "with_integrisme": 3,
-    "with_integriste": 5
-  },
-  {
-    "word": "aurait",
-    "total_associations": 7,
-    "with_integrisme": 4,
-    "with_integriste": 3
-  },
-  {
     "word": "politique",
-    "total_associations": 7,
-    "with_integrisme": 3,
-    "with_integriste": 4
-  },
-  {
-    "word": "pays",
     "total_associations": 7,
     "with_integrisme": 3,
     "with_integriste": 4
@@ -150,18 +120,6 @@
     "with_integriste": 3
   },
   {
-    "word": "gens",
-    "total_associations": 7,
-    "with_integrisme": 2,
-    "with_integriste": 5
-  },
-  {
-    "word": "fait",
-    "total_associations": 6,
-    "with_integrisme": 3,
-    "with_integriste": 3
-  },
-  {
     "word": "religieux",
     "total_associations": 6,
     "with_integrisme": 6,
@@ -172,12 +130,6 @@
     "total_associations": 6,
     "with_integrisme": 6,
     "with_integriste": 0
-  },
-  {
-    "word": "aussi",
-    "total_associations": 6,
-    "with_integrisme": 2,
-    "with_integriste": 4
   },
   {
     "word": "communauté",
@@ -240,12 +192,6 @@
     "with_integriste": 3
   },
   {
-    "word": "entre",
-    "total_associations": 5,
-    "with_integrisme": 5,
-    "with_integriste": 0
-  },
-  {
     "word": "thème",
     "total_associations": 5,
     "with_integrisme": 3,
@@ -276,12 +222,6 @@
     "with_integriste": 2
   },
   {
-    "word": "pouvoir",
-    "total_associations": 5,
-    "with_integrisme": 2,
-    "with_integriste": 3
-  },
-  {
     "word": "retour",
     "total_associations": 5,
     "with_integrisme": 0,
@@ -294,7 +234,55 @@
     "with_integriste": 3
   },
   {
-    "word": "quelles",
+    "word": "mot",
+    "total_associations": 5,
+    "with_integrisme": 3,
+    "with_integriste": 2
+  },
+  {
+    "word": "lecture",
+    "total_associations": 5,
+    "with_integrisme": 2,
+    "with_integriste": 3
+  },
+  {
+    "word": "moi",
+    "total_associations": 5,
+    "with_integrisme": 4,
+    "with_integriste": 1
+  },
+  {
+    "word": "tente",
+    "total_associations": 5,
+    "with_integrisme": 1,
+    "with_integriste": 4
+  },
+  {
+    "word": "charte",
+    "total_associations": 5,
+    "with_integrisme": 3,
+    "with_integriste": 2
+  },
+  {
+    "word": "mots",
+    "total_associations": 5,
+    "with_integrisme": 1,
+    "with_integriste": 4
+  },
+  {
+    "word": "dossier",
+    "total_associations": 5,
+    "with_integrisme": 0,
+    "with_integriste": 5
+  },
+  {
+    "word": "sainte",
+    "total_associations": 5,
+    "with_integrisme": 4,
+    "with_integriste": 1
+  },
+  {
+    "word": "deviennent",
     "total_associations": 5,
     "with_integrisme": 1,
     "with_integriste": 4
