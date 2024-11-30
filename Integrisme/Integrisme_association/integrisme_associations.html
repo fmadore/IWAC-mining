@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Associations avec Intégrisme/Intégriste</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .description {
+            margin-bottom: 30px;
+        }
+
+        .bar-integrisme {
+            fill: #1f77b4;
+        }
+
+        .bar-integriste {
+            fill: #ff7f0e;
+        }
+
+        .axis-label {
+            font-size: 12px;
+        }
+
+        .legend {
+            font-size: 12px;
+        }
+
+        .tooltip {
+            position: absolute;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="description">
+            <h2>Mots associés à "intégrisme" et "intégriste"</h2>
+            <p>Ce graphique montre les mots qui apparaissent le plus fréquemment à proximité des termes "intégrisme" et "intégriste".
+               Les barres sont divisées pour montrer la fréquence d'association avec chaque terme.</p>
+        </div>
+        <div id="visualization"></div>
+    </div>
+    <script>
+        class AssociationVisualization {
+            constructor() {
+                this.margin = {top: 30, right: 200, bottom: 30, left: 150};
+                this.width = 1000 - this.margin.left - this.margin.right;
+                this.height = 800 - this.margin.top - this.margin.bottom;
+                this.barHeight = 20;
+                this.barPadding = 5;
+            }
+
+            async initialize() {
+                // Load data
+                const data = await d3.json('data/integrisme_associations.json');
+                this.createVisualization(data);
+            }
+
+            createVisualization(data) {
+                // Sort data by total associations
+                data.sort((a, b) => b.total_associations - a.total_associations);
+
+                // Create SVG
+                const svg = d3.select('#visualization')
+                    .append('svg')
+                    .attr('width', this.width + this.margin.left + this.margin.right)
+                    .attr('height', Math.min(this.height, data.length * (this.barHeight + this.barPadding) + this.margin.top + this.margin.bottom))
+                    .append('g')
+                    .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
+
+                // Create scales
+                const x = d3.scaleLinear()
+                    .domain([0, d3.max(data, d => d.total_associations)])
+                    .range([0, this.width]);
+
+                const y = d3.scaleBand()
+                    .domain(data.map(d => d.word))
+                    .range([0, data.length * (this.barHeight + this.barPadding)])
+                    .padding(0.1);
+
+                // Add axes
+                svg.append('g')
+                    .attr('class', 'x axis')
+                    .call(d3.axisTop(x));
+
+                svg.append('g')
+                    .attr('class', 'y axis')
+                    .call(d3.axisLeft(y));
+
+                // Create tooltip
+                const tooltip = d3.select('body').append('div')
+                    .attr('class', 'tooltip')
+                    .style('opacity', 0);
+
+                // Create bar groups
+                const barGroups = svg.selectAll('.bar-group')
+                    .data(data)
+                    .enter()
+                    .append('g')
+                    .attr('class', 'bar-group')
+                    .attr('transform', d => `translate(0,${y(d.word)})`);
+
+                // Add bars for intégrisme
+                barGroups.append('rect')
+                    .attr('class', 'bar-integrisme')
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .attr('width', d => x(d.with_integrisme))
+                    .attr('height', y.bandwidth())
+                    .on('mouseover', (event, d) => {
+                        tooltip.transition()
+                            .duration(200)
+                            .style('opacity', .9);
+                        tooltip.html(`"intégrisme": ${d.with_integrisme}`)
+                            .style('left', (event.pageX + 10) + 'px')
+                            .style('top', (event.pageY - 28) + 'px');
+                    })
+                    .on('mouseout', () => {
+                        tooltip.transition()
+                            .duration(500)
+                            .style('opacity', 0);
+                    });
+
+                // Add bars for intégriste
+                barGroups.append('rect')
+                    .attr('class', 'bar-integriste')
+                    .attr('x', d => x(d.with_integrisme))
+                    .attr('y', 0)
+                    .attr('width', d => x(d.with_integriste))
+                    .attr('height', y.bandwidth())
+                    .on('mouseover', (event, d) => {
+                        tooltip.transition()
+                            .duration(200)
+                            .style('opacity', .9);
+                        tooltip.html(`"intégriste": ${d.with_integriste}`)
+                            .style('left', (event.pageX + 10) + 'px')
+                            .style('top', (event.pageY - 28) + 'px');
+                    })
+                    .on('mouseout', () => {
+                        tooltip.transition()
+                            .duration(500)
+                            .style('opacity', 0);
+                    });
+
+                // Add legend
+                const legend = svg.append('g')
+                    .attr('class', 'legend')
+                    .attr('transform', `translate(${this.width + 10}, 0)`);
+
+                legend.append('rect')
+                    .attr('class', 'bar-integrisme')
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .attr('width', 20)
+                    .attr('height', 20);
+
+                legend.append('text')
+                    .attr('x', 30)
+                    .attr('y', 15)
+                    .text('intégrisme');
+
+                legend.append('rect')
+                    .attr('class', 'bar-integriste')
+                    .attr('x', 0)
+                    .attr('y', 30)
+                    .attr('width', 20)
+                    .attr('height', 20);
+
+                legend.append('text')
+                    .attr('x', 30)
+                    .attr('y', 45)
+                    .text('intégriste');
+            }
+        }
+
+        // Initialize visualization
+        const visualization = new AssociationVisualization();
+        visualization.initialize();
+    </script>
+</body>
+</html> 
