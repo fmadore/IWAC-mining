@@ -39,6 +39,7 @@
             font-family: Arial, sans-serif;
             font-size: 14px;
             max-width: 300px;
+            z-index: 1000;
         }
         
         .controls {
@@ -74,6 +75,25 @@
             font-size: 12px;
             margin-left: 5px;
             cursor: help;
+        }
+        
+        .zoom-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .zoom-controls button {
+            padding: 5px 10px;
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .zoom-controls button:hover {
+            background: #e0e0e0;
         }
     </style>
 </head>
