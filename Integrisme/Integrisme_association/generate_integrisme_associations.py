@@ -13,7 +13,7 @@ def load_integrisme_data():
         return json.load(f)
 
 def get_french_stopwords():
-    """Get a set of French stopwords"""
+    """Get an expanded set of French stopwords"""
     stopwords = {
         'le', 'la', 'les', 'un', 'une', 'des', 'du', 'de', 'ce', 'ces', 'cette',
         'il', 'elle', 'ils', 'elles', 'nous', 'vous', 'je', 'tu', 'on',
@@ -26,7 +26,18 @@ def get_french_stopwords():
         'plus', 'moins', 'très', 'bien', 'mal', 'peu', 'trop',
         'ici', 'là', 'cela', 'ceci', 'celui', 'celle', 'ceux', 'celles',
         'alors', 'ainsi', 'car', 'donc', 'ensuite', 'puis',
-        'comme', 'comment', 'pourquoi', 'quand', 'après'
+        'comme', 'comment', 'pourquoi', 'quand', 'après',
+        'aussi', 'entre', 'encore', 'fait', 'fois', 'gens',
+        'jamais', 'jour', 'jours', 'lui', 'non', 'oui',
+        'par', 'parce', 'peut', 'peux', 'pouvoir',
+        'quand', 'que', 'quel', 'quelle', 'quelles', 'quels',
+        'sans', 'sera', 'serai', 'seraient', 'serais', 'serait',
+        'suis', 'sur', 'ta', 'te', 'toi', 'ton', 'tous',
+        'tout', 'toute', 'toutes', 'tres', 'trop', 'voici',
+        'voilà', 'voir', 'vos', 'votre', 'vôtre', 'vous',
+        'certain', 'certaine', 'certaines', 'certains',
+        'quelque', 'quelques', 'plusieurs',
+        'falloir', 'contre', 'pays', 'aurait', 'faire'
     }
     return stopwords
 
