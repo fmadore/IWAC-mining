@@ -91,7 +91,7 @@ function updateVisualization(data, threshold = 0.2) {
     // Add tooltips
     node.on('mouseover', (event, d) => {
         let content = d.type === 'topic' 
-            ? `Thématique ${d.id + 1}<br>Mots clés: ${d.words.join(', ')}`
+            ? `Topic ${d.id + 1}<br>Keywords: ${d.words.join(', ')}`
             : `Document: ${d.title}<br>Date: ${d.date}`;
             
         tooltip.transition()
