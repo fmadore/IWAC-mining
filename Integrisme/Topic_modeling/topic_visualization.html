@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topic Model Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .node-topic {
+            fill: #4CAF50;
+            stroke: #2E7D32;
+            stroke-width: 2px;
+        }
+        
+        .node-document {
+            fill: #2196F3;
+            stroke: #1976D2;
+            stroke-width: 1px;
+        }
+        
+        .link {
+            stroke: #9E9E9E;
+            stroke-opacity: 0.4;
+        }
+        
+        .tooltip {
+            position: absolute;
+            padding: 10px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            pointer-events: none;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            max-width: 300px;
+        }
+        
+        .controls {
+            margin-bottom: 20px;
+        }
+        
+        .legend {
+            margin-top: 20px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Visualisation des thématiques</h1>
+        <div class="controls">
+            <label for="threshold">Seuil de liaison : </label>
+            <input type="range" id="threshold" min="0" max="100" value="20">
+            <span id="threshold-value">0.2</span>
+        </div>
+        <div id="visualization"></div>
+        <div class="legend">
+            <p>🟢 Thématiques</p>
+            <p>🔵 Documents</p>
+        </div>
+    </div>
+    <script src="topic_visualization.js"></script>
+</body>
+</html> 
