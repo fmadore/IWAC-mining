@@ -84,25 +84,25 @@ def preprocess_text(text):
             "sentences": []
         }
     
-    # Initial text cleaning
+    # Initial text cleaning - UPDATED apostrophe handling
     text = (text.strip()
-        .replace('\xa0', ' ')  # Replace non-breaking spaces
-        .replace('  ', ' ')    # Replace double spaces
-        .replace('«', '"')     # Normalize French quotes
+        .replace('\xa0', ' ')     # Replace non-breaking spaces
+        .replace('  ', ' ')       # Replace double spaces
+        .replace('«', '"')        # Normalize French quotes
         .replace('»', '"')
-        .replace('"', '"')     # Normalize other quotes
+        .replace('"', '"')        # Normalize other quotes
         .replace('"', '"')
-        .replace(''', "'")     # Normalize apostrophes
-        .replace(''', "'")
-        .replace('…', '...')   # Normalize ellipsis
-        .replace('–', '-')     # Normalize dashes
-        .replace('—', '-'))
+        .replace('…', '...')      # Normalize ellipsis
+        .replace('–', '-')        # Normalize dashes
+        .replace('—', '-')
+        .replace(''', "'")        # Normalize apostrophes to single consistent form
+        .replace(''', "'"))
+
+    # Special handling for French contractions
+    text = re.sub(r"([a-zéèêëàâäôöûüç])'([a-zéèêëàâäôöûüç])", r"\1'\2", text, flags=re.IGNORECASE)
     
-    # Remove multiple spaces (including those created by previous replacements)
-    text = re.sub(r'\s+', ' ', text)
-    
-    # Convert to lowercase and remove special characters
-    text = re.sub(r'[^\w\s]', ' ', text.lower())
+    # Don't lowercase or remove special characters yet
+    # text = re.sub(r'[^\w\s]', ' ', text.lower())  # REMOVE THIS LINE
     
     # Process with spaCy
     doc = nlp(text)
@@ -118,6 +118,8 @@ def preprocess_text(text):
             and len(token.text.strip()) > 1
             and not token.like_num
             and token.pos_ not in ['SPACE', 'SYM']
+            and not any(char in '0123456789' for char in token.lemma_)  # ADD THIS
+            and len(token.lemma_.strip()) > 2  # ADD THIS - filter out very short tokens
         ]
     
     # Process at article level
