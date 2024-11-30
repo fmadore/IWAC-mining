@@ -4,8 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Associations with Integrism/Integrist</title>
+    <!-- Add Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
+        /* Apply font to all elements */
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            color: #333;
+            line-height: 1.6;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -16,6 +30,17 @@
             margin-bottom: 30px;
         }
 
+        .description h2 {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+
+        .description p {
+            font-size: 15px;
+            color: #4a4a4a;
+        }
+
         .bar-integrisme {
             fill: #1f77b4;
         }
@@ -24,22 +49,36 @@
             fill: #ff7f0e;
         }
 
+        /* Style the axes */
         .axis-label {
-            font-size: 12px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .axis text {
+            font-size: 13px;
+            fill: #4a4a4a;
+        }
+
+        .axis line, .axis path {
+            stroke: #e0e0e0;
         }
 
         .legend {
-            font-size: 12px;
+            font-size: 13px;
+            font-weight: 500;
         }
 
         .tooltip {
             position: absolute;
-            padding: 8px;
+            padding: 10px;
             background: rgba(0, 0, 0, 0.8);
             color: white;
-            border-radius: 4px;
-            font-size: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
             pointer-events: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
     </style>
 </head>
