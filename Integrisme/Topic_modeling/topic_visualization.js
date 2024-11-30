@@ -92,7 +92,7 @@ function updateVisualization(data, threshold = 0.2) {
     node.on('mouseover', (event, d) => {
         let content = d.type === 'topic' 
             ? `Topic ${d.id + 1}<br>Keywords: ${d.words.join(', ')}`
-            : `Document: ${d.title}<br>Date: ${d.date}`;
+            : `Document: ${d.title}<br>Date: ${d.date}<br>Publisher: ${d.publisher}`;
             
         tooltip.transition()
             .duration(200)
