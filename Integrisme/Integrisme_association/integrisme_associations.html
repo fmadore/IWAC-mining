@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Associations avec Intégrisme/Intégriste</title>
+    <title>Associations with Integrism/Integrist</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         .container {
@@ -46,9 +46,9 @@
 <body>
     <div class="container">
         <div class="description">
-            <h2>Mots associés à "intégrisme" et "intégriste"</h2>
-            <p>Ce graphique montre les mots qui apparaissent le plus fréquemment à proximité des termes "intégrisme" et "intégriste".
-               Les barres sont divisées pour montrer la fréquence d'association avec chaque terme.</p>
+            <h2>Words Associated with "intégrisme" and "intégriste"</h2>
+            <p>This graph shows the words that appear most frequently in proximity to the terms "intégrisme" and "intégriste" 
+               (French terms for "integrism" and "integrist"). The bars are divided to show the frequency of association with each term.</p>
         </div>
         <div id="visualization"></div>
     </div>
@@ -57,7 +57,7 @@
             constructor() {
                 this.margin = {top: 30, right: 200, bottom: 30, left: 150};
                 this.width = 1000 - this.margin.left - this.margin.right;
-                this.height = 800 - this.margin.top - this.margin.bottom;
+                this.height = 1200 - this.margin.top - this.margin.bottom;
                 this.barHeight = 20;
                 this.barPadding = 5;
             }
@@ -72,11 +72,14 @@
                 // Sort data by total associations
                 data.sort((a, b) => b.total_associations - a.total_associations);
 
-                // Create SVG
+                // Calculate required height based on data length
+                const totalHeight = data.length * (this.barHeight + this.barPadding) + this.margin.top + this.margin.bottom;
+
+                // Create SVG with dynamic height
                 const svg = d3.select('#visualization')
                     .append('svg')
                     .attr('width', this.width + this.margin.left + this.margin.right)
-                    .attr('height', Math.min(this.height, data.length * (this.barHeight + this.barPadding) + this.margin.top + this.margin.bottom))
+                    .attr('height', totalHeight)
                     .append('g')
                     .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
 
@@ -85,6 +88,7 @@
                     .domain([0, d3.max(data, d => d.total_associations)])
                     .range([0, this.width]);
 
+                // Update y scale range to use total height
                 const y = d3.scaleBand()
                     .domain(data.map(d => d.word))
                     .range([0, data.length * (this.barHeight + this.barPadding)])
@@ -112,7 +116,7 @@
                     .attr('class', 'bar-group')
                     .attr('transform', d => `translate(0,${y(d.word)})`);
 
-                // Add bars for intégrisme
+                // Add bars for integrism
                 barGroups.append('rect')
                     .attr('class', 'bar-integrisme')
                     .attr('x', 0)
@@ -133,7 +137,7 @@
                             .style('opacity', 0);
                     });
 
-                // Add bars for intégriste
+                // Add bars for integrist
                 barGroups.append('rect')
                     .attr('class', 'bar-integriste')
                     .attr('x', d => x(d.with_integrisme))
