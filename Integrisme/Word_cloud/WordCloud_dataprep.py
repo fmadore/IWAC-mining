@@ -1,19 +1,11 @@
 import json
 import os
-import requests
 from collections import Counter
 
 def load_data(json_path):
-    """Load data from JSON file or URL."""
-    if json_path.startswith('http'):
-        # Load from URL
-        response = requests.get(json_path)
-        response.raise_for_status()  # Raise exception for bad status codes
-        return response.json()
-    else:
-        # Load from local file
-        with open(json_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
+    """Load data from JSON file."""
+    with open(json_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
 def extract_processed_text(articles):
     """Extract preprocessed text from articles."""
@@ -60,30 +52,29 @@ def save_to_json(word_frequencies, output_path):
 
 def main():
     """Main function to generate word frequency JSON."""
-    # GitHub raw URL for the data
-    github_url = "https://github.com/fmadore/Mining_IWAC/raw/refs/heads/main/Integrisme/Word_cloud/data/word_frequencies.json"
+    # Get the script directory
+    script_dir = os.path.dirname(os.path.abspath(__file__))
     
-    try:
-        # Load data from GitHub
-        word_frequencies = load_data(github_url)
-        
-        # Get the script directory
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        
-        # Create data directory if it doesn't exist
-        data_dir = os.path.join(script_dir, 'data')
-        os.makedirs(data_dir, exist_ok=True)
-        
-        # Save to local JSON file (optional - if you want to keep a local copy)
-        output_path = os.path.join(data_dir, 'word_frequencies.json')
-        save_to_json(word_frequencies, output_path)
-        print(f"Word frequencies saved to {output_path}")
-        
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching data from GitHub: {e}")
-        # Optionally fall back to local file if GitHub fetch fails
-        print("Falling back to local file...")
-        # Your existing local file loading code here
+    # Path to input JSON file (going up one directory)
+    input_path = os.path.join(os.path.dirname(script_dir), 'integrisme_data.json')
+    
+    # Load data
+    articles = load_data(input_path)
+    
+    # Extract preprocessed texts
+    processed_texts = extract_processed_text(articles)
+    
+    # Generate word frequencies
+    word_frequencies = generate_word_frequencies(processed_texts, max_words=200)
+    
+    # Create data directory if it doesn't exist
+    data_dir = os.path.join(script_dir, 'data')
+    os.makedirs(data_dir, exist_ok=True)
+    
+    # Save to JSON file
+    output_path = os.path.join(data_dir, 'word_frequencies.json')
+    save_to_json(word_frequencies, output_path)
+    print(f"Word frequencies saved to {output_path}")
 
 if __name__ == "__main__":
     main() 
