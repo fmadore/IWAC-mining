@@ -18,12 +18,13 @@
     line-height: 1.5;
 }
 
-#window-type {
+#window-type,
+#order {
     display: inline-block;
     padding: 2px 5px;
     font-size: inherit;
-    border: none;
-    border-bottom: 1px dashed #666;
+    border: 1px solid #666;
+    border-radius: 4px;
     background: transparent;
     cursor: pointer;
 }
@@ -75,14 +76,13 @@ select {
     white-space: nowrap;
 }
 
-.row-label {
+.row-label,
+.column-label {
     font-family: sans-serif;
     font-size: 9px;
 }
 
 .column-label {
-    font-family: sans-serif;
-    font-size: 9px;
     text-anchor: start;
 }
 
@@ -108,4 +108,24 @@ select {
     font-size: 12px;
     pointer-events: none;
     display: none;
+}
+
+/* Remove scrollbar-width property and use alternative styling */
+* {
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+/* Custom scrollbar styling for webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
 } 

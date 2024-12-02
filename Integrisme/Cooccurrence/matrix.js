@@ -7,6 +7,31 @@ const config = {
     minOpacity: 0.2
 };
 
+// Update the data loading URL to use the GitHub raw file
+const dataUrl = 'https://github.com/fmadore/Mining_IWAC/raw/refs/heads/main/Integrisme/Cooccurrence/data/cooccurrence.json';
+
+// Load data and initialize visualization
+d3.json(dataUrl).then(data => {
+    // Initial setup
+    const windowType = document.getElementById('window-type').value;
+    createMatrix(data, windowType);
+
+    // Add event listeners
+    document.getElementById('window-type').addEventListener('change', (event) => {
+        createMatrix(data, event.target.value);
+    });
+
+    document.getElementById('order').addEventListener('change', (event) => {
+        createMatrix(data, document.getElementById('window-type').value);
+    });
+}).catch(error => {
+    console.error('Error loading the data:', error);
+    d3.select("#matrix")
+        .append("p")
+        .attr("class", "error")
+        .text("Error loading visualization data. Please check the console for details.");
+});
+
 function createMatrix(data, windowType) {
     // Clear previous visualization
     d3.select("#matrix").selectAll("*").remove();
@@ -92,6 +117,14 @@ function createMatrix(data, windowType) {
         .attr("text-anchor", "end")
         .text(d => d.name)
         .style("font-size", "10px");
+
+    // Add tooltip div if it doesn't exist
+    if (!d3.select("#tooltip").size()) {
+        d3.select("body").append("div")
+            .attr("id", "tooltip")
+            .attr("class", "tooltip")
+            .style("display", "none");
+    }
 }
 
 function showTooltip(event, d) {
