@@ -1,8 +1,8 @@
 // Add these configurations at the top
 const config = {
-    margin: { top: 80, right: 20, bottom: 10, left: 100 },
-    cellSize: 12,
-    cellPadding: 2,
+    margin: { top: 160, right: 20, bottom: 10, left: 120 },
+    cellSize: 16,
+    cellPadding: 3,
     maxOpacity: 1.0,
     minOpacity: 0.3,
     colors: {
@@ -142,12 +142,12 @@ function createMatrix(data, windowType) {
     // Add row labels with unique class
     rows.append("text")
         .attr("class", d => `label row-label-${nodes.indexOf(d)}`)
-        .attr("x", -8)
+        .attr("x", -12)
         .attr("y", config.cellSize / 2)
         .attr("text-anchor", "end")
         .attr("alignment-baseline", "middle")
         .text(d => d.name)
-        .style("font-size", "11px")
+        .style("font-size", "12px")
         .style("font-weight", "500");
 
     // Add column labels with unique class
@@ -157,14 +157,16 @@ function createMatrix(data, windowType) {
         .append("text")
         .attr("class", (d, i) => `label col-label-${i}`)
         .attr("x", (d, i) => i * (config.cellSize + config.cellPadding) + config.cellSize / 2)
-        .attr("y", -8)
+        .attr("y", -30)
         .attr("transform", (d, i) => {
             const x = i * (config.cellSize + config.cellPadding) + config.cellSize / 2;
-            return `rotate(-45,${x},-8)`;
+            const y = -30;
+            return `rotate(-65,${x},${y})`;
         })
         .attr("text-anchor", "end")
+        .attr("dy", ".2em")
         .text(d => d.name)
-        .style("font-size", "11px")
+        .style("font-size", "12px")
         .style("font-weight", "500");
 
     // Add tooltip div if it doesn't exist
