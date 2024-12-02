@@ -20,6 +20,9 @@ def get_top_terms(word_frequencies_path, n_terms=50):
     current_dir = Path(__file__).parent
     word_frequencies_file = current_dir.parent / 'Word_cloud/data/word_frequencies.json'
     
+    # Load articles data first
+    articles = load_integrisme_data()
+    
     with open(word_frequencies_file, 'r', encoding='utf-8') as f:
         word_freq = json.load(f)
     
@@ -30,10 +33,25 @@ def get_top_terms(word_frequencies_path, n_terms=50):
         and not any(c.isdigit() for c in word)  # Filter out words with numbers
         and word not in ['celer', 'célér']  # Explicitly exclude problematic words
         and word.isalpha()  # Only keep purely alphabetic words
+        and freq >= np.percentile(list(word_freq.values()), 75)  # Only keep words in top 25% by frequency
+    }
+    
+    # Calculate document frequency (how many articles contain each word)
+    doc_frequencies = defaultdict(int)
+    for article in articles:
+        content = article.get('bibo:content', [{}])[0].get('@value', '').lower()
+        for word in filtered_freq:
+            if word in content:
+                doc_frequencies[word] += 1
+    
+    # Filter out words that appear in too few documents
+    min_doc_frequency = len(articles) * 0.05  # Word should appear in at least 5% of articles
+    filtered_freq = {
+        word: freq for word, freq in filtered_freq.items()
+        if doc_frequencies[word] >= min_doc_frequency
     }
     
     # Calculate TF-IDF scores
-    articles = load_integrisme_data()
     total_articles = len(articles)
     word_importance = {}
     
@@ -43,8 +61,6 @@ def get_top_terms(word_frequencies_path, n_terms=50):
                        if word in article.get('bibo:content', [{}])[0].get('@value', '').lower())
         
         # Calculate importance score (TF-IDF)
-        # TF = freq (we already have term frequencies)
-        # IDF = log(total_docs / (1 + docs_containing_term))
         importance = freq * np.log(total_articles / (1 + doc_count))
         word_importance[word] = importance
     
@@ -90,9 +106,20 @@ def calculate_cooccurrence(articles, top_terms, window_type='article'):
     # Calculate mean and std of non-zero values
     non_zero_vals = matrix[matrix > 0]
     if len(non_zero_vals) > 0:
-        threshold = np.mean(non_zero_vals) - 0.5 * np.std(non_zero_vals)
+        # Calculate percentile-based threshold instead
+        threshold = np.percentile(non_zero_vals, 25)  # Keep values above 25th percentile
         matrix[matrix < threshold] = 0
         
+        # Remove terms that have very few connections
+        min_connections = 3  # Minimum number of connections a term should have
+        connected_terms = np.sum(matrix > 0, axis=0) >= min_connections
+        
+        # If a term doesn't have enough connections, zero out its row and column
+        for i in range(len(matrix)):
+            if not connected_terms[i]:
+                matrix[i, :] = 0
+                matrix[:, i] = 0
+
     return matrix
 
 def generate_matrix_data():
@@ -101,7 +128,7 @@ def generate_matrix_data():
     articles = load_integrisme_data()
     
     # Get top terms from word frequencies
-    top_terms = get_top_terms(word_frequencies_path=None)
+    top_terms = get_top_terms(word_frequencies_path=None, n_terms=30)
     
     # Calculate co-occurrence matrices for different window types
     matrices = {
