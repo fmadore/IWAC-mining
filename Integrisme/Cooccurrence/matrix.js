@@ -4,7 +4,11 @@ const config = {
     cellSize: 12,
     cellPadding: 2,
     maxOpacity: 1.0,
-    minOpacity: 0.3
+    minOpacity: 0.3,
+    colors: {
+        empty: "#f8f9fa",
+        filled: d3.interpolateBlues
+    }
 };
 
 // Add error handling for matrix container
@@ -60,10 +64,26 @@ function createMatrix(data, windowType) {
     // Find max value for scaling
     const maxValue = d3.max(links, d => d.value);
 
-    // Create color scale with more pronounced differences
-    const colorScale = d3.scaleSequential()
-        .domain([0, maxValue])
-        .interpolator(d3.interpolateBlues);
+    // Get all non-zero values to better understand the distribution
+    const nonZeroValues = links.map(d => d.value).filter(v => v > 0);
+    
+    // Calculate quartiles for better distribution understanding
+    const quartiles = {
+        q1: d3.quantile(nonZeroValues, 0.25),
+        q2: d3.quantile(nonZeroValues, 0.5),
+        q3: d3.quantile(nonZeroValues, 0.75)
+    };
+
+    // Create a more nuanced color scale using quantile breaks
+    const colorScale = d3.scaleQuantile()
+        .domain([0, quartiles.q1, quartiles.q2, quartiles.q3, d3.max(nonZeroValues)])
+        .range([
+            d3.interpolateBlues(0.1),  // Very light blue for lowest values
+            d3.interpolateBlues(0.3),  // Light blue
+            d3.interpolateBlues(0.5),  // Medium blue
+            d3.interpolateBlues(0.7),  // Darker blue
+            d3.interpolateBlues(0.9)   // Darkest blue
+        ]);
 
     // Calculate size based on number of nodes
     const size = nodes.length * (config.cellSize + config.cellPadding);
@@ -95,11 +115,16 @@ function createMatrix(data, windowType) {
         .attr("x", (d, i) => i * (config.cellSize + config.cellPadding))
         .attr("width", config.cellSize)
         .attr("height", config.cellSize)
-        .style("fill", d => d.value > 0 ? colorScale(d.value) : "#f8f9fa")
+        .style("fill", d => {
+            if (d.value === 0) return config.colors.empty;
+            return colorScale(d.value);
+        })
         .style("opacity", d => {
             if (d.value === 0) return 0.05;
+            // Use a more pronounced opacity scale
             const normalizedValue = d.value / maxValue;
-            return config.minOpacity + normalizedValue * (config.maxOpacity - config.minOpacity);
+            return config.minOpacity + Math.pow(normalizedValue, 0.5) * 
+                   (config.maxOpacity - config.minOpacity);
         })
         .style("stroke", "#ddd")
         .style("stroke-width", 0.5)
@@ -152,7 +177,6 @@ function createMatrix(data, windowType) {
 
     // Add these new functions within createMatrix
     function highlightCell(row, col) {
-        // Highlight the cell
         d3.selectAll(".cell")
             .style("opacity", function() {
                 const cellRow = +this.getAttribute("data-row");
@@ -160,7 +184,7 @@ function createMatrix(data, windowType) {
                 if (cellRow === row && cellCol === col) {
                     return 1;
                 }
-                return 0.3;
+                return 0.15; // Reduced opacity for non-highlighted cells
             });
 
         // Highlight the labels
