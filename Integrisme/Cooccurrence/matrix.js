@@ -103,12 +103,20 @@ function createMatrix(data, windowType) {
         })
         .style("stroke", "#ddd")
         .style("stroke-width", 0.5)
-        .on("mouseover", showTooltip)
-        .on("mouseout", hideTooltip);
+        .attr("data-row", d => d.i)
+        .attr("data-col", d => d.j)
+        .on("mouseover", (event, d) => {
+            showTooltip(event, d);
+            highlightCell(d.i, d.j);
+        })
+        .on("mouseout", (event, d) => {
+            hideTooltip();
+            unhighlightCell();
+        });
 
-    // Add row labels
+    // Add row labels with unique class
     rows.append("text")
-        .attr("class", "label")
+        .attr("class", d => `label row-label-${nodes.indexOf(d)}`)
         .attr("x", -8)
         .attr("y", config.cellSize / 2)
         .attr("text-anchor", "end")
@@ -117,12 +125,12 @@ function createMatrix(data, windowType) {
         .style("font-size", "11px")
         .style("font-weight", "500");
 
-    // Add column labels
+    // Add column labels with unique class
     svg.selectAll(".column-label")
         .data(nodes)
         .enter()
         .append("text")
-        .attr("class", "label")
+        .attr("class", (d, i) => `label col-label-${i}`)
         .attr("x", (d, i) => i * (config.cellSize + config.cellPadding) + config.cellSize / 2)
         .attr("y", -8)
         .attr("transform", (d, i) => {
@@ -140,6 +148,47 @@ function createMatrix(data, windowType) {
             .attr("id", "tooltip")
             .attr("class", "tooltip")
             .style("display", "none");
+    }
+
+    // Add these new functions within createMatrix
+    function highlightCell(row, col) {
+        // Highlight the cell
+        d3.selectAll(".cell")
+            .style("opacity", function() {
+                const cellRow = +this.getAttribute("data-row");
+                const cellCol = +this.getAttribute("data-col");
+                if (cellRow === row && cellCol === col) {
+                    return 1;
+                }
+                return 0.3;
+            });
+
+        // Highlight the labels
+        d3.selectAll(".label")
+            .style("fill", "#999");
+        
+        d3.select(`.row-label-${row}`)
+            .style("fill", "#2171b5")
+            .style("font-weight", "bold");
+        
+        d3.select(`.col-label-${col}`)
+            .style("fill", "#2171b5")
+            .style("font-weight", "bold");
+    }
+
+    function unhighlightCell() {
+        // Reset cell opacity
+        d3.selectAll(".cell")
+            .style("opacity", d => {
+                if (d.value === 0) return 0.05;
+                const normalizedValue = d.value / maxValue;
+                return config.minOpacity + normalizedValue * (config.maxOpacity - config.minOpacity);
+            });
+
+        // Reset label styles
+        d3.selectAll(".label")
+            .style("fill", "#333")
+            .style("font-weight", "500");
     }
 }
 
