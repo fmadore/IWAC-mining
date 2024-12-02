@@ -7,11 +7,26 @@ const config = {
     minOpacity: 0.2
 };
 
-// Update the data loading URL to use the GitHub raw file
-const dataUrl = 'https://github.com/fmadore/Mining_IWAC/raw/refs/heads/main/Integrisme/Cooccurrence/data/cooccurrence.json';
+// Add error handling for matrix container
+function showError(message) {
+    const matrixDiv = d3.select("#matrix");
+    matrixDiv.selectAll("*").remove();
+    matrixDiv
+        .append("div")
+        .attr("class", "error-message")
+        .attr("role", "alert")
+        .text(message);
+}
+
+// Update the data loading URL to use the correct path
+const dataUrl = './data/cooccurrence.json';
 
 // Load data and initialize visualization
 d3.json(dataUrl).then(data => {
+    if (!data) {
+        throw new Error('No data received');
+    }
+    
     // Initial setup
     const windowType = document.getElementById('window-type').value;
     createMatrix(data, windowType);
@@ -26,10 +41,7 @@ d3.json(dataUrl).then(data => {
     });
 }).catch(error => {
     console.error('Error loading the data:', error);
-    d3.select("#matrix")
-        .append("p")
-        .attr("class", "error")
-        .text("Error loading visualization data. Please check the console for details.");
+    showError("Error loading visualization data. Please ensure the data file exists and is properly formatted.");
 });
 
 function createMatrix(data, windowType) {
