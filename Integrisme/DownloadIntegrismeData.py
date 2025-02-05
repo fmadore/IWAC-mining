@@ -1,3 +1,52 @@
+"""
+This module downloads and processes article data from an Omeka API endpoint.
+It handles authentication, concurrent data fetching, and text preprocessing using spaCy.
+
+Main Features:
+-------------
+1. Authentication and API Access:
+   - Uses environment variables for secure API authentication
+   - Handles concurrent API requests with rate limiting
+   
+2. Data Collection:
+   - Fetches articles related to 'integrisme' from the Omeka platform
+   - Validates article types and metadata
+   - Provides progress tracking for long-running operations
+
+3. Text Processing:
+   - Uses spaCy's French transformer model for advanced NLP
+   - Normalizes text (quotes, spaces, dashes)
+   - Handles French-specific text features (contractions, accents)
+   - Processes text at multiple levels (article, paragraph, sentence)
+
+4. Error Handling and Logging:
+   - Comprehensive logging system with file and console output
+   - Graceful error handling for network and processing issues
+   - Detailed progress tracking with tqdm progress bars
+
+Requirements:
+------------
+- Python 3.7+
+- spaCy with French transformer model (fr_dep_news_trf)
+- Environment variables:
+  - OMEKA_BASE_URL: Base URL for the Omeka API
+  - OMEKA_KEY_IDENTITY: API key identity
+  - OMEKA_KEY_CREDENTIAL: API key credential
+
+Output:
+-------
+- Processed data saved as JSON file (integrisme_data.json)
+- Detailed logs in the logs directory
+- Progress information in the console
+
+Usage:
+------
+1. Ensure environment variables are set in .env file
+2. Run the script: python DownloadIntegrismeData.py
+3. Monitor progress in console and logs
+4. Access processed data in integrisme_data.json
+"""
+
 import asyncio
 import aiohttp
 import json
