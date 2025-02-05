@@ -1,8 +1,28 @@
+"""
+This module extracts articles from a JSON file and organizes them by publisher.
+It processes articles from various Ivorian newspapers and saves them into separate text files,
+one for each publisher. The module handles data extraction, cleaning, and file organization
+while maintaining a consistent output format.
+"""
+
 import json
 import os
 
 def extract_articles_by_publisher(json_file, output_dir="extracted_articles"):
-    # List of publishers to extract
+    """
+    Extract and organize articles from a JSON file by their publisher.
+    
+    Args:
+        json_file (str): Path to the input JSON file containing article data
+        output_dir (str): Directory where the extracted articles will be saved (default: "extracted_articles")
+    
+    The function performs the following steps:
+    1. Creates separate text files for each publisher
+    2. Processes the JSON data to extract article information
+    3. Writes articles to their respective publisher files with consistent formatting
+    4. Handles file operations safely with proper encoding and error handling
+    """
+    # Define list of publishers to extract articles for
     publishers = [
         "Fraternité Matin",
         "La Voie",
@@ -16,17 +36,15 @@ def extract_articles_by_publisher(json_file, output_dir="extracted_articles"):
         "Plume Libre"
     ]
     
-    # Get the directory containing the script
+    # Set up file paths relative to the script location
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # Create full paths
     json_path = os.path.join(script_dir, json_file)
     output_dir_path = os.path.join(script_dir, output_dir)
     
-    # Create output directory if it doesn't exist
+    # Ensure output directory exists
     os.makedirs(output_dir_path, exist_ok=True)
     
-    # Initialize file handles for each publisher
+    # Create file handles for each publisher with consistent naming convention
     file_handles = {}
     for publisher in publishers:
         filename = f"{publisher.lower().replace(' ', '_')}_articles.txt"
@@ -34,21 +52,21 @@ def extract_articles_by_publisher(json_file, output_dir="extracted_articles"):
         file_handles[publisher] = open(filepath, 'w', encoding='utf-8')
     
     try:
-        # Read the JSON data
+        # Load and parse the JSON data
         with open(json_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
         
-        # Process each article
+        # Process each article in the dataset
         for article in data:
-            # Check publisher
+            # Check if article has publisher information
             if 'dcterms:publisher' in article:
                 for pub in article['dcterms:publisher']:
                     publisher = pub.get('display_title')
                     if publisher in publishers:
-                        # Extract title
+                        # Extract article metadata
                         title = article.get('o:title', 'No title')
                         
-                        # Extract date
+                        # Extract and format publication date
                         date = None
                         if 'dcterms:date' in article:
                             for d in article['dcterms:date']:
@@ -56,7 +74,7 @@ def extract_articles_by_publisher(json_file, output_dir="extracted_articles"):
                                     date = d['@value']
                                     break
                         
-                        # Extract content
+                        # Extract article content
                         content = None
                         if 'bibo:content' in article:
                             for c in article['bibo:content']:
@@ -64,21 +82,23 @@ def extract_articles_by_publisher(json_file, output_dir="extracted_articles"):
                                     content = c['@value']
                                     break
                         
-                        # Write to appropriate file
+                        # Write article to file with consistent formatting
                         f = file_handles[publisher]
                         f.write(f"TITLE: {title}\n")
                         f.write(f"DATE: {date}\n")
                         f.write("CONTENT:\n")
                         if content:
                             f.write(f"{content}\n")
-                        f.write("\n" + "="*80 + "\n\n")  # Separator between articles
-                        break  # Break after finding the first matching publisher
+                        # Add clear separator between articles
+                        f.write("\n" + "="*80 + "\n\n")
+                        break  # Stop after finding first matching publisher
                     
     finally:
-        # Close all file handles
+        # Ensure all files are properly closed
         for f in file_handles.values():
             f.close()
 
 if __name__ == "__main__":
+    # Execute the extraction when run as a script
     input_file = "integrisme_data.json"
     extract_articles_by_publisher(input_file) 
