@@ -78,9 +78,19 @@ logging.basicConfig(
     ]
 )
 
-# Load French language model with progress bar
 def download_spacy_model():
-    """Download spacy model with progress bar if not already installed."""
+    """
+    Download and load the French spaCy transformer model.
+    
+    This function attempts to load the French transformer model and downloads it
+    if not already installed. It includes a custom progress bar for the download process.
+    
+    Returns:
+        spacy.language.Language: Loaded spaCy language model
+    
+    Raises:
+        OSError: If model download fails
+    """
     try:
         nlp = spacy.load('fr_dep_news_trf')
         logging.info("Successfully loaded French transformer language model")
@@ -123,8 +133,22 @@ OMEKA_KEY_CREDENTIAL = os.getenv('OMEKA_KEY_CREDENTIAL')
 
 def preprocess_text(text):
     """
-    Preprocess text using the transformer model's advanced capabilities at different levels.
-    Returns a dictionary containing processed text at article, paragraph and sentence levels.
+    Preprocess text using advanced NLP techniques and the spaCy transformer model.
+    
+    This function performs comprehensive text preprocessing including:
+    - Character normalization (quotes, spaces, dashes)
+    - French-specific handling (contractions, accents)
+    - Token filtering (stopwords, punctuation, numbers)
+    - Multi-level text processing (article, paragraph, sentence)
+    
+    Args:
+        text (str): Raw text to process
+        
+    Returns:
+        dict: Processed text at different levels:
+            - article (str): Full processed text
+            - paragraphs (list): List of processed paragraphs
+            - sentences (list): List of processed sentences
     """
     if not text:
         return {
@@ -199,7 +223,25 @@ def preprocess_text(text):
 semaphore = asyncio.Semaphore(10)  # Limit to 10 concurrent requests
 
 async def fetch_data_async(session, url):
-    """Fetch data from a given URL with authentication asynchronously."""
+    """
+    Fetch data from the Omeka API with authentication.
+    
+    This function handles authenticated requests to the Omeka API with:
+    - Rate limiting through semaphore
+    - Error handling and logging
+    - Authentication header and URL parameter handling
+    
+    Args:
+        session (aiohttp.ClientSession): Active HTTP session
+        url (str): URL to fetch data from
+        
+    Returns:
+        dict: JSON response data or None if request fails
+        
+    Raises:
+        aiohttp.ClientError: For HTTP-related errors
+        json.JSONDecodeError: For invalid JSON responses
+    """
     # Add key_identity and key_credential as URL parameters
     if '?' in url:
         auth_url = f"{url}&key_identity={OMEKA_KEY_IDENTITY}&key_credential={OMEKA_KEY_CREDENTIAL}"
@@ -220,7 +262,26 @@ async def fetch_data_async(session, url):
         return None
 
 async def fetch_ids_from_item_async(session, url):
-    """Async version of fetch_ids_from_item."""
+    """
+    Fetch and validate article IDs from an Omeka item.
+    
+    This function:
+    1. Fetches the main item data
+    2. Extracts related article URLs
+    3. Validates each URL to ensure it points to a valid article
+    4. Tracks progress with tqdm
+    
+    Args:
+        session (aiohttp.ClientSession): Active HTTP session
+        url (str): URL of the main item to fetch related articles from
+        
+    Returns:
+        list: Valid article URLs that were successfully validated
+        
+    Notes:
+        - Progress is displayed using tqdm
+        - Failed fetches are logged but don't stop the process
+    """
     logging.info(f"Starting to fetch IDs from {url}")
     data = await fetch_data_async(session, url)
     
@@ -251,7 +312,24 @@ async def fetch_ids_from_item_async(session, url):
     return article_urls
 
 def process_article_content(article_data):
-    """Process the content of an article and add processed text."""
+    """
+    Process and enrich article content with NLP analysis.
+    
+    This function:
+    1. Extracts content from article data
+    2. Applies text preprocessing to the content
+    3. Adds processed text back to the article data
+    
+    Args:
+        article_data (dict): Raw article data from API
+        
+    Returns:
+        dict: Enriched article data with processed text fields
+        
+    Notes:
+        - Handles both list and dict content formats
+        - Preserves original content while adding processed version
+    """
     if not article_data:
         return article_data
     
@@ -273,7 +351,27 @@ def process_article_content(article_data):
     return article_data
 
 async def process_urls_async(urls):
-    """Process multiple URLs concurrently."""
+    """
+    Process multiple article URLs concurrently.
+    
+    This function:
+    1. Creates a single session for all requests
+    2. Processes URLs concurrently within rate limits
+    3. Tracks progress and success/failure counts
+    
+    Args:
+        urls (list): List of article URLs to process
+        
+    Returns:
+        tuple: Contains:
+            - list: Processed article data
+            - int: Number of successful fetches
+            - int: Number of failed fetches
+            
+    Notes:
+        - Progress is displayed using tqdm
+        - Failed fetches are counted but don't stop the process
+    """
     async with aiohttp.ClientSession() as session:
         all_data = []
         successful_fetches = 0
@@ -296,6 +394,21 @@ async def process_urls_async(urls):
         return all_data, successful_fetches, failed_fetches
 
 async def main_async():
+    """
+    Main asynchronous execution function.
+    
+    This function orchestrates the entire data collection and processing pipeline:
+    1. Initializes API connection
+    2. Fetches article URLs
+    3. Processes articles concurrently
+    4. Saves results to JSON
+    5. Logs statistics and progress
+    
+    Notes:
+        - Requires environment variables to be set
+        - Creates output directory if needed
+        - Handles errors gracefully with logging
+    """
     base_item_url = f"{OMEKA_BASE_URL}/items/59"
     # Add authentication parameters to the initial URL
     item_url = f"{base_item_url}?key_identity={OMEKA_KEY_IDENTITY}&key_credential={OMEKA_KEY_CREDENTIAL}"
@@ -328,6 +441,14 @@ async def main_async():
             logging.error(f"Failed to save data to file: {str(e)}")
 
 def main():
+    """
+    Entry point for the script.
+    
+    This function:
+    1. Sets up the async event loop
+    2. Runs the main async function
+    3. Handles any top-level exceptions
+    """
     asyncio.run(main_async())
 
 if __name__ == "__main__":
