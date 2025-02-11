@@ -269,7 +269,7 @@ async def fetch_ids_from_item_async(session, url):
     This function:
     1. Fetches the main item data
     2. Extracts related article URLs
-    3. Validates each URL to ensure it points to a valid article
+    3. Validates each URL in parallel using asyncio.gather()
     4. Tracks progress with tqdm
     
     Args:
@@ -278,10 +278,6 @@ async def fetch_ids_from_item_async(session, url):
         
     Returns:
         list: Valid article URLs that were successfully validated
-        
-    Notes:
-        - Progress is displayed using tqdm
-        - Failed fetches are logged but don't stop the process
     """
     logging.info(f"Starting to fetch IDs from {url}")
     data = await fetch_data_async(session, url)
@@ -294,20 +290,29 @@ async def fetch_ids_from_item_async(session, url):
     logging.info(f"Found {len(potential_urls)} potential URLs to process")
     
     # Create progress bar for URL validation
-    article_urls = []
-    with tqdm(total=len(potential_urls), desc="Validating articles", unit="item") as pbar:
-        for url in potential_urls:
-            item_data = await fetch_data_async(session, url)
-            if not item_data:
-                logging.warning(f"Failed to fetch data for URL: {url}")
-                pbar.update(1)
-                continue
-                
-            if '@type' in item_data and 'bibo:Article' in item_data['@type']:
-                article_urls.append(url)
-                title = item_data.get('o:title', 'Untitled')
-                logging.info(f"Found article: '{title}' at {url}")
-            pbar.update(1)
+    pbar = tqdm(total=len(potential_urls), desc="Validating articles", unit="item")
+    
+    async def validate_url(url):
+        """Helper function to validate a single URL."""
+        item_data = await fetch_data_async(session, url)
+        pbar.update(1)
+        if not item_data:
+            logging.warning(f"Failed to fetch data for URL: {url}")
+            return None
+            
+        if '@type' in item_data and 'bibo:Article' in item_data['@type']:
+            title = item_data.get('o:title', 'Untitled')
+            logging.info(f"Found article: '{title}' at {url}")
+            return url
+        return None
+    
+    # Create tasks for all URLs and gather them
+    tasks = [validate_url(url) for url in potential_urls]
+    results = await asyncio.gather(*tasks)
+    
+    # Filter out None values and close progress bar
+    article_urls = [url for url in results if url is not None]
+    pbar.close()
     
     logging.info(f"Processing complete: Found {len(article_urls)} articles out of {len(potential_urls)} total items")
     return article_urls
@@ -353,11 +358,11 @@ def process_article_content(article_data):
 
 async def process_urls_async(urls):
     """
-    Process multiple article URLs concurrently.
+    Process multiple article URLs concurrently using asyncio.gather().
     
     This function:
     1. Creates a single session for all requests
-    2. Processes URLs concurrently within rate limits
+    2. Processes URLs concurrently with rate limiting via semaphore
     3. Tracks progress and success/failure counts
     
     Args:
@@ -368,29 +373,27 @@ async def process_urls_async(urls):
             - list: Processed article data
             - int: Number of successful fetches
             - int: Number of failed fetches
-            
-    Notes:
-        - Progress is displayed using tqdm
-        - Failed fetches are counted but don't stop the process
     """
     async with aiohttp.ClientSession() as session:
-        all_data = []
-        successful_fetches = 0
-        failed_fetches = 0
-        
-        # Create progress bar for article processing
         pbar = tqdm(total=len(urls), desc="Processing articles", unit="article")
         
-        for url in urls:
+        async def process_single_url(url):
+            """Helper function to process a single URL."""
             data = await fetch_data_async(session, url)
-            if data:
-                processed_data = process_article_content(data)
-                all_data.append(processed_data)
-                successful_fetches += 1
-            else:
-                failed_fetches += 1
             pbar.update(1)
-            
+            if data:
+                return process_article_content(data)
+            return None
+        
+        # Create tasks for all URLs and gather them
+        tasks = [process_single_url(url) for url in urls]
+        results = await asyncio.gather(*tasks)
+        
+        # Filter out None values and count successes/failures
+        all_data = [result for result in results if result is not None]
+        successful_fetches = len(all_data)
+        failed_fetches = len(urls) - successful_fetches
+        
         pbar.close()
         return all_data, successful_fetches, failed_fetches
 
