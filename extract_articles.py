@@ -1,8 +1,7 @@
 """
 This module extracts articles from a JSON file and organizes them by publisher.
-It processes articles from various Ivorian newspapers and saves them into separate text files,
-one for each publisher. The module handles data extraction, cleaning, and file organization
-while maintaining a consistent output format.
+It processes articles from various newspapers and saves them into separate text files,
+one for each publisher, plus a comprehensive file with all articles.
 """
 
 import json
@@ -54,24 +53,12 @@ def extract_articles_by_publisher(json_file, output_dir="extracted_articles"):
         output_dir (str): Directory where the extracted articles will be saved (default: "extracted_articles")
     
     The function performs the following steps:
-    1. Creates separate text files for each publisher
-    2. Processes the JSON data to extract article information
-    3. Writes articles to their respective publisher files with consistent formatting
-    4. Handles file operations safely with proper encoding and error handling
+    1. Creates separate text files for each unique publisher found in the data
+    2. Creates an all_articles.txt file containing all articles
+    3. Processes the JSON data to extract article information
+    4. Writes articles to their respective files with consistent formatting
+    5. Handles file operations safely with proper encoding and error handling
     """
-    # Define list of publishers to extract articles for
-    publishers = [
-        "Fraternité Matin",
-        "La Voie",
-        "Le Patriote", 
-        "Le Jour",
-        "Le Nouvel Horizon",
-        "Notre Voie",
-        "Notre Temps",
-        "Fraternité Hebdo",
-        "Alif",
-        "Plume Libre"
-    ]
     
     # Set up file paths relative to the script location (now at root)
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -84,59 +71,86 @@ def extract_articles_by_publisher(json_file, output_dir="extracted_articles"):
     # Ensure output directory exists
     os.makedirs(output_dir_path, exist_ok=True)
     
-    # Create file handles for each publisher with consistent naming convention
-    file_handles = {}
-    for publisher in publishers:
-        filename = f"{publisher.lower().replace(' ', '_')}_articles.txt"
-        filepath = os.path.join(output_dir_path, filename)
-        file_handles[publisher] = open(filepath, 'w', encoding='utf-8')
-    
+    # First pass: collect all unique publishers
+    publishers = set()
     try:
-        # Load and parse the JSON data
         with open(json_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-        
-        # Process each article in the dataset
+            
         for article in data:
-            # Check if article has publisher information
             if 'dcterms:publisher' in article:
+                for pub in article['dcterms:publisher']:
+                    if 'display_title' in pub:
+                        publishers.add(pub['display_title'])
+    
+        print(f"\nFound {len(publishers)} unique publishers:")
+        for pub in sorted(publishers):
+            print(f"- {pub}")
+            
+        # Create file handles for each publisher and the all_articles file
+        file_handles = {}
+        for publisher in publishers:
+            filename = f"{publisher.lower().replace(' ', '_')}_articles.txt"
+            filepath = os.path.join(output_dir_path, filename)
+            file_handles[publisher] = open(filepath, 'w', encoding='utf-8')
+        
+        # Create the all_articles file
+        all_articles_path = os.path.join(output_dir_path, "all_articles.txt")
+        all_articles_file = open(all_articles_path, 'w', encoding='utf-8')
+        
+        # Second pass: process and write articles
+        for article in data:
+            if 'dcterms:publisher' in article:
+                # Extract article metadata
+                title = article.get('o:title', 'No title')
+                
+                # Extract and format publication date
+                date = None
+                if 'dcterms:date' in article:
+                    for d in article['dcterms:date']:
+                        if '@value' in d:
+                            date = d['@value']
+                            break
+                
+                # Extract article content
+                content = None
+                if 'bibo:content' in article:
+                    for c in article['bibo:content']:
+                        if '@value' in c:
+                            content = c['@value']
+                            break
+                
+                # Format article text
+                article_text = f"TITLE: {title}\n"
+                article_text += f"DATE: {date}\n"
+                if content:
+                    article_text += "CONTENT:\n"
+                    article_text += f"{content}\n"
+                article_text += "\n" + "="*80 + "\n\n"
+                
+                # Write to all_articles file
+                all_articles_file.write(article_text)
+                
+                # Write to publisher-specific files
                 for pub in article['dcterms:publisher']:
                     publisher = pub.get('display_title')
                     if publisher in publishers:
-                        # Extract article metadata
-                        title = article.get('o:title', 'No title')
+                        file_handles[publisher].write(article_text)
+                        break
                         
-                        # Extract and format publication date
-                        date = None
-                        if 'dcterms:date' in article:
-                            for d in article['dcterms:date']:
-                                if '@value' in d:
-                                    date = d['@value']
-                                    break
-                        
-                        # Extract article content
-                        content = None
-                        if 'bibo:content' in article:
-                            for c in article['bibo:content']:
-                                if '@value' in c:
-                                    content = c['@value']
-                                    break
-                        
-                        # Write article to file with consistent formatting
-                        f = file_handles[publisher]
-                        f.write(f"TITLE: {title}\n")
-                        f.write(f"DATE: {date}\n")
-                        f.write("CONTENT:\n")
-                        if content:
-                            f.write(f"{content}\n")
-                        # Add clear separator between articles
-                        f.write("\n" + "="*80 + "\n\n")
-                        break  # Stop after finding first matching publisher
-                    
     finally:
         # Ensure all files are properly closed
         for f in file_handles.values():
             f.close()
+        if 'all_articles_file' in locals():
+            all_articles_file.close()
+            
+        print(f"\nArticles have been extracted to: {output_dir_path}")
+        print("Files created:")
+        print(f"- all_articles.txt (contains all articles)")
+        for publisher in sorted(publishers):
+            filename = f"{publisher.lower().replace(' ', '_')}_articles.txt"
+            print(f"- {filename}")
 
 if __name__ == "__main__":
     # Set up the data directory path (now relative to script at root)
