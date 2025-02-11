@@ -59,9 +59,13 @@ from datetime import datetime
 import spacy
 from spacy.lang.fr.stop_words import STOP_WORDS
 import re
+import warnings
 
 # Get the directory of the current script
 script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Add warning filter for PyTorch future warning
+warnings.filterwarnings('ignore', category=FutureWarning, module='thinc.shims.pytorch')
 
 def setup_logging(item_id=None):
     """
@@ -106,6 +110,10 @@ def download_spacy_model():
     This function attempts to load the French transformer model and downloads it
     if not already installed. It includes a custom progress bar for the download process.
     
+    Note:
+        Suppresses PyTorch FutureWarning about model loading as we're using official spaCy models.
+        This is safe as we're only loading verified models from spaCy's model repository.
+    
     Returns:
         spacy.language.Language: Loaded spaCy language model
     
@@ -113,6 +121,7 @@ def download_spacy_model():
         OSError: If model download fails
     """
     try:
+        # Safe to use default loading as we're using official spaCy models
         nlp = spacy.load('fr_dep_news_trf')
         logging.info("Successfully loaded French transformer language model")
         return nlp
