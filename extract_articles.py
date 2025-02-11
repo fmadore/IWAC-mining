@@ -73,12 +73,13 @@ def extract_articles_by_publisher(json_file, output_dir="extracted_articles"):
         "Plume Libre"
     ]
     
-    # Set up file paths relative to the workspace root
-    workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    json_path = os.path.join(workspace_root, "data", json_file)
-    output_dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), output_dir)
+    # Set up file paths relative to the script location (now at root)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    json_path = os.path.join(script_dir, "data", json_file)
+    output_dir_path = os.path.join(script_dir, output_dir)
     
-    print(f"Looking for JSON file at: {json_path}")  # Debug print
+    print(f"Looking for JSON file at: {json_path}")
+    print(f"Output directory will be: {output_dir_path}")
     
     # Ensure output directory exists
     os.makedirs(output_dir_path, exist_ok=True)
@@ -138,9 +139,9 @@ def extract_articles_by_publisher(json_file, output_dir="extracted_articles"):
             f.close()
 
 if __name__ == "__main__":
-    # Set up the data directory path
-    workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    data_dir = os.path.join(workspace_root, "data")
+    # Set up the data directory path (now relative to script at root)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.join(script_dir, "data")
     
     # Get user's choice of JSON file
     selected_file = get_json_file_choice(data_dir)
