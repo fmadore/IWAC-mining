@@ -8,6 +8,43 @@ while maintaining a consistent output format.
 import json
 import os
 
+def get_json_file_choice(data_dir):
+    """
+    Lists all JSON files in the specified directory and lets the user choose one.
+    
+    Args:
+        data_dir (str): Path to the directory containing JSON files
+        
+    Returns:
+        str: Name of the selected JSON file, or None if no files found or invalid selection
+    """
+    # Get all JSON files in the directory
+    json_files = [f for f in os.listdir(data_dir) if f.endswith('.json')]
+    
+    if not json_files:
+        print("No JSON files found in the data directory.")
+        return None
+    
+    # Print available files with numbers
+    print("\nAvailable JSON files:")
+    for idx, file in enumerate(json_files, 1):
+        print(f"{idx}. {file}")
+    
+    # Get user choice
+    while True:
+        try:
+            choice = input("\nEnter the number of the file to process (or 'q' to quit): ")
+            if choice.lower() == 'q':
+                return None
+            
+            choice_idx = int(choice) - 1
+            if 0 <= choice_idx < len(json_files):
+                return json_files[choice_idx]
+            else:
+                print("Invalid selection. Please try again.")
+        except ValueError:
+            print("Please enter a valid number or 'q' to quit.")
+
 def extract_articles_by_publisher(json_file, output_dir="extracted_articles"):
     """
     Extract and organize articles from a JSON file by their publisher.
@@ -36,10 +73,12 @@ def extract_articles_by_publisher(json_file, output_dir="extracted_articles"):
         "Plume Libre"
     ]
     
-    # Set up file paths relative to the script location
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    json_path = os.path.join(script_dir, json_file)
-    output_dir_path = os.path.join(script_dir, output_dir)
+    # Set up file paths relative to the workspace root
+    workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    json_path = os.path.join(workspace_root, "data", json_file)
+    output_dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), output_dir)
+    
+    print(f"Looking for JSON file at: {json_path}")  # Debug print
     
     # Ensure output directory exists
     os.makedirs(output_dir_path, exist_ok=True)
@@ -99,6 +138,15 @@ def extract_articles_by_publisher(json_file, output_dir="extracted_articles"):
             f.close()
 
 if __name__ == "__main__":
-    # Execute the extraction when run as a script
-    input_file = "integrisme_data.json"
-    extract_articles_by_publisher(input_file) 
+    # Set up the data directory path
+    workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    data_dir = os.path.join(workspace_root, "data")
+    
+    # Get user's choice of JSON file
+    selected_file = get_json_file_choice(data_dir)
+    
+    if selected_file:
+        print(f"\nProcessing file: {selected_file}")
+        extract_articles_by_publisher(selected_file)
+    else:
+        print("No file selected. Exiting.") 
