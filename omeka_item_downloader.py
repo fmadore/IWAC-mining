@@ -48,6 +48,11 @@ Usage:
 5. Access processed data in the generated JSON file (named after the item's title)
 """
 
+# Initialize welcome message before any imports or processing
+print("\n=== Omeka Article Downloader ===")
+print("Initializing system...")
+print("Loading French language model (this may take a few moments)...")
+
 import asyncio
 import aiohttp
 import json
@@ -120,15 +125,18 @@ def download_spacy_model():
     Raises:
         OSError: If model download fails
     """
+    from tqdm import tqdm
+    
     try:
         # Safe to use default loading as we're using official spaCy models
-        nlp = spacy.load('fr_dep_news_trf')
+        with tqdm(total=1, desc="Loading spaCy model", unit="model") as pbar:
+            nlp = spacy.load('fr_dep_news_trf')
+            pbar.update(1)
         logging.info("Successfully loaded French transformer language model")
         return nlp
     except OSError:
         logging.info("French transformer model not found. Starting download...")
         from spacy.cli import download
-        from tqdm import tqdm
         
         class TqdmProgressbar:
             def __init__(self):
@@ -136,7 +144,7 @@ def download_spacy_model():
             
             def __call__(self, dl_total, dl_count, width=None):
                 if self.pbar is None:
-                    self.pbar = tqdm(total=dl_total, unit='B', unit_scale=True)
+                    self.pbar = tqdm(total=dl_total, unit='B', unit_scale=True, desc="Downloading model")
                 self.pbar.n = dl_count
                 self.pbar.refresh()
                 if dl_count == dl_total:
@@ -144,7 +152,10 @@ def download_spacy_model():
                     self.pbar = None
         
         download('fr_dep_news_trf', progress=TqdmProgressbar())
-        nlp = spacy.load('fr_dep_news_trf')
+        print("\nLoading downloaded model...")
+        with tqdm(total=1, desc="Loading spaCy model", unit="model") as pbar:
+            nlp = spacy.load('fr_dep_news_trf')
+            pbar.update(1)
         logging.info("Successfully installed and loaded French transformer model")
         return nlp
 
