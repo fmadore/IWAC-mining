@@ -5,6 +5,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
 import logging
 from datetime import datetime
+import glob
 
 # Setup logging
 logging.basicConfig(
@@ -12,19 +13,41 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-def load_processed_data():
-    """Load the processed articles from the JSON file."""
+def list_available_files():
+    """List all JSON files in the data directory and let user choose one."""
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    parent_dir = os.path.dirname(script_dir)  # Get parent directory
-    data_path = os.path.join(parent_dir, 'integrisme_data.json')
+    workspace_dir = os.path.dirname(os.path.dirname(script_dir))
+    data_dir = os.path.join(workspace_dir, 'data')
+    json_files = glob.glob(os.path.join(data_dir, '*.json'))
     
-    logging.info(f"Looking for data file at: {data_path}")
+    if not json_files:
+        logging.error("No JSON files found in the data directory")
+        raise FileNotFoundError("No JSON files available")
+    
+    print("\nAvailable files:")
+    for idx, file_path in enumerate(json_files, 1):
+        file_name = os.path.basename(file_path)
+        print(f"{idx}. {file_name}")
+    
+    while True:
+        try:
+            choice = int(input("\nEnter the number of the file you want to process: "))
+            if 1 <= choice <= len(json_files):
+                return json_files[choice - 1]
+            print("Invalid choice. Please try again.")
+        except ValueError:
+            print("Please enter a valid number.")
+
+def load_processed_data():
+    """Load the processed articles from the chosen JSON file."""
+    file_path = list_available_files()
+    logging.info(f"Loading data from: {file_path}")
     
     try:
-        with open(data_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return json.load(f), os.path.basename(file_path)
     except FileNotFoundError:
-        logging.error(f"Data file not found at {data_path}")
+        logging.error(f"Data file not found at {file_path}")
         raise
 
 def extract_article_texts(data):
@@ -130,7 +153,7 @@ def perform_topic_modeling(texts, n_topics=10, n_words=10):
 
 def main():
     # Load and process data
-    data = load_processed_data()
+    data, input_filename = load_processed_data()
     texts, dates, titles, publishers = extract_article_texts(data)
     
     # Perform topic modeling
@@ -151,9 +174,11 @@ def main():
         ]
     }
     
-    # Save results
+    # Save results with input filename-based output
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    output_path = os.path.join(script_dir, 'topic_modeling_results.json')
+    base_name = os.path.splitext(input_filename)[0]
+    output_filename = f'topic_modeling_results_{base_name}.json'
+    output_path = os.path.join(script_dir, output_filename)
     
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(output_data, f, ensure_ascii=False, indent=2)
