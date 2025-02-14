@@ -29,6 +29,8 @@ import logging
 from datetime import datetime
 import glob
 from tqdm import tqdm
+from dataclasses import dataclass
+from typing import List, Dict, Tuple, Any, Optional
 
 # Setup logging configuration for tracking script execution
 logging.basicConfig(
@@ -36,268 +38,247 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-def list_available_files():
-    """
-    List and allow selection of JSON files from the data directory.
+@dataclass
+class ModelConfig:
+    """Configuration parameters for topic modeling."""
+    n_topics: int = 10
+    n_words_per_topic: int = 10
+    max_features: int = 2000
+    max_df: float = 0.95
+    min_df: int = 2
+    max_iter: int = 200
+    learning_offset: float = 50.0
+    doc_topic_prior: float = 0.1
+    topic_word_prior: float = 0.01
+
+class FileHandler:
+    """Handles all file-related operations."""
     
-    Returns:
-        str: Full path to the selected JSON file
+    @staticmethod
+    def list_available_files() -> str:
+        """List and allow selection of JSON files from the data directory."""
+        workspace_dir = os.path.dirname(os.path.abspath(__file__))
+        data_dir = os.path.join(workspace_dir, 'data')
+        json_files = glob.glob(os.path.join(data_dir, '*.json'))
         
-    Raises:
-        FileNotFoundError: If no JSON files are found in the data directory
-    """
-    # Get the workspace root directory (now the same as script directory)
-    workspace_dir = os.path.dirname(os.path.abspath(__file__))
-    data_dir = os.path.join(workspace_dir, 'data')
-    json_files = glob.glob(os.path.join(data_dir, '*.json'))
-    
-    if not json_files:
-        logging.error("No JSON files found in the data directory")
-        raise FileNotFoundError("No JSON files available")
-    
-    print("\nAvailable files:")
-    for idx, file_path in enumerate(json_files, 1):
-        file_name = os.path.basename(file_path)
-        print(f"{idx}. {file_name}")
-    
-    while True:
+        if not json_files:
+            logging.error("No JSON files found in the data directory")
+            raise FileNotFoundError("No JSON files available")
+        
+        print("\nAvailable files:")
+        for idx, file_path in enumerate(json_files, 1):
+            file_name = os.path.basename(file_path)
+            print(f"{idx}. {file_name}")
+        
+        while True:
+            try:
+                choice = int(input("\nEnter the number of the file you want to process: "))
+                if 1 <= choice <= len(json_files):
+                    return json_files[choice - 1]
+                print("Invalid choice. Please try again.")
+            except ValueError:
+                print("Please enter a valid number.")
+
+    @staticmethod
+    def load_json_data(file_path: str) -> Tuple[List[Dict], str]:
+        """Load and parse JSON file."""
+        logging.info(f"Loading data from: {file_path}")
         try:
-            choice = int(input("\nEnter the number of the file you want to process: "))
-            if 1 <= choice <= len(json_files):
-                return json_files[choice - 1]
-            print("Invalid choice. Please try again.")
-        except ValueError:
-            print("Please enter a valid number.")
+            with open(file_path, 'r', encoding='utf-8') as f:
+                return json.load(f), os.path.basename(file_path)
+        except FileNotFoundError:
+            logging.error(f"Data file not found at {file_path}")
+            raise
 
-def load_processed_data():
-    """
-    Load and parse the selected JSON file containing article data.
+    @staticmethod
+    def save_results(output_data: Dict, input_filename: str) -> None:
+        """Save topic modeling results to JSON file."""
+        workspace_dir = os.path.dirname(os.path.abspath(__file__))
+        output_dir = os.path.join(workspace_dir, 'Topic_modeling_data')
+        os.makedirs(output_dir, exist_ok=True)
+        
+        base_name = os.path.splitext(input_filename)[0]
+        output_filename = f'topic_modeling_results_{base_name}.json'
+        output_path = os.path.join(output_dir, output_filename)
+        
+        with open(output_path, 'w', encoding='utf-8') as f:
+            json.dump(output_data, f, ensure_ascii=False, indent=2)
+        
+        logging.info(f"Topic modeling results saved to {output_path}")
+
+class ArticleProcessor:
+    """Handles article text and metadata extraction."""
     
-    Returns:
-        tuple: (data, filename)
-            - data: Parsed JSON content containing article information
-            - filename: Base name of the selected file
+    @staticmethod
+    def extract_publisher(article: Dict) -> str:
+        """Extract publisher information from article metadata."""
+        if 'dcterms:publisher' in article:
+            pub_info = article['dcterms:publisher']
+            if isinstance(pub_info, list) and pub_info:
+                if 'display_title' in pub_info[0]:
+                    return pub_info[0]['display_title']
+                elif '@value' in pub_info[0]:
+                    return pub_info[0]['@value']
+        return "Unknown"
+
+    @staticmethod
+    def process_content(content: Any, article: Dict, publisher: str) -> Optional[Tuple[str, str, str, str]]:
+        """Process article content and extract relevant information."""
+        if isinstance(content, (list, dict)):
+            content_list = content if isinstance(content, list) else [content]
+            for item in content_list:
+                if isinstance(item, dict) and '@value' in item and 'processed_text' in item:
+                    processed_text = item['processed_text']['article']
+                    if processed_text:
+                        date = article.get('dcterms:date', [{'@value': 'unknown'}])[0]['@value']
+                        title = article.get('o:title', 'Untitled')
+                        return processed_text, date, title, publisher
+        return None
+
+    @staticmethod
+    def extract_article_data(data: List[Dict]) -> Tuple[List[str], List[str], List[str], List[str]]:
+        """Extract processed article texts and metadata."""
+        texts, dates, titles, publishers = [], [], [], []
+        
+        logging.info("Extracting article texts and metadata...")
+        for article in tqdm(data, desc="Processing articles"):
+            if 'bibo:content' in article:
+                publisher = ArticleProcessor.extract_publisher(article)
+                result = ArticleProcessor.process_content(article['bibo:content'], article, publisher)
+                if result:
+                    text, date, title, pub = result
+                    texts.append(text)
+                    dates.append(date)
+                    titles.append(title)
+                    publishers.append(pub)
+        
+        return texts, dates, titles, publishers
+
+class TopicModeler:
+    """Handles topic modeling operations."""
+    
+    def __init__(self, config: ModelConfig):
+        self.config = config
+        self.vectorizer = self._create_vectorizer()
+        self.lda_model = self._create_lda_model()
+
+    def _create_vectorizer(self) -> CountVectorizer:
+        """Create and configure the CountVectorizer."""
+        return CountVectorizer(
+            max_df=self.config.max_df,
+            min_df=self.config.min_df,
+            max_features=self.config.max_features,
+            token_pattern=r'[a-zA-ZÀ-ÿ]+',
+            stop_words=[
+                'être', 'avoir', 'faire',
+                'plus', 'très', 'bien',
+                'tout', 'tous', 'toute', 'toutes',
+                'autre', 'autres',
+                'comme', 'ainsi',
+                'donc', 'car', 'mais',
+                'm', 'el'
+            ]
+        )
+
+    def _create_lda_model(self) -> LatentDirichletAllocation:
+        """Create and configure the LDA model."""
+        return LatentDirichletAllocation(
+            n_components=self.config.n_topics,
+            random_state=42,
+            learning_method='batch',
+            max_iter=self.config.max_iter,
+            learning_offset=self.config.learning_offset,
+            doc_topic_prior=self.config.doc_topic_prior,
+            topic_word_prior=self.config.topic_word_prior,
+            verbose=1
+        )
+
+    def extract_topics(self, feature_names: np.ndarray, components: np.ndarray) -> List[Dict]:
+        """Extract and format topic information."""
+        topics = []
+        for topic_idx, topic in enumerate(tqdm(components, desc="Processing topics")):
+            word_weights = [(feature_names[i], float(topic[i])) 
+                           for i in topic.argsort()[:-self.config.n_words_per_topic-1:-1]]
             
-    Raises:
-        FileNotFoundError: If the selected file cannot be found
-        json.JSONDecodeError: If the file contains invalid JSON
-    """
-    file_path = list_available_files()
-    logging.info(f"Loading data from: {file_path}")
-    
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            return json.load(f), os.path.basename(file_path)
-    except FileNotFoundError:
-        logging.error(f"Data file not found at {file_path}")
-        raise
-
-def extract_article_texts(data):
-    """
-    Extract processed article texts and metadata from the JSON data structure.
-    
-    This function handles various JSON structure formats and extracts:
-    - Lemmatized article text (pre-processed by spaCy)
-    - Publication dates
-    - Article titles
-    - Publisher information
-    
-    Args:
-        data (list): List of article dictionaries from the JSON file
-        
-    Returns:
-        tuple: (texts, dates, titles, publishers)
-            - texts: List of processed article texts
-            - dates: List of publication dates
-            - titles: List of article titles
-            - publishers: List of publisher names
-    """
-    texts = []
-    dates = []
-    titles = []
-    publishers = []
-    
-    logging.info("Extracting article texts and metadata...")
-    for article in tqdm(data, desc="Processing articles"):
-        if 'bibo:content' in article:
-            content = article['bibo:content']
-            # Extract publisher from dcterms:publisher display_title
-            publisher = "Unknown"
-            if 'dcterms:publisher' in article:
-                pub_info = article['dcterms:publisher']
-                if isinstance(pub_info, list) and pub_info:
-                    # Get the first publisher's display_title
-                    if 'display_title' in pub_info[0]:
-                        publisher = pub_info[0]['display_title']
-                    elif '@value' in pub_info[0]:
-                        publisher = pub_info[0]['@value']
+            topic_prevalence = float(topic.sum() / components.sum())
             
-            if isinstance(content, list):
-                for item in content:
-                    if '@value' in item and 'processed_text' in item:
-                        # Use the lemmatized article text
-                        processed_text = item['processed_text']['article']
-                        if processed_text:  # Only add if we have processed text
-                            texts.append(processed_text)
-                            dates.append(article.get('dcterms:date', [{'@value': 'unknown'}])[0]['@value'])
-                            titles.append(article.get('o:title', 'Untitled'))
-                            publishers.append(publisher)
-            elif isinstance(content, dict):
-                if '@value' in content and 'processed_text' in content:
-                    # Use the lemmatized article text
-                    processed_text = content['processed_text']['article']
-                    if processed_text:  # Only add if we have processed text
-                        texts.append(processed_text)
-                        dates.append(article.get('dcterms:date', [{'@value': 'unknown'}])[0]['@value'])
-                        titles.append(article.get('o:title', 'Untitled'))
-                        publishers.append(publisher)
-    
-    return texts, dates, titles, publishers
+            topics.append({
+                'id': topic_idx,
+                'words': [w for w, _ in word_weights],
+                'word_weights': word_weights,
+                'weight': float(topic.sum()),
+                'prevalence': topic_prevalence,
+                'label': f"Topic {topic_idx + 1}"
+            })
+        
+        return sorted(topics, key=lambda x: x['prevalence'], reverse=True)
 
-def perform_topic_modeling(texts, n_topics=10, n_words=10):
-    """
-    Perform LDA topic modeling on the processed article texts.
-    
-    The function implements several optimizations:
-    - Custom stop words for French text
-    - Optimized LDA parameters for better topic separation
-    - Prevalence calculation for topic importance
-    
-    Args:
-        texts (list): List of pre-processed article texts
-        n_topics (int, optional): Number of topics to extract. Defaults to 10.
-        n_words (int, optional): Number of top words per topic. Defaults to 10.
+    def perform_topic_modeling(self, texts: List[str]) -> Tuple[List[Dict], List[List[float]]]:
+        """Perform topic modeling on the processed texts."""
+        logging.info("Creating document-term matrix...")
+        doc_term_matrix = self.vectorizer.fit_transform(texts)
         
-    Returns:
-        tuple: (topics, doc_topics)
-            - topics: List of topic dictionaries containing:
-                * id: Topic identifier
-                * words: Top words in the topic
-                * word_weights: Weights for each top word
-                * weight: Overall topic weight
-                * prevalence: Topic prevalence in corpus
-                * label: Topic label
-            - doc_topics: Document-topic distribution matrix
-    """
-    logging.info("Creating document-term matrix...")
-    # Create document-term matrix
-    vectorizer = CountVectorizer(
-        max_df=0.95,     # Remove terms that appear in >95% of docs
-        min_df=2,        # Remove terms that appear in <2 docs
-        max_features=2000,  # Increased from 1000 to capture more nuanced topics
-        token_pattern=r'[a-zA-ZÀ-ÿ]+',  # Simplified pattern since text is pre-processed
-        # Minimal stop words since most are handled by spaCy
-        stop_words=[
-            'être', 'avoir', 'faire',  # Common verbs
-            'plus', 'très', 'bien',    # Common adverbs
-            'tout', 'tous', 'toute', 'toutes',  # Variations of "all"
-            'autre', 'autres',         # Variations of "other"
-            'comme', 'ainsi',          # Comparison words
-            'donc', 'car', 'mais',      # Conjunctions
-            'm', 'el'                  # Unwanted abbreviations
-        ]
-    )
-    
-    doc_term_matrix = vectorizer.fit_transform(texts)
-    
-    # Create and fit LDA model with optimized parameters
-    logging.info("Performing LDA topic modeling...")
-    lda_model = LatentDirichletAllocation(
-        n_components=n_topics,
-        random_state=42,
-        learning_method='batch',
-        max_iter=200,          # Increased from 100 for better convergence
-        learning_offset=50.,
-        doc_topic_prior=0.1,   # Adjusted from 1/n_topics for sparser topic distribution
-        topic_word_prior=0.01, # Adjusted from 1/n_topics for clearer word-topic associations
-        verbose=1  # Enable progress output
-    )
-    
-    # Fit the model and transform documents with progress bar
-    with tqdm(total=2, desc="LDA Progress") as pbar:
-        lda_model.fit(doc_term_matrix)
-        pbar.update(1)
-        doc_topics = lda_model.transform(doc_term_matrix)
-        pbar.update(1)
-    
-    # Get feature names (words)
-    feature_names = vectorizer.get_feature_names_out()
-    
-    # Extract top words for each topic with their weights
-    logging.info("Extracting topic information...")
-    topics = []
-    for topic_idx, topic in enumerate(tqdm(lda_model.components_, desc="Processing topics")):
-        # Get word indices and weights sorted by importance
-        word_weights = [(feature_names[i], float(topic[i])) 
-                       for i in topic.argsort()[:-n_words-1:-1]]
+        logging.info("Performing LDA topic modeling...")
+        with tqdm(total=2, desc="LDA Progress") as pbar:
+            self.lda_model.fit(doc_term_matrix)
+            pbar.update(1)
+            doc_topics = self.lda_model.transform(doc_term_matrix)
+            pbar.update(1)
         
-        # Calculate topic prevalence (percentage of corpus)
-        topic_prevalence = float(topic.sum() / lda_model.components_.sum())
+        feature_names = self.vectorizer.get_feature_names_out()
+        topics = self.extract_topics(feature_names, self.lda_model.components_)
         
-        topics.append({
-            'id': topic_idx,
-            'words': [w for w, _ in word_weights],
-            'word_weights': word_weights,
-            'weight': float(topic.sum()),
-            'prevalence': topic_prevalence,
-            'label': f"Topic {topic_idx + 1}"  # We can manually label these later
-        })
+        return topics, doc_topics.tolist()
+
+class TopicModelingPipeline:
+    """Orchestrates the complete topic modeling workflow."""
     
-    # Sort topics by prevalence
-    topics.sort(key=lambda x: x['prevalence'], reverse=True)
-    return topics, doc_topics.tolist()
+    def __init__(self, config: ModelConfig = ModelConfig()):
+        self.config = config
+        self.file_handler = FileHandler()
+        self.article_processor = ArticleProcessor()
+        self.topic_modeler = TopicModeler(config)
+
+    def prepare_output_data(self, topics: List[Dict], doc_topics: List[List[float]], 
+                          titles: List[str], dates: List[str], publishers: List[str]) -> Dict:
+        """Prepare the final output data structure."""
+        return {
+            'topics': topics,
+            'documents': [
+                {
+                    'id': idx,
+                    'title': title,
+                    'date': date,
+                    'publisher': publisher,
+                    'topic_weights': weights
+                }
+                for idx, (title, date, publisher, weights) in enumerate(zip(titles, dates, publishers, doc_topics))
+            ]
+        }
+
+    def run(self):
+        """Execute the complete topic modeling pipeline."""
+        print("\n=== Topic Modeling Process ===")
+        
+        # Load and process data
+        file_path = self.file_handler.list_available_files()
+        data, input_filename = self.file_handler.load_json_data(file_path)
+        
+        # Extract article data
+        texts, dates, titles, publishers = self.article_processor.extract_article_data(data)
+        print(f"\nProcessing {len(texts)} articles...")
+        
+        # Perform topic modeling
+        topics, doc_topics = self.topic_modeler.perform_topic_modeling(texts)
+        
+        # Prepare and save results
+        output_data = self.prepare_output_data(topics, doc_topics, titles, dates, publishers)
+        self.file_handler.save_results(output_data, input_filename)
 
 def main():
-    """
-    Main execution function that orchestrates the topic modeling process:
-    1. Loads and processes the selected JSON file
-    2. Extracts article texts and metadata
-    3. Performs LDA topic modeling
-    4. Saves results to a JSON file with the input filename as base
-    
-    The output JSON contains:
-    - Topic information including top words and weights
-    - Document metadata and their topic distributions
-    """
-    print("\n=== Topic Modeling Process ===")
-    # Load and process data
-    data, input_filename = load_processed_data()
-    texts, dates, titles, publishers = extract_article_texts(data)
-    
-    print(f"\nProcessing {len(texts)} articles...")
-    # Perform topic modeling
-    topics, doc_topics = perform_topic_modeling(texts)
-    
-    # Prepare output data
-    logging.info("Preparing output data...")
-    output_data = {
-        'topics': topics,
-        'documents': [
-            {
-                'id': idx,
-                'title': title,
-                'date': date,
-                'publisher': publisher,
-                'topic_weights': weights
-            }
-            for idx, (title, date, publisher, weights) in enumerate(zip(titles, dates, publishers, doc_topics))
-        ]
-    }
-    
-    # Create Topic_modeling_data directory if it doesn't exist
-    workspace_dir = os.path.dirname(os.path.abspath(__file__))
-    output_dir = os.path.join(workspace_dir, 'Topic_modeling_data')
-    os.makedirs(output_dir, exist_ok=True)
-    
-    # Save results in Topic_modeling_data folder
-    base_name = os.path.splitext(input_filename)[0]
-    output_filename = f'topic_modeling_results_{base_name}.json'
-    output_path = os.path.join(output_dir, output_filename)
-    
-    with open(output_path, 'w', encoding='utf-8') as f:
-        json.dump(output_data, f, ensure_ascii=False, indent=2)
-    
-    logging.info(f"Topic modeling results saved to {output_path}")
+    """Main execution function."""
+    pipeline = TopicModelingPipeline()
+    pipeline.run()
 
 if __name__ == "__main__":
     main() 
