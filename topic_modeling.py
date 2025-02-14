@@ -193,7 +193,8 @@ def perform_topic_modeling(texts, n_topics=10, n_words=10):
             'tout', 'tous', 'toute', 'toutes',  # Variations of "all"
             'autre', 'autres',         # Variations of "other"
             'comme', 'ainsi',          # Comparison words
-            'donc', 'car', 'mais'      # Conjunctions
+            'donc', 'car', 'mais',      # Conjunctions
+            'm', 'el'                  # Unwanted abbreviations
         ]
     )
     
