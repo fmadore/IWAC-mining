@@ -17,6 +17,7 @@ Dependencies:
 - numpy: For numerical operations
 - json: For data I/O
 - logging: For operation logging
+- tqdm: For progress tracking
 """
 
 import json
@@ -27,6 +28,7 @@ from sklearn.decomposition import LatentDirichletAllocation
 import logging
 from datetime import datetime
 import glob
+from tqdm import tqdm
 
 # Setup logging configuration for tracking script execution
 logging.basicConfig(
@@ -115,7 +117,8 @@ def extract_article_texts(data):
     titles = []
     publishers = []
     
-    for article in data:
+    logging.info("Extracting article texts and metadata...")
+    for article in tqdm(data, desc="Processing articles"):
         if 'bibo:content' in article:
             content = article['bibo:content']
             # Extract publisher from dcterms:publisher display_title
@@ -176,8 +179,8 @@ def perform_topic_modeling(texts, n_topics=10, n_words=10):
                 * label: Topic label
             - doc_topics: Document-topic distribution matrix
     """
+    logging.info("Creating document-term matrix...")
     # Create document-term matrix
-    # Note: Many stop words and preprocessing steps are already handled by spaCy
     vectorizer = CountVectorizer(
         max_df=0.95,     # Remove terms that appear in >95% of docs
         min_df=2,        # Remove terms that appear in <2 docs
@@ -197,6 +200,7 @@ def perform_topic_modeling(texts, n_topics=10, n_words=10):
     doc_term_matrix = vectorizer.fit_transform(texts)
     
     # Create and fit LDA model with optimized parameters
+    logging.info("Performing LDA topic modeling...")
     lda_model = LatentDirichletAllocation(
         n_components=n_topics,
         random_state=42,
@@ -204,18 +208,24 @@ def perform_topic_modeling(texts, n_topics=10, n_words=10):
         max_iter=200,          # Increased from 100 for better convergence
         learning_offset=50.,
         doc_topic_prior=0.1,   # Adjusted from 1/n_topics for sparser topic distribution
-        topic_word_prior=0.01  # Adjusted from 1/n_topics for clearer word-topic associations
+        topic_word_prior=0.01, # Adjusted from 1/n_topics for clearer word-topic associations
+        verbose=1  # Enable progress output
     )
     
-    # Fit the model and transform documents
-    doc_topics = lda_model.fit_transform(doc_term_matrix)
+    # Fit the model and transform documents with progress bar
+    with tqdm(total=2, desc="LDA Progress") as pbar:
+        lda_model.fit(doc_term_matrix)
+        pbar.update(1)
+        doc_topics = lda_model.transform(doc_term_matrix)
+        pbar.update(1)
     
     # Get feature names (words)
     feature_names = vectorizer.get_feature_names_out()
     
     # Extract top words for each topic with their weights
+    logging.info("Extracting topic information...")
     topics = []
-    for topic_idx, topic in enumerate(lda_model.components_):
+    for topic_idx, topic in enumerate(tqdm(lda_model.components_, desc="Processing topics")):
         # Get word indices and weights sorted by importance
         word_weights = [(feature_names[i], float(topic[i])) 
                        for i in topic.argsort()[:-n_words-1:-1]]
@@ -248,14 +258,17 @@ def main():
     - Topic information including top words and weights
     - Document metadata and their topic distributions
     """
+    print("\n=== Topic Modeling Process ===")
     # Load and process data
     data, input_filename = load_processed_data()
     texts, dates, titles, publishers = extract_article_texts(data)
     
+    print(f"\nProcessing {len(texts)} articles...")
     # Perform topic modeling
     topics, doc_topics = perform_topic_modeling(texts)
     
     # Prepare output data
+    logging.info("Preparing output data...")
     output_data = {
         'topics': topics,
         'documents': [
