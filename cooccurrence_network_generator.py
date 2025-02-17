@@ -16,6 +16,7 @@ import numpy as np
 from collections import defaultdict
 from pathlib import Path
 import os
+from typing import Union, List
 
 def list_available_datasets():
     """
@@ -39,7 +40,7 @@ def select_dataset():
     Present available datasets to the user and get their selection.
     
     Returns:
-        Path: Full path to the selected dataset file
+        Union[Path, List[Path]]: Either a single file path or list of all file paths
     """
     json_files, data_dir = list_available_datasets()
     
@@ -47,13 +48,16 @@ def select_dataset():
         raise FileNotFoundError("No JSON files found in the data directory")
     
     print("\nAvailable datasets:")
+    print("0. Process ALL files")
     for idx, file in enumerate(json_files, 1):
         print(f"{idx}. {file}")
     
     while True:
         try:
-            selection = int(input("\nSelect a dataset by number: "))
-            if 1 <= selection <= len(json_files):
+            selection = int(input("\nSelect a dataset by number (0 for all): "))
+            if selection == 0:
+                return [data_dir / file for file in json_files]
+            elif 1 <= selection <= len(json_files):
                 selected_file = json_files[selection - 1]
                 return data_dir / selected_file
             else:
@@ -230,11 +234,11 @@ def generate_matrix_data():
     Generate and save co-occurrence network data for visualization.
     
     This function:
-    1. Prompts user to select input data file
+    1. Prompts user to select input data file(s)
     2. Gets the top terms
     3. Calculates co-occurrence matrices for different window types
     4. Converts matrices to network format (nodes and links)
-    5. Saves the result to a JSON file named 'cooccurrence_[dataset_name].json'
+    5. Saves the result to JSON file(s) named 'cooccurrence_[dataset_name].json'
     
     Output format:
     {
@@ -245,54 +249,62 @@ def generate_matrix_data():
     }
     """
     try:
-        # Let user select the dataset
-        data_file = select_dataset()
-        dataset_name = data_file.stem  # Get filename without extension
+        # Let user select the dataset(s)
+        data_files = select_dataset()
         
-        print(f"\nProcessing dataset: {dataset_name}")
-        
-        # Load data
-        articles = load_article_data(data_file)
-        print(f"Loaded {len(articles)} articles")
-        
-        # Get top terms from word frequencies
-        top_terms = get_top_terms(articles, n_terms=30)
-        print(f"Identified {len(top_terms)} top terms")
-        
-        # Calculate co-occurrence matrices for different window types
-        matrices = {
-            'article': calculate_cooccurrence(articles, top_terms, 'article'),
-            'paragraph': calculate_cooccurrence(articles, top_terms, 'paragraph'),
-            'sentence': calculate_cooccurrence(articles, top_terms, 'sentence')
-        }
-        
-        # Initialize output data structure
-        output_data = {window_type: {
-            "nodes": [{"id": i, "name": term} for i, term in enumerate(top_terms)],
-            "links": []
-        } for window_type in matrices.keys()}
-        
-        # Convert matrices to network links
-        n = len(top_terms)
-        for window_type, matrix in matrices.items():
-            for i in range(n):
-                for j in range(n):
-                    if matrix[i][j] > 0:
-                        output_data[window_type]["links"].append({
-                            "source": i,
-                            "target": j,
-                            "value": matrix[i][j]
-                        })
-        
-        # Use a subdirectory 'cooccurrence' inside the data directory
-        output_dir = data_file.parent / 'cooccurrence'
-        output_dir.mkdir(exist_ok=True)
-        output_file = output_dir / f'cooccurrence_{dataset_name}.json'
+        # Convert to list if single file
+        if not isinstance(data_files, list):
+            data_files = [data_files]
+            
+        # Process each file
+        for data_file in data_files:
+            dataset_name = data_file.stem  # Get filename without extension
+            print(f"\nProcessing dataset: {dataset_name}")
+            
+            # Load data
+            articles = load_article_data(data_file)
+            print(f"Loaded {len(articles)} articles")
+            
+            # Get top terms from word frequencies
+            top_terms = get_top_terms(articles, n_terms=30)
+            print(f"Identified {len(top_terms)} top terms")
+            
+            # Calculate co-occurrence matrices for different window types
+            matrices = {
+                'article': calculate_cooccurrence(articles, top_terms, 'article'),
+                'paragraph': calculate_cooccurrence(articles, top_terms, 'paragraph'),
+                'sentence': calculate_cooccurrence(articles, top_terms, 'sentence')
+            }
+            
+            # Initialize output data structure
+            output_data = {window_type: {
+                "nodes": [{"id": i, "name": term} for i, term in enumerate(top_terms)],
+                "links": []
+            } for window_type in matrices.keys()}
+            
+            # Convert matrices to network links
+            n = len(top_terms)
+            for window_type, matrix in matrices.items():
+                for i in range(n):
+                    for j in range(n):
+                        if matrix[i][j] > 0:
+                            output_data[window_type]["links"].append({
+                                "source": i,
+                                "target": j,
+                                "value": matrix[i][j]
+                            })
+            
+            # Use a subdirectory 'cooccurrence' inside the data directory
+            output_dir = data_file.parent / 'cooccurrence'
+            output_dir.mkdir(exist_ok=True)
+            output_file = output_dir / f'cooccurrence_{dataset_name}.json'
 
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(output_data, f, ensure_ascii=False, indent=2)
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(output_data, f, ensure_ascii=False, indent=2)
 
-        print(f"\nResults saved to: {output_file}")
+            print(f"Results saved to: {output_file}")
+        
+        print("\nAll processing complete!")
         
     except Exception as e:
         print(f"\nError: {str(e)}")
