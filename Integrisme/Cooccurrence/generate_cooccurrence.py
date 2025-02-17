@@ -2,7 +2,7 @@
 Script to generate co-occurrence matrices and network data for term relationships in articles.
 
 This script analyzes the relationships between terms in a corpus of articles by:
-1. Loading article data from JSON
+1. Loading article data from JSON (user-selected file)
 2. Identifying important terms using TF-IDF scoring
 3. Calculating co-occurrence matrices at different text window levels (article, paragraph, sentence)
 4. Generating network data for visualization
@@ -15,28 +15,72 @@ import pandas as pd
 import numpy as np
 from collections import defaultdict
 from pathlib import Path
+import os
 
-def load_integrisme_data():
+def list_available_datasets():
     """
-    Load the integrisme article data from JSON file.
+    List all available JSON datasets in the data directory.
+    
+    Returns:
+        list: List of available JSON files
+        Path: Path to the data directory
+    """
+    # Get the root directory (two levels up from the script)
+    root_dir = Path(__file__).parent.parent.parent
+    data_dir = root_dir / 'data'
+    
+    # Get all JSON files in the data directory
+    json_files = [f for f in os.listdir(data_dir) if f.endswith('.json')]
+    
+    return json_files, data_dir
+
+def select_dataset():
+    """
+    Present available datasets to the user and get their selection.
+    
+    Returns:
+        Path: Full path to the selected dataset file
+    """
+    json_files, data_dir = list_available_datasets()
+    
+    if not json_files:
+        raise FileNotFoundError("No JSON files found in the data directory")
+    
+    print("\nAvailable datasets:")
+    for idx, file in enumerate(json_files, 1):
+        print(f"{idx}. {file}")
+    
+    while True:
+        try:
+            selection = int(input("\nSelect a dataset by number: "))
+            if 1 <= selection <= len(json_files):
+                selected_file = json_files[selection - 1]
+                return data_dir / selected_file
+            else:
+                print("Invalid selection. Please try again.")
+        except ValueError:
+            print("Please enter a valid number.")
+
+def load_article_data(data_file):
+    """
+    Load the article data from a JSON file.
+    
+    Args:
+        data_file (Path): Path to the JSON data file
     
     Returns:
         list: List of dictionaries containing article data
     """
-    # Get the current script's directory
-    current_dir = Path(__file__).parent
-    # Go up one level to the Integrisme directory and get the data file
-    data_file = current_dir.parent / 'integrisme_data.json'
-    
     with open(data_file, 'r', encoding='utf-8') as f:
         return json.load(f)
 
-def get_top_terms(word_frequencies_path, n_terms=50):
+def get_top_terms(articles, word_frequencies_path=None, n_terms=50):
     """
     Identify the most important terms using TF-IDF scoring and filtering.
     
     Args:
-        word_frequencies_path (str): Path to word frequencies JSON file (currently unused)
+        articles (list): List of article dictionaries
+        word_frequencies_path (str): Path to word frequencies JSON file (unused)
         n_terms (int): Number of top terms to return (default: 50)
     
     Returns:
@@ -51,25 +95,29 @@ def get_top_terms(word_frequencies_path, n_terms=50):
           * Appear in less than 5% of documents
         - Uses TF-IDF scoring to rank terms by importance
     """
-    # Get the current script's directory
-    current_dir = Path(__file__).parent
-    word_frequencies_file = current_dir.parent / 'Word_cloud/data/word_frequencies.json'
+    # Calculate word frequencies directly from articles
+    word_freq = defaultdict(int)
+    for article in articles:
+        content = article.get('bibo:content', [{}])[0].get('@value', '').lower()
+        # Split content into words and count frequencies
+        words = content.split()
+        for word in words:
+            if (len(word) > 2  # Filter out very short words
+                and not any(c.isdigit() for c in word)  # Filter out words with numbers
+                and word not in ['celer', 'célér']  # Explicitly exclude problematic words
+                and word.isalpha()):  # Only keep purely alphabetic words
+                word_freq[word] += 1
     
-    # Load articles data first
-    articles = load_integrisme_data()
-    
-    with open(word_frequencies_file, 'r', encoding='utf-8') as f:
-        word_freq = json.load(f)
-    
-    # First filter: remove problematic terms
-    filtered_freq = {
-        word: freq for word, freq in word_freq.items() 
-        if len(word) > 2  # Filter out very short words
-        and not any(c.isdigit() for c in word)  # Filter out words with numbers
-        and word not in ['celer', 'célér']  # Explicitly exclude problematic words
-        and word.isalpha()  # Only keep purely alphabetic words
-        and freq >= np.percentile(list(word_freq.values()), 75)  # Only keep words in top 25% by frequency
-    }
+    # First filter: keep only words in top 25% by frequency
+    if word_freq:
+        freq_threshold = np.percentile(list(word_freq.values()), 75)
+        filtered_freq = {
+            word: freq for word, freq in word_freq.items() 
+            if freq >= freq_threshold
+        }
+    else:
+        print("Warning: No valid words found in the articles")
+        return []
     
     # Calculate document frequency (how many articles contain each word)
     doc_frequencies = defaultdict(int)
@@ -92,17 +140,22 @@ def get_top_terms(word_frequencies_path, n_terms=50):
     
     for word, freq in filtered_freq.items():
         # Count documents containing this word
-        doc_count = sum(1 for article in articles 
-                       if word in article.get('bibo:content', [{}])[0].get('@value', '').lower())
+        doc_count = doc_frequencies[word]
         
         # Calculate importance score (TF-IDF)
         importance = freq * np.log(total_articles / (1 + doc_count))
         word_importance[word] = importance
     
     # Get top N terms by importance score
-    return list(dict(sorted(word_importance.items(), 
-                          key=lambda x: x[1], 
-                          reverse=True)[:n_terms]).keys())
+    sorted_terms = sorted(word_importance.items(), key=lambda x: x[1], reverse=True)
+    
+    # Print some statistics
+    print(f"\nWord statistics:")
+    print(f"Total unique words found: {len(word_freq)}")
+    print(f"Words after frequency filtering: {len(filtered_freq)}")
+    print(f"Final number of terms selected: {min(n_terms, len(sorted_terms))}")
+    
+    return list(dict(sorted_terms[:n_terms]).keys())
 
 def calculate_cooccurrence(articles, top_terms, window_type='article'):
     """
@@ -176,11 +229,11 @@ def generate_matrix_data():
     Generate and save co-occurrence network data for visualization.
     
     This function:
-    1. Loads the article data
+    1. Prompts user to select input data file
     2. Gets the top terms
     3. Calculates co-occurrence matrices for different window types
     4. Converts matrices to network format (nodes and links)
-    5. Saves the result to a JSON file
+    5. Saves the result to a JSON file named 'cooccurrence_[dataset_name].json'
     
     Output format:
     {
@@ -190,45 +243,60 @@ def generate_matrix_data():
         }
     }
     """
-    # Load data
-    articles = load_integrisme_data()
-    
-    # Get top terms from word frequencies
-    top_terms = get_top_terms(word_frequencies_path=None, n_terms=30)
-    
-    # Calculate co-occurrence matrices for different window types
-    matrices = {
-        'article': calculate_cooccurrence(articles, top_terms, 'article'),
-        'paragraph': calculate_cooccurrence(articles, top_terms, 'paragraph'),
-        'sentence': calculate_cooccurrence(articles, top_terms, 'sentence')
-    }
-    
-    # Initialize output data structure
-    output_data = {window_type: {
-        "nodes": [{"id": i, "name": term} for i, term in enumerate(top_terms)],
-        "links": []
-    } for window_type in matrices.keys()}
-    
-    # Convert matrices to network links
-    n = len(top_terms)
-    for window_type, matrix in matrices.items():
-        for i in range(n):
-            for j in range(n):
-                if matrix[i][j] > 0:
-                    output_data[window_type]["links"].append({
-                        "source": i,
-                        "target": j,
-                        "value": matrix[i][j]
-                    })
-    
-    # Ensure output directory exists
-    output_dir = Path(__file__).parent / 'data'
-    output_dir.mkdir(exist_ok=True)
-    
-    # Save network data to JSON file
-    output_file = output_dir / 'cooccurrence.json'
-    with open(output_file, 'w', encoding='utf-8') as f:
-        json.dump(output_data, f, ensure_ascii=False, indent=2)
+    try:
+        # Let user select the dataset
+        data_file = select_dataset()
+        dataset_name = data_file.stem  # Get filename without extension
+        
+        print(f"\nProcessing dataset: {dataset_name}")
+        
+        # Load data
+        articles = load_article_data(data_file)
+        print(f"Loaded {len(articles)} articles")
+        
+        # Get top terms from word frequencies
+        top_terms = get_top_terms(articles, n_terms=30)
+        print(f"Identified {len(top_terms)} top terms")
+        
+        # Calculate co-occurrence matrices for different window types
+        matrices = {
+            'article': calculate_cooccurrence(articles, top_terms, 'article'),
+            'paragraph': calculate_cooccurrence(articles, top_terms, 'paragraph'),
+            'sentence': calculate_cooccurrence(articles, top_terms, 'sentence')
+        }
+        
+        # Initialize output data structure
+        output_data = {window_type: {
+            "nodes": [{"id": i, "name": term} for i, term in enumerate(top_terms)],
+            "links": []
+        } for window_type in matrices.keys()}
+        
+        # Convert matrices to network links
+        n = len(top_terms)
+        for window_type, matrix in matrices.items():
+            for i in range(n):
+                for j in range(n):
+                    if matrix[i][j] > 0:
+                        output_data[window_type]["links"].append({
+                            "source": i,
+                            "target": j,
+                            "value": matrix[i][j]
+                        })
+        
+        # Ensure output directory exists
+        output_dir = Path(__file__).parent / 'data'
+        output_dir.mkdir(exist_ok=True)
+        
+        # Save network data to JSON file with dataset name in filename
+        output_file = output_dir / f'cooccurrence_{dataset_name}.json'
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(output_data, f, ensure_ascii=False, indent=2)
+        
+        print(f"\nResults saved to: {output_file}")
+        
+    except Exception as e:
+        print(f"\nError: {str(e)}")
+        raise
 
 if __name__ == "__main__":
     generate_matrix_data() 
