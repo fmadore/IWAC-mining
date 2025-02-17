@@ -25,8 +25,8 @@ def list_available_datasets():
         list: List of available JSON files
         Path: Path to the data directory
     """
-    # Get the root directory (two levels up from the script)
-    root_dir = Path(__file__).parent.parent.parent
+    # Get the root directory (where the script is located)
+    root_dir = Path(__file__).parent
     data_dir = root_dir / 'data'
     
     # Get all JSON files in the data directory
@@ -283,15 +283,14 @@ def generate_matrix_data():
                             "value": matrix[i][j]
                         })
         
-        # Ensure output directory exists
-        output_dir = Path(__file__).parent / 'data'
+        # Use a subdirectory 'cooccurrence' inside the data directory
+        output_dir = data_file.parent / 'cooccurrence'
         output_dir.mkdir(exist_ok=True)
-        
-        # Save network data to JSON file with dataset name in filename
         output_file = output_dir / f'cooccurrence_{dataset_name}.json'
+
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(output_data, f, ensure_ascii=False, indent=2)
-        
+
         print(f"\nResults saved to: {output_file}")
         
     except Exception as e:
