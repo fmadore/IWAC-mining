@@ -98,7 +98,7 @@ def get_top_terms(articles, word_frequencies_path=None, n_terms=50):
     # Calculate word frequencies directly from articles
     word_freq = defaultdict(int)
     for article in articles:
-        content = article.get('bibo:content', [{}])[0].get('@value', '').lower()
+        content = article.get('bibo:content', [{}])[0].get('processed_text', {}).get('article', '').lower()
         # Split content into words and count frequencies
         words = content.split()
         for word in words:
@@ -122,7 +122,7 @@ def get_top_terms(articles, word_frequencies_path=None, n_terms=50):
     # Calculate document frequency (how many articles contain each word)
     doc_frequencies = defaultdict(int)
     for article in articles:
-        content = article.get('bibo:content', [{}])[0].get('@value', '').lower()
+        content = article.get('bibo:content', [{}])[0].get('processed_text', {}).get('article', '').lower()
         for word in filtered_freq:
             if word in content:
                 doc_frequencies[word] += 1
@@ -182,7 +182,7 @@ def calculate_cooccurrence(articles, top_terms, window_type='article'):
     matrix = np.zeros((n, n))
     
     for article in articles:
-        content = article.get('bibo:content', [{}])[0].get('@value', '').lower()
+        content = article.get('bibo:content', [{}])[0].get('processed_text', {}).get('article', '').lower()
         
         # Split content into appropriate windows based on window_type
         if window_type == 'article':
