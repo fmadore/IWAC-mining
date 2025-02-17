@@ -182,20 +182,21 @@ def calculate_cooccurrence(articles, top_terms, window_type='article'):
     matrix = np.zeros((n, n))
     
     for article in articles:
-        content = article.get('bibo:content', [{}])[0].get('processed_text', {}).get('article', '').lower()
+        # Get the processed text structure from the article
+        processed_text = article.get('bibo:content', [{}])[0].get('processed_text', {})
         
-        # Split content into appropriate windows based on window_type
+        # Get the appropriate windows based on window_type
         if window_type == 'article':
-            windows = [content]  # Whole article as one window
+            windows = [processed_text.get('article', '')]
         elif window_type == 'paragraph':
-            windows = [p.strip() for p in content.split('\n\n') if p.strip()]  # Split by double newline
+            windows = processed_text.get('paragraphs', [])
         elif window_type == 'sentence':
-            windows = [s.strip() for s in content.split('.') if s.strip()]  # Split by period
+            windows = processed_text.get('sentences', [])
             
         # Process each window
         for window in windows:
             # Find which terms appear in this window
-            present_terms = [term for term in top_terms if term in window]
+            present_terms = [term for term in top_terms if term in window.lower()]
             
             # Update co-occurrence counts
             for i, term1 in enumerate(present_terms):
