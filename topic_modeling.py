@@ -466,7 +466,7 @@ class TopicModeler:
             topic_prevalence = float(topic.sum() / components.sum())
             
             topics.append({
-                'id': topic_idx,
+                'id': topic_idx + 1,
                 'words': [w for w, _ in word_weights],
                 'word_weights': word_weights,
                 'weight': float(topic.sum()),
