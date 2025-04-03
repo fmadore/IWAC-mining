@@ -74,7 +74,7 @@
         }
         @media (max-width: 768px) {
             .title {
-                font-size: 14px;
+                font-size: 13px; /* Slightly smaller font size */
             }
             .axis-label {
                 font-size: 10px;
@@ -124,6 +124,53 @@
     }
 
     /**
+     * Wraps SVG text based on available width. (Corrected Version)
+     * @param {d3.Selection} textSelection - The D3 selection of the text element(s).
+     * @param {number} wrapWidth - The maximum width the text should occupy.
+     */
+    function wrapText(textSelection, wrapWidth) {
+        textSelection.each(function() {
+            const text = d3.select(this);
+            const words = text.text().split(/\s+/).reverse();
+            let word;
+            let line = [];
+            let lineNumber = 0;
+            const lineHeight = 1.1; // ems
+            const x = text.attr("x"); // Keep original x for centering
+            const y = text.attr("y"); // Keep original y
+            
+            // Clear existing text and tspans
+            text.text(null); 
+
+            // Append the first tspan
+            let tspan = text.append("tspan")
+                .attr("x", x) // Center each tspan
+                .attr("y", y) 
+                .attr("dy", "0em"); // First line starts at the base y
+
+            while (word = words.pop()) {
+                line.push(word);
+                tspan.text(line.join(" "));
+                // Use getComputedTextLength for accurate measurement
+                if (tspan.node() && tspan.node().getComputedTextLength() > wrapWidth && line.length > 1) {
+                    line.pop(); // Remove the word that caused overflow
+                    tspan.text(line.join(" ")); // Set the text for the completed line
+                    line = [word]; // Start new line with the overflow word
+                    
+                    // Start a new line with the overflow word
+                    line = [word]; 
+                    
+                    // Create a new tspan for the next line
+                    tspan = text.append("tspan") 
+                        .attr("x", x) // Center new tspan
+                        .attr("dy", lineHeight + "em") 
+                        .text(word);
+                }
+            }
+        });
+    }
+
+    /**
      * Calculates an array of tick values for the x-axis based on available width.
      * Aims to prevent labels from overlapping on smaller screens.
      *
@@ -164,7 +211,7 @@
 
     // Set the dimensions and margins of the graph
     const margin = {
-        top: 60,
+        top: 80,
         right: 200,
         bottom: 100,
         left: 90
@@ -260,7 +307,7 @@
         // Add labels groups (position will be updated)
         const titleLabel = chartGroup.append("text")
             .attr("class", "title")
-            .attr("y", -margin.top + 20)
+            .attr("y", -margin.top + 25)
             .attr("text-anchor", "middle")
             .text("Number of Articles Mentioning \"Intégrisme\" or \"Intégriste(s)\" by Country Over Time");
 
@@ -558,6 +605,8 @@
             // 6. Update positions of centered elements
             titleLabel.attr("x", width / 2);
             totalCountLabel.attr("x", width / 2);
+            // Apply text wrapping to the title
+            titleLabel.call(wrapText, width); // Pass the calculated chart width
             xAxisLabel.attr("x", width / 2).attr("y", height + margin.bottom - 10); // Re-apply y too
             
             // 7. Update legend position
