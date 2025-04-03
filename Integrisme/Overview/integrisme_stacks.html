@@ -110,6 +110,58 @@
 </div>
 
 <script>
+    // Debounce function
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    /**
+     * Calculates an array of tick values for the x-axis based on available width.
+     * Aims to prevent labels from overlapping on smaller screens.
+     *
+     * @param {Array<number|string>} domain - The complete domain of the x-axis (e.g., years).
+     * @param {number} availableWidth - The current width available for the chart drawing area.
+     * @param {number} [minTickSpacing=40] - The minimum desired space (in pixels) between ticks.
+     * @returns {Array<number|string>} - An array of tick values to display.
+     */
+    function getXAxisTickValues(domain, availableWidth, minTickSpacing = 40) {
+        if (!domain || domain.length === 0 || availableWidth <= 0) {
+            return [];
+        }
+
+        const maxTicks = Math.floor(availableWidth / minTickSpacing);
+
+        if (maxTicks >= domain.length) {
+            // If there's enough space for all ticks, return the full domain
+            return domain;
+        } else {
+            // Calculate a step to skip ticks
+            const step = Math.ceil(domain.length / maxTicks);
+            // Filter the domain, taking every 'step'-th item
+            // Ensure the first and last ticks are always included for context
+            const ticks = domain.filter((d, i) => i % step === 0);
+            // Add the last tick if it wasn't included by the step
+            if (domain.length > 0 && !ticks.includes(domain[domain.length - 1])) {
+                 ticks.push(domain[domain.length - 1]);
+            }
+             // Add the first tick if it wasn't included (though index 0 % step === 0 should cover this)
+             if (domain.length > 0 && !ticks.includes(domain[0])) {
+                 ticks.unshift(domain[0]);
+             }
+             // Sort as filtering might mess order slightly if first/last added
+             ticks.sort((a, b) => a - b); 
+            return ticks;
+        }
+    }
+
     // Set the dimensions and margins of the graph
     const margin = {
         top: 60,
@@ -118,14 +170,14 @@
         left: 90
     };
     
-    const width = 1200 - margin.left - margin.right;
+    // Initial height (can be adjusted or made dynamic too)
     const height = 600 - margin.top - margin.bottom;
+    let width; // Width will be calculated dynamically
 
-    // Append the svg object
-    const svg = d3.select("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
+    // Select the container and svg
+    const container = d3.select(".container");
+    const svg = d3.select("svg");
+    const chartGroup = svg.append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // Create tooltip
@@ -145,10 +197,15 @@
         .domain(subgroups)
         .range(['#4e79a7', '#f28e2c', '#76b7b2', '#9c755f']);
 
+    // Variables to hold data and update function reference
+    let processedData = null;
+    let filteredData = null;
+    let updateChartFunc = null;
+
     // Load and process the data
     d3.json("https://raw.githubusercontent.com/fmadore/Mining_IWAC/main/Integrisme/Overview/yearly_counts.json").then(function(data) {
         // Process data
-        const processedData = data.map(yearData => {
+        processedData = data.map(yearData => {
             const year = yearData.year;
             const integrisme = yearData.keywords.find(k => k.keyword === "Intégrisme");
             const countsByCountry = {
@@ -179,7 +236,7 @@
         const lastYear = yearsWithOccurrences[yearsWithOccurrences.length - 1].year;
 
         // Filter processedData to only include years between first and last occurrence
-        const filteredData = processedData.filter(d => 
+        filteredData = processedData.filter(d => 
             d.year >= firstYear && d.year <= lastYear
         );
 
@@ -192,38 +249,35 @@
         const y = d3.scaleLinear()
             .range([height, 0]);
 
-        // Add axes
-        const xAxis = svg.append("g")
+        // Add axes groups (will be populated later)
+        const xAxisGroup = chartGroup.append("g")
             .attr("class", "x-axis")
             .attr("transform", `translate(0,${height})`);
 
-        const yAxis = svg.append("g")
+        const yAxisGroup = chartGroup.append("g")
             .attr("class", "y-axis");
 
-        // Add labels
-        svg.append("text")
+        // Add labels groups (position will be updated)
+        const titleLabel = chartGroup.append("text")
             .attr("class", "title")
-            .attr("x", width / 2)
             .attr("y", -margin.top + 20)
             .attr("text-anchor", "middle")
             .text("Number of Articles Mentioning \"Intégrisme\" or \"Intégriste(s)\" by Country Over Time");
 
-        svg.append("text")
+        const totalCountLabel = chartGroup.append("text")
             .attr("class", "total-count")
-            .attr("x", width / 2)
             .attr("y", -margin.top + 45)
             .attr("text-anchor", "middle")
             .style("font-size", "12px")
             .style("margin-bottom", "20px");
 
-        svg.append("text")
+        const xAxisLabel = chartGroup.append("text")
             .attr("class", "axis-label")
             .attr("text-anchor", "middle")
-            .attr("x", width / 2)
             .attr("y", height + margin.bottom - 10)
             .text("Year");
 
-        svg.append("text")
+        const yAxisLabel = chartGroup.append("text")
             .attr("class", "axis-label")
             .attr("text-anchor", "middle")
             .attr("transform", "rotate(-90)")
@@ -231,19 +285,19 @@
             .attr("x", -height / 2)
             .text("Number of Articles");
 
-        // Add legend
-        const legend = svg.append("g")
-            .attr("transform", `translate(${width + 30}, 0)`);
+        // Add legend group (position will be updated)
+        const legendGroup = chartGroup.append("g")
+            .attr("class", "legend-group");
 
-        legend.append("text")
+        legendGroup.append("text")
             .attr("class", "legend-title")
             .attr("x", 0)
             .attr("y", 0)
             .text("Country");
 
-        // Add legend items with alphabetically sorted countries
-        const legendItems = legend.selectAll(".legend-item")
-            .data(subgroups.slice().sort((a, b) => a.localeCompare(b)))  // Sort alphabetically
+        // Setup legend items once
+        const legendItems = legendGroup.selectAll(".legend-item")
+            .data(subgroups.slice().sort((a, b) => a.localeCompare(b)))
             .enter()
             .append("g")
             .attr("class", "legend-item")
@@ -258,7 +312,7 @@
                     enabledGroups.add(d);
                     d3.select(this).classed("disabled", false);
                 }
-                updateChart();
+                if (updateChartFunc) updateChartFunc(); // Call update
             });
 
         legendItems.append("rect")
@@ -273,8 +327,41 @@
             .text(d => d);
 
         // Update function
-        function updateChart() {
+        updateChartFunc = function updateChart() {
             const activeGroups = Array.from(enabledGroups);
+            
+            // Filter years based on currently active groups
+            const yearsWithOccurrences = processedData.filter(year => {
+                const total = activeGroups.reduce((sum, country) => sum + (year[country] || 0), 0);
+                return total > 0;
+            });
+            
+            if (yearsWithOccurrences.length === 0) {
+                 // Handle case with no data for selected groups (e.g., clear chart or show message)
+                 console.log("No data for selected countries in any year.");
+                 filteredData = []; // Ensure filteredData is empty
+                 // Optionally clear chart elements
+                 chartGroup.selectAll(".stack").remove();
+                 chartGroup.selectAll(".year-total").remove();
+                 // Update axes for empty state
+                 x.domain([]);
+                 y.domain([0, 1]); // Set a minimal domain
+                 xAxisGroup.call(d3.axisBottom(x));
+                 yAxisGroup.transition().duration(500).call(d3.axisLeft(y).ticks(1).tickFormat(d3.format("d")));
+                 totalCountLabel.transition().duration(500).text("Total articles: 0");
+                 return; // Exit update if no data
+            }
+
+            const firstYear = yearsWithOccurrences[0].year;
+            const lastYear = yearsWithOccurrences[yearsWithOccurrences.length - 1].year;
+
+            // Filter processedData for the relevant year range
+            filteredData = processedData.filter(d => 
+                d.year >= firstYear && d.year <= lastYear
+            );
+
+            // Update x domain based on filtered data
+            x.domain(filteredData.map(d => d.year));
             
             // Create stack generator
             const stack = d3.stack()
@@ -283,26 +370,28 @@
 
             const stackedData = stack(filteredData);
             
-            // Update y scale
+            // Update y scale domain
             const maxY = d3.max(stackedData, layer => d3.max(layer, d => d[1]));
-            y.domain([0, maxY || 0]);
+            y.domain([0, maxY || 1]); // Use 1 if maxY is 0
             
             // Update axes
-            yAxis.transition()
+            yAxisGroup.transition()
                 .duration(500)
                 .call(d3.axisLeft(y)
-                    .ticks(Math.min(maxY, 20))
+                    .ticks(Math.min(Math.ceil(maxY), 10)) // Adjust tick count dynamically
                     .tickFormat(d3.format("d")));
 
-            xAxis.call(d3.axisBottom(x))
+            const newDomain = x.domain(); // Get domain after updating it
+            const tickValues = getXAxisTickValues(newDomain, width); // Use current width
+            xAxisGroup.call(d3.axisBottom(x).tickValues(tickValues)) // Use calculated tick values
                 .selectAll("text")
                 .attr("transform", "rotate(-45)")
                 .style("text-anchor", "end");
 
             // Update bars with smoother transitions
-            const bars = svg.selectAll(".stack")
+            const bars = chartGroup.selectAll(".stack") // Select within chartGroup
                 .data(stackedData, d => d.key);
-
+            
             // Exit with transition
             bars.exit()
                 .transition()
@@ -316,59 +405,62 @@
                 .attr("class", "stack")
                 .style("opacity", 0); // Start with opacity 0
 
-            // Update + Enter
-            bars.merge(barsEnter)
+            // Update + Enter groups
+            const barsMerged = bars.merge(barsEnter);
+            
+            barsMerged
                 .transition() // Add transition for the groups
                 .duration(500)
                 .style("opacity", 1) // Fade in
-                .attr("fill", d => color(d.key));
+                .attr("fill", d => color(d.key)); // Ensure fill is set/updated
 
-            // Update the rectangles with smoother transitions
-            bars.merge(barsEnter)
-                .selectAll("rect")
+            // Update the rectangles within each group
+            barsMerged.selectAll("rect")
                 .data(d => d)
                 .join(
                     enter => enter.append("rect")
                         .attr("x", d => x(d.data.year))
                         .attr("y", height) // Start from bottom
                         .attr("height", 0)
-                        .attr("width", x.bandwidth()),
-                    update => update,
+                        .attr("width", x.bandwidth())
+                        .call(enter => enter.transition().duration(500) // Transition height and y on enter
+                            .attr("y", d => y(d[1]))
+                            .attr("height", d => Math.max(0, y(d[0]) - y(d[1]))) // Ensure height is non-negative
+                        ),
+                    update => update
+                        .call(update => update.transition().duration(500) // Transition existing bars
+                            .attr("x", d => x(d.data.year))
+                            .attr("y", d => y(d[1]))
+                            .attr("height", d => Math.max(0, y(d[0]) - y(d[1]))) // Ensure height is non-negative
+                            .attr("width", x.bandwidth())
+                        ),
                     exit => exit.transition()
                         .duration(500)
                         .attr("y", height)
                         .attr("height", 0)
                         .remove()
-                )
-                .transition()
-                .duration(500)
-                .attr("x", d => x(d.data.year))
-                .attr("y", d => y(d[1]))
-                .attr("height", d => y(d[0]) - y(d[1]))
-                .attr("width", x.bandwidth());
+                );
 
-            // Update y-axis with transition
-            yAxis.transition()
-                .duration(500)
-                .call(d3.axisLeft(y)
-                    .ticks(Math.min(maxY, 20))
-                    .tickFormat(d3.format("d")));
-
-            // Update legend items with visual feedback
-            legend.selectAll(".legend-item")
+            // Update legend items visual state
+            legendGroup.selectAll(".legend-item") // Select within legendGroup
                 .transition()
                 .duration(500)
                 .style("opacity", d => enabledGroups.has(d) ? 1 : 0.3);
 
             // Update total count with transition
-            svg.select(".total-count")
+            totalCountLabel // Select the specific label
                 .transition()
                 .duration(500)
                 .tween("text", function() {
-                    const currentTotal = parseInt(this.textContent.match(/\d+/) || [0]);
+                    const currentTotal = parseInt(this.textContent?.match(/\d+/) || [0]);
                     const newTotal = filteredData.reduce((acc, year) => {
                         return acc + activeGroups.reduce((sum, country) => sum + (year[country] || 0), 0);
                     }, 0);
+                    // Check if interpolation is needed
+                    if (isNaN(currentTotal)) {
+                         this.textContent = `Total articles: ${newTotal}`;
+                         return; // Skip tween if currentTotal is NaN
+                    }
                     const i = d3.interpolateNumber(currentTotal, newTotal);
                     return function(t) {
                         this.textContent = `Total articles: ${Math.round(i(t))}`;
@@ -376,21 +468,24 @@
                 });
 
             // Update year totals
-            const yearTotals = svg.selectAll(".year-total")
-                .data(filteredData);
+            const yearTotals = chartGroup.selectAll(".year-total") // Select within chartGroup
+                .data(filteredData, d => d.year); // Key by year for object constancy
 
             yearTotals.exit().remove();
 
             yearTotals.enter()
                 .append("text")
                 .attr("class", "year-total")
+                .attr("y", height) // Start from bottom for enter transition
                 .merge(yearTotals)
                 .transition()
                 .duration(500)
                 .attr("x", d => x(d.year) + x.bandwidth() / 2)
                 .attr("y", d => {
                     const total = activeGroups.reduce((sum, country) => sum + (d[country] || 0), 0);
-                    return y(total) - 5; // Position slightly above the bar
+                    // Prevent totals from overlapping the top if maxY is small
+                     const yPos = y(total);
+                     return Math.max(10, yPos - 5); // Ensure minimum y position
                 })
                 .attr("text-anchor", "middle")
                 .attr("font-size", "10px")
@@ -400,18 +495,20 @@
                 });
 
             // Add event listeners
-            svg.selectAll(".stack rect")
+            barsMerged.selectAll("rect") // Re-apply listeners after join/update
                 .on("mouseover", function(event, d) {
-                    const countryName = d3.select(this.parentNode).datum().key;
+                    const parentData = d3.select(this.parentNode).datum();
+                    if (!parentData) return; // Check if parent data exists
+                    const countryName = parentData.key;
                     const value = d[1] - d[0];
                     const year = d.data.year;
                     
-                    // Calculate total for the year
+                    // Calculate total for the year based on *active* groups
                     const yearTotal = activeGroups.reduce((sum, country) => 
                         sum + (d.data[country] || 0), 0);
                     
                     // Calculate percentage
-                    const percentage = ((value / yearTotal) * 100).toFixed(1);
+                    const percentage = yearTotal === 0 ? 0 : ((value / yearTotal) * 100).toFixed(1);
                     
                     tooltip.transition()
                         .duration(200)
@@ -431,73 +528,158 @@
                         .duration(500)
                         .style("opacity", 0);
                 });
+        } // End of updateChart function
+
+        // Resize handler function
+        function handleResize() {
+            // 1. Get current container width
+            const containerWidth = container.node().getBoundingClientRect().width;
+            
+            // 2. Calculate new chart width
+            width = containerWidth - margin.left - margin.right;
+            
+             // Ensure width is not negative
+            width = Math.max(0, width); 
+
+            // 3. Update SVG dimensions
+            svg.attr("width", containerWidth)
+               .attr("height", height + margin.top + margin.bottom); // Keep height fixed or calculate based on aspect ratio
+
+            // 4. Update X scale range
+            x.range([0, width]);
+            
+            // 5. Update X axis group
+            xAxisGroup.attr("transform", `translate(0,${height})`); // Ensure position is correct
+            xAxisGroup.call(d3.axisBottom(x))
+                .selectAll("text")
+                .attr("transform", "rotate(-45)")
+                .style("text-anchor", "end");
+
+            // 6. Update positions of centered elements
+            titleLabel.attr("x", width / 2);
+            totalCountLabel.attr("x", width / 2);
+            xAxisLabel.attr("x", width / 2).attr("y", height + margin.bottom - 10); // Re-apply y too
+            
+            // 7. Update legend position
+            legendGroup.attr("transform", `translate(${width + 30}, 0)`);
+
+            // 8. Call updateChart to redraw bars and update Y axis based on new dimensions/filtering
+            if (updateChartFunc && filteredData) { // Ensure data is loaded and function exists
+                 updateChartFunc(); 
+            }
         }
 
-        // Initial render
-        updateChart();
+        // Initial draw
+        handleResize(); // Call once to set initial size
+
+        // Add debounced resize listener
+        window.addEventListener('resize', debounce(handleResize, 150));
 
         // Add this function after the updateChart function but before the initial render
         function saveSvgAsPng() {
             try {
-                // Get the SVG element
+                // Get the SVG element - select the main SVG, not the 'g'
                 const svgElement = document.querySelector('svg');
                 
                 // Deep clone the SVG
                 const clonedSvg = svgElement.cloneNode(true);
-                
-                // Add inline styles
-                const styles = document.getElementsByTagName('style');
-                const styleText = Array.from(styles)
-                    .map(style => style.textContent)
-                    .join(' ');
-                
+
+                // Get computed styles to inline them (more robust)
+                 const styleSheets = Array.from(document.styleSheets);
+                 let cssText = "";
+                 styleSheets.forEach(sheet => {
+                     try {
+                         const rules = Array.from(sheet.cssRules);
+                         rules.forEach(rule => {
+                             cssText += rule.cssText + '\\n';
+                         });
+                     } catch (e) {
+                         console.warn("Could not read CSS rules from stylesheet:", sheet.href, e);
+                     }
+                 });
+                 // Also add inline styles from <style> tags
+                  const styles = document.getElementsByTagName('style');
+                  Array.from(styles).forEach(style => {
+                       cssText += style.textContent + '\\n';
+                  });
+
+
                 const styleElement = document.createElement('style');
-                styleElement.textContent = styleText;
+                styleElement.textContent = cssText;
+                // Prepend to ensure styles apply correctly
                 clonedSvg.insertBefore(styleElement, clonedSvg.firstChild);
-                
-                // Set dimensions explicitly
-                clonedSvg.setAttribute('width', svgElement.getBoundingClientRect().width);
-                clonedSvg.setAttribute('height', svgElement.getBoundingClientRect().height);
-                
+
+
+                // Get the actual rendered size
+                const svgRect = svgElement.getBoundingClientRect();
+                const currentWidth = svgRect.width;
+                const currentHeight = svgRect.height;
+
+                // Set dimensions explicitly on the clone
+                clonedSvg.setAttribute('width', currentWidth);
+                clonedSvg.setAttribute('height', currentHeight);
+                // Add a background for transparency issues
+                clonedSvg.style.backgroundColor = 'white'; 
+
+
                 // Convert SVG to string with XML declaration
                 const serializer = new XMLSerializer();
-                const svgString = serializer.serializeToString(clonedSvg);
-                
-                // Create Blob and URL
+                 // Add XML declaration and potentially doctype for stricter SVG format
+                let svgString = '<?xml version="1.0" standalone="no"?>\\r\\n' + serializer.serializeToString(clonedSvg);
+
+
+                // Create Blob using the updated string
                 const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+
+                // Use canvg for better SVG rendering to Canvas if available, otherwise fallback
+                // For simplicity here, we stick to the Image approach, but canvg is often more reliable
                 const url = URL.createObjectURL(svgBlob);
-                
+
                 // Create canvas
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
                 const img = new Image();
-                
-                // Set canvas size
-                canvas.width = svgElement.getBoundingClientRect().width;
-                canvas.height = svgElement.getBoundingClientRect().height;
-                
-                // Handle image loading
+
+                // Set canvas size based on rendered SVG size
+                canvas.width = currentWidth;
+                canvas.height = currentHeight;
+                // For higher resolution PNGs, you can scale the canvas:
+                // const scale = 2; // Example: 2x resolution
+                // canvas.width = currentWidth * scale;
+                // canvas.height = currentHeight * scale;
+                // ctx.scale(scale, scale);
+
+
                 img.onload = () => {
                     try {
-                        // Draw image on canvas
+                        // Draw white background first
                         ctx.fillStyle = 'white';
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        ctx.drawImage(img, 0, 0);
+                        // Draw the SVG image
+                        ctx.drawImage(img, 0, 0, currentWidth, currentHeight); // Ensure drawing uses original dimensions
                         
+                        URL.revokeObjectURL(url); // Revoke URL immediately after drawing
+
                         // Convert to PNG and download
                         canvas.toBlob((blob) => {
-                            const url = URL.createObjectURL(blob);
+                             if (!blob) {
+                                 console.error('Canvas to Blob conversion failed');
+                                 alert('Error creating PNG blob. Cannot save.');
+                                 return;
+                             }
+                            const downloadUrl = URL.createObjectURL(blob);
                             const a = document.createElement('a');
-                            a.href = url;
+                            a.href = downloadUrl;
                             a.download = 'integrisme_visualization.png';
                             document.body.appendChild(a);
                             a.click();
                             document.body.removeChild(a);
-                            URL.revokeObjectURL(url);
+                            URL.revokeObjectURL(downloadUrl);
                         }, 'image/png');
                     } catch (err) {
                         console.error('Error in image processing:', err);
-                        alert('Error saving the image. Please try again.');
+                        alert('Error processing the image for saving. Please check console.');
+                        URL.revokeObjectURL(url); // Clean up URL on error
                     }
                 };
                 
@@ -505,6 +687,7 @@
                 img.onerror = (err) => {
                     console.error('Error loading image:', err);
                     alert('Error loading the image. Please try again.');
+                    URL.revokeObjectURL(url); // Clean up URL on error
                 };
                 
                 // Load image
@@ -518,6 +701,13 @@
 
         // Add this event listener after loading the data
         d3.select('.save-button').on('click', saveSvgAsPng);
+
+    }).catch(function(error) { // Added basic error handling for data loading
+        console.error("Error loading the data: ", error);
+        // Display error message to the user
+        container.append("p")
+          .style("color", "red")
+          .text("Could not load visualization data. Please check the console or try again later.");
     });
 </script>
 </body>
