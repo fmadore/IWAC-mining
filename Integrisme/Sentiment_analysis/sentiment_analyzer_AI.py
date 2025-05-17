@@ -7,6 +7,7 @@ import time
 from tqdm import tqdm
 from dotenv import load_dotenv
 from pydantic import BaseModel
+from pathlib import Path
 
 # Define Pydantic model for structured output
 class SentimentAnalysisOutput(BaseModel):
@@ -155,10 +156,42 @@ def analyze_sentiment(article_text):
         }
 
 def main():
-    input_json_file = "data.json"
-    output_json_file = "resultats_analyse.json"
+    # Determine the data directory relative to the script's location
+    script_dir = Path(__file__).parent
+    data_dir = script_dir / "../../data"
+
+    json_files = []
+    if data_dir.exists() and data_dir.is_dir():
+        json_files = sorted([f for f in data_dir.iterdir() if f.is_file() and f.suffix.lower() == '.json'])
+    
+    if not json_files:
+        print(f"Erreur : Aucun fichier .json trouvé dans le dossier {data_dir.resolve()}.")
+        print("Veuillez vérifier que le dossier existe et contient des fichiers JSON.")
+        return
+
+    print("Veuillez choisir un fichier JSON à analyser :")
+    for i, file_path in enumerate(json_files):
+        print(f"  {i+1}: {file_path.name}")
+
+    selected_index = -1
+    while True:
+        try:
+            choice = input(f"Entrez le numéro du fichier (1-{len(json_files)}) : ")
+            selected_index = int(choice) - 1
+            if 0 <= selected_index < len(json_files):
+                break
+            else:
+                print(f"Choix invalide. Veuillez entrer un numéro entre 1 et {len(json_files)}.")
+        except ValueError:
+            print("Entrée invalide. Veuillez entrer un nombre.")
+
+    input_json_file = json_files[selected_index]
+    # Create a unique output file name based on the input file name
+    output_json_file = data_dir.parent / f"{input_json_file.stem}_resultats_analyse.json"
+
     all_results = []
 
+    print(f"Lecture du fichier : {input_json_file}")
     try:
         with open(input_json_file, 'r', encoding='utf-8') as f:
             articles_data = json.load(f)
