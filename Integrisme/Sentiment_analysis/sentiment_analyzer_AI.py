@@ -6,12 +6,15 @@ import os
 import time
 from tqdm import tqdm
 from dotenv import load_dotenv
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from pathlib import Path
+from typing import Optional
 
 # Define Pydantic model for structured output
 class SentimentAnalysisOutput(BaseModel):
-    subjectivite_score: int
+    centralite_islam_musulmans: str
+    centralite_justification: str
+    subjectivite_score: Optional[int] = Field(default=None)
     subjectivite_justification: str
     polarite: str
     polarite_justification: str
@@ -43,7 +46,9 @@ MODEL_NAME = "gemini-2.5-flash-preview-04-17" # Updated model
 # Le prompt pour l'analyse de sentiment
 def create_prompt(article_text):
     prompt = f"""
-    Vous êtes un expert en analyse de sentiments spécialisé dans les articles de presse. Votre tâche est d'analyser le texte fourni et de renvoyer une analyse structurée en JSON.
+    Vous êtes un expert en analyse de sentiments, spécialisé dans l'étude des représentations de l'islam et des musulmans dans les médias, notamment en Afrique de l'Ouest francophone. Votre tâche est d'analyser le texte fourni sous cet angle spécifique et de renvoyer une analyse structurée en JSON.
+
+    Votre analyse doit spécifiquement évaluer comment l'islam et/ou les musulmans sont dépeints ou représentés dans l'article. La subjectivité et la polarité doivent être jugées par rapport à cette représentation. Si l'islam et les musulmans ne sont qu'un sujet marginal ou non pertinent dans l'article, indiquez-le clairement.
 
     Pour le texte de l'article suivant :
     ---
@@ -52,27 +57,47 @@ def create_prompt(article_text):
 
     Veuillez fournir les informations suivantes au format JSON :
     {{
-      "subjectivite_score": <score_de_1_a_5>,
-      "subjectivite_justification": "<justification_en_1_2_phrases expliquant pourquoi ce score de subjectivité a été attribué>",
-      "polarite": "<Très positif | Positif | Neutre | Négatif | Très négatif>",
-      "polarite_justification": "<justification_en_1_2_phrases expliquant pourquoi cette polarité a été attribuée>"
+      "centralite_islam_musulmans": "<Très central | Central | Secondaire | Marginal | Non abordé>",
+      "centralite_justification": "<Courte justification (1 phrase) expliquant le niveau de centralité de l'islam/des musulmans dans l'article>",
+      "subjectivite_score": <score_de_1_a_5_ou_null_si_non_aborde>,
+      "subjectivite_justification": "<justification_en_1_2_phrases expliquant pourquoi ce score de subjectivité a été attribué concernant la manière dont l'article traite de l'islam et/ou des musulmans, ou 'Non applicable si le sujet n'est pas abordé'>",
+      "polarite": "<Très positif | Positif | Neutre | Négatif | Très négatif | Non applicable>",
+      "polarite_justification": "<justification_en_1_2_phrases expliquant pourquoi cette polarité a été attribuée en ce qui concerne le portrait de l'islam et/ou des musulmans dans l'article, ou 'Non applicable si le sujet n'est pas abordé'>"
     }}
 
     Voici les barèmes à utiliser :
 
-    Subjectivité (note de 1 à 5) :
-    1 : Très objectif (rapporte des faits vérifiables sans exprimer d'opinions ou de sentiments personnels, style purement informatif).
-    2 : Plutôt objectif (principalement factuel, mais peut contenir des traces subtiles d'opinions ou de choix de mots suggérant une perspective limitée).
-    3 : Mixte (contient un mélange équilibré de faits et d'opinions/sentiments personnels, ou présente plusieurs points de vue).
-    4 : Plutôt subjectif (exprime clairement des opinions, des sentiments ou des jugements, même s'il s'appuie sur certains faits pour les étayer).
-    5 : Très subjectif (fortement biaisé, exprime des opinions et des émotions intenses, avec peu ou pas de présentation objective des faits, style éditorial ou billet d'humeur).
+    Centralité de l'islam et des musulmans dans l'article :
+    - Très central : L'article est principalement ou entièrement consacré à l'islam et/ou aux musulmans.
+    - Central : L'islam et/ou les musulmans sont un des sujets principaux de l'article.
+    - Secondaire : L'islam et/ou les musulmans sont mentionnés ou discutés, mais ne constituent pas le focus principal de l'article.
+    - Marginal : L'islam et/ou les musulmans sont brièvement mentionnés de manière anecdotique ou périphérique.
+    - Non abordé : L'article ne traite pas du tout de l'islam ou des musulmans.
 
-    Polarité :
-    - Très positif : Sentiment général extrêmement favorable, enthousiaste, élogieux.
-    - Positif : Sentiment général favorable, optimiste.
-    - Neutre : Pas de sentiment clair ou équilibre entre positif et négatif, ton factuel sans charge émotionnelle marquée.
-    - Négatif : Sentiment général défavorable, critique, pessimiste.
-    - Très négatif : Sentiment général extrêmement défavorable, alarmiste, très critique.
+    Subjectivité (note de 1 à 5) – Évaluez le degré d'objectivité/subjectivité de l'article DANS SA MANIÈRE DE REPRÉSENTER l'islam et/ou les musulmans (Attribuez 'null' si 'Non abordé' pour la centralité) :
+    1 : Très objectif (rapporte des faits vérifiables sur l'islam/les musulmans sans exprimer d'opinions ou de sentiments personnels à leur sujet, style purement informatif sur ce thème).
+    2 : Plutôt objectif (principalement factuel concernant l'islam/les musulmans, mais peut contenir des traces subtiles d'opinions ou des choix de mots suggérant une perspective limitée sur ce thème).
+    3 : Mixte (contient un mélange équilibré de faits et d'opinions/sentiments personnels concernant l'islam/les musulmans, ou présente plusieurs points de vue sur ce thème).
+    4 : Plutôt subjectif (exprime clairement des opinions, des sentiments ou des jugements sur l'islam/les musulmans, même s'il s'appuie sur certains faits pour les étayer).
+    5 : Très subjectif (fortement biaisé dans sa représentation de l'islam/des musulmans, exprime des opinions et des émotions intenses à leur sujet, avec peu ou pas de présentation objective des faits, style éditorial ou billet d'humeur sur ce thème).
+
+    Polarité – Évaluez le sentiment général exprimé DANS L'ARTICLE ENVERS l'islam et/ou les musulmans, ou concernant leur représentation (Attribuez 'Non applicable' si 'Non abordé' pour la centralité) :
+    - Très positif : Le portrait de l'islam/des musulmans est extrêmement favorable, enthousiaste, élogieux.
+    - Positif : Le portrait de l'islam/des musulmans est favorable, optimiste.
+    - Neutre : Pas de sentiment clair envers l'islam/des musulmans ou équilibre entre aspects positifs et négatifs dans leur représentation ; ton factuel sans charge émotionnelle marquée à leur égard.
+    - Négatif : Le portrait de l'islam/des musulmans est défavorable, critique, pessimiste.
+    - Très négatif : Le portrait de l'islam/des musulmans est extrêmement défavorable, alarmiste, très critique.
+
+    Si la centralité est "Non abordé", le "subjectivite_score" doit être null, et "polarite", "subjectivite_justification", et "polarite_justification" doivent être "Non applicable". Le JSON doit toujours être valide.
+    Par exemple, si "centralite_islam_musulmans" est "Non abordé":
+    {{
+      "centralite_islam_musulmans": "Non abordé",
+      "centralite_justification": "L'article ne mentionne ni l'islam ni les musulmans.",
+      "subjectivite_score": null,
+      "subjectivite_justification": "Non applicable car le sujet n'est pas abordé.",
+      "polarite": "Non applicable",
+      "polarite_justification": "Non applicable car le sujet n'est pas abordé."
+    }}
 
     Assurez-vous que votre réponse est uniquement le JSON structuré demandé, sans texte ou formatage supplémentaire avant ou après le JSON.
     """
@@ -83,12 +108,16 @@ def analyze_sentiment(article_text):
     Analyse le sentiment d'un texte d'article en utilisant l'API Gemini.
     """
     if not article_text or not article_text.strip():
+        # Retourner la structure attendue même en cas d'erreur de texte vide,
+        # conformément au nouveau schéma et à la logique "Non abordé"
         return {
             "error": "Le texte de l'article est vide.",
+            "centralite_islam_musulmans": "Non abordé",
+            "centralite_justification": "Texte de l'article non fourni ou vide.",
             "subjectivite_score": None,
-            "subjectivite_justification": None,
-            "polarite": None,
-            "polarite_justification": None
+            "subjectivite_justification": "Non applicable car le texte de l'article est vide.",
+            "polarite": "Non applicable",
+            "polarite_justification": "Non applicable car le texte de l'article est vide."
         }
 
     try:
@@ -128,10 +157,12 @@ def analyze_sentiment(article_text):
         return {
             "error": "Erreur de décodage JSON de la réponse de l'API.",
             "raw_response": response.text if 'response' in locals() and hasattr(response, 'text') else 'Pas de réponse textuelle reçue ou l\'objet réponse n\'existe pas.',
+            "centralite_islam_musulmans": "Non applicable", # Valeur par défaut en cas d'erreur
+            "centralite_justification": "Erreur lors de l'analyse.",
             "subjectivite_score": None,
-            "subjectivite_justification": None,
-            "polarite": None,
-            "polarite_justification": None
+            "subjectivite_justification": "Erreur lors de l'analyse.",
+            "polarite": "Non applicable",
+            "polarite_justification": "Erreur lors de l'analyse."
         }
     except errors.APIError as e: # Catch specific API errors
         print(f"Une erreur API est survenue lors de l'appel à l'API Gemini : {e}")
@@ -140,19 +171,23 @@ def analyze_sentiment(article_text):
              print(f"Prompt Feedback: {e.response.prompt_feedback}")
         return {
             "error": f"Gemini API Error: {e}",
+            "centralite_islam_musulmans": "Non applicable", # Valeur par défaut en cas d'erreur
+            "centralite_justification": "Erreur API Gemini.",
             "subjectivite_score": None,
-            "subjectivite_justification": None,
-            "polarite": None,
-            "polarite_justification": None
+            "subjectivite_justification": "Erreur API Gemini.",
+            "polarite": "Non applicable",
+            "polarite_justification": "Erreur API Gemini."
         }
     except Exception as e: # Catch any other exceptions
         print(f"Une erreur inattendue est survenue : {e}")
         return {
             "error": f"Unexpected error: {str(e)}",
+            "centralite_islam_musulmans": "Non applicable", # Valeur par défaut en cas d'erreur
+            "centralite_justification": "Erreur inattendue.",
             "subjectivite_score": None,
-            "subjectivite_justification": None,
-            "polarite": None,
-            "polarite_justification": None
+            "subjectivite_justification": "Erreur inattendue.",
+            "polarite": "Non applicable",
+            "polarite_justification": "Erreur inattendue."
         }
 
 def main():
@@ -221,21 +256,83 @@ def main():
             analysis = analyze_sentiment(article_text)
             print(f"  Analyse obtenue : {analysis}")
             
-            # Enrichir l'objet article original avec les résultats de l'analyse
-            article_with_analysis = article.copy() # Crée une copie pour ne pas modifier l'original en cas de réutilisation
-            article_with_analysis["sentiment_analysis"] = analysis
-            all_results.append(article_with_analysis)
+            # Construire l'objet résultat avec les champs spécifiés
+            result_entry = {
+                "o:id": article.get("o:id"),
+                "o:title": article.get("o:title")
+            }
+
+            # Extraction pour dcterms:publisher -> display_title
+            publisher_list = article.get("dcterms:publisher", [])
+            if isinstance(publisher_list, list) and len(publisher_list) > 0:
+                publisher_obj = publisher_list[0]
+                if isinstance(publisher_obj, dict) and "@value" in publisher_obj:
+                    result_entry["display_title"] = publisher_obj["@value"]
+                elif isinstance(publisher_obj, str): # Au cas où ce ne serait pas une liste de dictionnaires
+                    result_entry["display_title"] = publisher_obj
+                else:
+                    result_entry["display_title"] = None # ou une valeur par défaut
+            else:
+                result_entry["display_title"] = None # ou une valeur par défaut
+
+
+            # Extraction pour dcterms:date
+            date_list = article.get("dcterms:date", [])
+            if isinstance(date_list, list) and len(date_list) > 0:
+                date_obj = date_list[0]
+                if isinstance(date_obj, dict) and "@value" in date_obj:
+                    result_entry["dcterms:date"] = date_obj["@value"]
+                elif isinstance(date_obj, str):  # Au cas où ce ne serait pas une liste de dictionnaires
+                    result_entry["dcterms:date"] = date_obj
+                else:
+                    result_entry["dcterms:date"] = None # ou une valeur par défaut
+            else:
+                result_entry["dcterms:date"] = None # ou une valeur par défaut
+            
+            result_entry["sentiment_analysis"] = analysis
+            all_results.append(result_entry)
         else:
             print(f"  Impossible d'extraire le texte pour l'article ID {article.get('id', 'N/A')}. Article ignoré.")
-            article_with_analysis = article.copy()
-            article_with_analysis["sentiment_analysis"] = {
-                "error": "Texte de l'article non trouvé ou vide.",
-                "subjectivite_score": None,
-                "subjectivite_justification": None,
-                "polarite": None,
-                "polarite_justification": None
+            # Même si le texte est manquant, nous voulons quand même une entrée minimale
+            # et la structure d'analyse de sentiment doit correspondre au cas "Non abordé" / Erreur
+            result_entry = {
+                "o:id": article.get("o:id"),
+                "o:title": article.get("o:title")
             }
-            all_results.append(article_with_analysis)
+            publisher_list = article.get("dcterms:publisher", [])
+            if isinstance(publisher_list, list) and len(publisher_list) > 0:
+                publisher_obj = publisher_list[0]
+                if isinstance(publisher_obj, dict) and "@value" in publisher_obj:
+                    result_entry["display_title"] = publisher_obj["@value"]
+                elif isinstance(publisher_obj, str):
+                    result_entry["display_title"] = publisher_obj
+                else:
+                    result_entry["display_title"] = None
+            else:
+                result_entry["display_title"] = None
+
+            date_list = article.get("dcterms:date", [])
+            if isinstance(date_list, list) and len(date_list) > 0:
+                date_obj = date_list[0]
+                if isinstance(date_obj, dict) and "@value" in date_obj:
+                    result_entry["dcterms:date"] = date_obj["@value"]
+                elif isinstance(date_obj, str):
+                     result_entry["dcterms:date"] = date_obj
+                else:
+                    result_entry["dcterms:date"] = None
+            else:
+                result_entry["dcterms:date"] = None
+
+            result_entry["sentiment_analysis"] = {
+                "error": "Texte de l'article non trouvé ou vide.",
+                "centralite_islam_musulmans": "Non abordé",
+                "centralite_justification": "Texte de l'article non trouvé ou vide.",
+                "subjectivite_score": None,
+                "subjectivite_justification": "Non applicable car le texte de l'article est non trouvé ou vide.",
+                "polarite": "Non applicable",
+                "polarite_justification": "Non applicable car le texte de l'article est non trouvé ou vide."
+            }
+            all_results.append(result_entry)
 
         # Petite pause pour éviter de surcharger l'API (surtout pour les quotas gratuits/limités)
         if i < len(articles_data) - 1 : # Ne pas attendre après le dernier article
