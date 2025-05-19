@@ -51,7 +51,7 @@ Usage:
 # Initialize welcome message before any imports or processing
 print("\n=== Omeka Article Downloader ===")
 print("Initializing system...")
-print("Loading French language model (this may take a few moments)...")
+# Conditional spaCy loading message is now in initialize_spacy()
 
 import asyncio
 import aiohttp
@@ -160,10 +160,16 @@ def download_spacy_model():
         return nlp
 
 # Initialize the model
-nlp = download_spacy_model()
+nlp = None # Will be initialized if user confirms
 
-# Add batch size configuration for transformer
-nlp.max_length = 1000000  # Increase max length to handle longer texts
+def initialize_spacy():
+    """Initializes spaCy model if not already initialized."""
+    global nlp
+    if nlp is None:
+        print("Loading French language model (this may take a few moments)...")
+        nlp = download_spacy_model()
+        # Add batch size configuration for transformer
+        nlp.max_length = 1000000  # Increase max length to handle longer texts
 
 # Load environment variables from .env file
 load_dotenv()
@@ -172,7 +178,7 @@ OMEKA_BASE_URL = os.getenv('OMEKA_BASE_URL')
 OMEKA_KEY_IDENTITY = os.getenv('OMEKA_KEY_IDENTITY')
 OMEKA_KEY_CREDENTIAL = os.getenv('OMEKA_KEY_CREDENTIAL')
 
-def preprocess_text(text):
+def preprocess_text(text, use_spacy_flag):
     """
     Preprocess French text using advanced NLP techniques and spaCy's transformer model.
     
@@ -188,7 +194,7 @@ def preprocess_text(text):
        - Maintains elision forms to respect French grammar
        - Handles special cases like "l'on", "d'accord", "qu'il"
     
-    3. Token Processing:
+    3. Token Processing (if use_spacy_flag is True):
        - Uses spaCy's French transformer for accurate tokenization
        - Preserves case in lemmatization for proper nouns
        - Removes stopwords while keeping important French particles
@@ -198,16 +204,17 @@ def preprocess_text(text):
     - Case Preservation: Maintains proper nouns and acronyms
     - Contraction Handling: Preserves French grammatical structure
     - Minimal Punctuation Removal: Keeps sentence boundaries and quotes
-    - Lemmatization: Uses spaCy's context-aware lemmatization
+    - Lemmatization: Uses spaCy's context-aware lemmatization (if spaCy is used)
     
     Args:
         text (str): Raw French text to process
+        use_spacy_flag (bool): Whether to use spaCy for processing
         
     Returns:
         dict: Processed text at different levels:
-            - article (str): Full processed text
-            - paragraphs (list): List of processed paragraphs
-            - sentences (list): List of processed sentences
+            - article (str): Full processed text (or original if spaCy not used)
+            - paragraphs (list): List of processed paragraphs (or split original if spaCy not used)
+            - sentences (list): List of processed sentences (or empty if spaCy not used)
     """
     if not text:
         return {
@@ -216,8 +223,8 @@ def preprocess_text(text):
             "sentences": []
         }
     
-    # Initial text cleaning with enhanced French support
-    text = (text.strip()
+    # Initial text cleaning with enhanced French support (always applied)
+    cleaned_text = (text.strip()
         .replace('\xa0', ' ')        # Replace non-breaking spaces
         .replace('  ', ' ')          # Replace double spaces
         .replace('«', '"')           # Normalize French quotes
@@ -227,11 +234,10 @@ def preprocess_text(text):
         .replace('…', '...')         # Normalize ellipsis
         .replace('–', '-')           # Normalize dashes
         .replace('—', '-')
-        .replace(''', "'")           # Normalize apostrophes
-        .replace(''', "'"))
+        .replace("'", "'")           # Normalize apostrophes
+        .replace("'", "'"))
 
-    # Enhanced French contraction handling
-    # Preserve common French contractions while handling special cases
+    # Enhanced French contraction handling (always applied)
     contraction_patterns = [
         (r"([ldnmtsjc])'([a-zéèêëàâäôöûüç])", r"\1'\2"),  # l'exemple, d'accord, n'est
         (r"qu'([a-zéèêëàâäôöûüç])", r"qu'\1"),            # qu'il, qu'elle
@@ -242,10 +248,20 @@ def preprocess_text(text):
     ]
     
     for pattern, replacement in contraction_patterns:
-        text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
+        cleaned_text = re.sub(pattern, replacement, cleaned_text, flags=re.IGNORECASE)
     
-    # Process with spaCy
-    doc = nlp(text)
+    if not use_spacy_flag or nlp is None: # If user opted out or nlp failed to load
+        logging.info("Skipping spaCy specific processing in preprocess_text.")
+        # Basic processing without spaCy
+        paragraphs_list = [p.strip() for p in cleaned_text.split('\n\n') if p.strip()]
+        return {
+            "article": cleaned_text,
+            "paragraphs": paragraphs_list,
+            "sentences": [] # Sentence tokenization without spaCy is non-trivial
+        }
+
+    # Process with spaCy (if nlp is available and user opted in)
+    doc = nlp(cleaned_text)
     
     def process_tokens(tokens):
         """
@@ -276,9 +292,9 @@ def preprocess_text(text):
     
     # Process at paragraph level with enhanced handling
     paragraphs = []
-    for para in text.split('\n\n'):
-        if para.strip():
-            para_doc = nlp(para)
+    for para_text in cleaned_text.split('\n\n'): # Iterate over original paragraphs for structure
+        if para_text.strip():
+            para_doc = nlp(para_text.strip()) # Process each paragraph individually
             para_tokens = process_tokens(para_doc)
             if para_tokens:  # Only add non-empty paragraphs
                 paragraphs.append(" ".join(para_tokens))
@@ -412,17 +428,18 @@ async def fetch_ids_from_item_async(session, url):
     logging.info(f"Processing complete: Found {len(article_urls)} articles out of {len(potential_urls)} total items")
     return article_urls
 
-def process_article_content(article_data):
+def process_article_content(article_data, use_spacy_flag):
     """
     Process and enrich article content with NLP analysis.
     
     This function:
     1. Extracts content from article data
-    2. Applies text preprocessing to the content
+    2. Applies text preprocessing to the content (conditionally using spaCy)
     3. Adds processed text back to the article data
     
     Args:
         article_data (dict): Raw article data from API
+        use_spacy_flag (bool): Whether to use spaCy for processing
         
     Returns:
         dict: Enriched article data with processed text fields
@@ -437,21 +454,22 @@ def process_article_content(article_data):
     try:
         # Find the content in bibo:content
         if 'bibo:content' in article_data:
-            content = article_data['bibo:content']
-            if isinstance(content, list):
-                for item in content:
-                    if '@value' in item:
+            content_field = article_data['bibo:content']
+            if isinstance(content_field, list):
+                for item in content_field:
+                    if '@value' in item and item['@value']: # Ensure there is text to process
                         # Add processed versions of the text at different levels
-                        item['processed_text'] = preprocess_text(item['@value'])
-            elif isinstance(content, dict) and '@value' in content:
+                        item['processed_text'] = preprocess_text(item['@value'], use_spacy_flag)
+            elif isinstance(content_field, dict) and '@value' in content_field and content_field['@value']:
                 # Add processed versions of the text at different levels
-                content['processed_text'] = preprocess_text(content['@value'])
+                content_field['processed_text'] = preprocess_text(content_field['@value'], use_spacy_flag)
     except Exception as e:
         logging.error(f"Error processing article content: {str(e)}")
+        # Optionally, re-raise or handle more gracefully depending on desired behavior
     
     return article_data
 
-async def process_urls_async(urls):
+async def process_urls_async(urls, use_spacy_flag):
     """
     Process multiple article URLs concurrently using asyncio.gather().
     
@@ -462,6 +480,7 @@ async def process_urls_async(urls):
     
     Args:
         urls (list): List of article URLs to process
+        use_spacy_flag (bool): Whether to use spaCy for processing
         
     Returns:
         tuple: Contains:
@@ -477,7 +496,7 @@ async def process_urls_async(urls):
             data = await fetch_data_async(session, url)
             pbar.update(1)
             if data:
-                return process_article_content(data)
+                return process_article_content(data, use_spacy_flag) # Pass use_spacy_flag
             return None
         
         # Create tasks for all URLs and gather them
@@ -532,6 +551,21 @@ async def main_async():
     # Get item ID from user
     item_id = input("Please enter the Omeka item ID: ").strip()
     
+    # Ask user if they want to perform spaCy processing
+    while True:
+        user_choice_spacy = input("Do you want to perform NLP processing with spaCy? (yes/no): ").strip().lower()
+        if user_choice_spacy in ['yes', 'no']:
+            break
+        print("Invalid input. Please enter 'yes' or 'no'.")
+            
+    use_spacy_processing = user_choice_spacy == 'yes'
+
+    if use_spacy_processing:
+        initialize_spacy() # Initialize spaCy only if confirmed
+    else:
+        logging.info("Skipping spaCy NLP processing as per user choice.")
+        # global nlp # nlp is already globally defined and defaults to None
+
     # Set up logging with item ID
     log_path = setup_logging(item_id)
     logging.info(f"Starting data collection for Omeka item {item_id}")
@@ -556,7 +590,7 @@ async def main_async():
             return
 
         # Process all URLs concurrently
-        all_data, successful_fetches, failed_fetches = await process_urls_async(urls)
+        all_data, successful_fetches, failed_fetches = await process_urls_async(urls, use_spacy_processing)
 
         # Log summary statistics
         logging.info(f"Data collection completed:")
@@ -582,6 +616,8 @@ def main():
     2. Runs the main async function
     3. Handles any top-level exceptions
     """
+    # Welcome messages moved to the top of the script
+
     asyncio.run(main_async())
 
 if __name__ == "__main__":
