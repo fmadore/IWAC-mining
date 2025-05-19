@@ -266,14 +266,14 @@ def main():
             publisher_list = article.get("dcterms:publisher", [])
             if isinstance(publisher_list, list) and len(publisher_list) > 0:
                 publisher_obj = publisher_list[0]
-                if isinstance(publisher_obj, dict) and "@value" in publisher_obj:
-                    result_entry["display_title"] = publisher_obj["@value"]
-                elif isinstance(publisher_obj, str): # Au cas où ce ne serait pas une liste de dictionnaires
-                    result_entry["display_title"] = publisher_obj
+                if isinstance(publisher_obj, dict):
+                    result_entry["Newspaper"] = publisher_obj.get("display_title")
+                # elif isinstance(publisher_obj, str): # This case seems unlikely given the example
+                #     result_entry["Newspaper"] = publisher_obj
                 else:
-                    result_entry["display_title"] = None # ou une valeur par défaut
+                    result_entry["Newspaper"] = None # ou une valeur par défaut
             else:
-                result_entry["display_title"] = None # ou une valeur par défaut
+                result_entry["Newspaper"] = None # ou une valeur par défaut
 
 
             # Extraction pour dcterms:date
@@ -302,14 +302,14 @@ def main():
             publisher_list = article.get("dcterms:publisher", [])
             if isinstance(publisher_list, list) and len(publisher_list) > 0:
                 publisher_obj = publisher_list[0]
-                if isinstance(publisher_obj, dict) and "@value" in publisher_obj:
-                    result_entry["display_title"] = publisher_obj["@value"]
-                elif isinstance(publisher_obj, str):
-                    result_entry["display_title"] = publisher_obj
+                if isinstance(publisher_obj, dict):
+                    result_entry["Newspaper"] = publisher_obj.get("display_title")
+                # elif isinstance(publisher_obj, str):
+                #     result_entry["Newspaper"] = publisher_obj
                 else:
-                    result_entry["display_title"] = None
+                    result_entry["Newspaper"] = None
             else:
-                result_entry["display_title"] = None
+                result_entry["Newspaper"] = None
 
             date_list = article.get("dcterms:date", [])
             if isinstance(date_list, list) and len(date_list) > 0:
