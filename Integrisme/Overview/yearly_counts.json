@@ -556,10 +556,14 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 1,
+        "total_count": 2,
         "countries": [
           {
             "name": "Burkina Faso",
+            "count": 1
+          },
+          {
+            "name": "Côte d'Ivoire",
             "count": 1
           }
         ]
@@ -872,7 +876,7 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 24,
+        "total_count": 27,
         "countries": [
           {
             "name": "Burkina Faso",
@@ -880,11 +884,11 @@
           },
           {
             "name": "Côte d'Ivoire",
-            "count": 22
+            "count": 24
           },
           {
             "name": "Togo",
-            "count": 1
+            "count": 2
           }
         ]
       },
@@ -969,7 +973,7 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 28,
+        "total_count": 30,
         "countries": [
           {
             "name": "Benin",
@@ -977,7 +981,7 @@
           },
           {
             "name": "Côte d'Ivoire",
-            "count": 26
+            "count": 28
           }
         ]
       },
@@ -1060,15 +1064,19 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 35,
+        "total_count": 41,
         "countries": [
           {
+            "name": "Benin",
+            "count": 1
+          },
+          {
             "name": "Burkina Faso",
-            "count": 2
+            "count": 4
           },
           {
             "name": "Côte d'Ivoire",
-            "count": 32
+            "count": 35
           },
           {
             "name": "Togo",
@@ -1152,7 +1160,7 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 33,
+        "total_count": 35,
         "countries": [
           {
             "name": "Benin",
@@ -1160,11 +1168,11 @@
           },
           {
             "name": "Burkina Faso",
-            "count": 2
+            "count": 3
           },
           {
             "name": "Côte d'Ivoire",
-            "count": 26
+            "count": 27
           },
           {
             "name": "Togo",
@@ -1357,11 +1365,11 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 6,
+        "total_count": 7,
         "countries": [
           {
             "name": "Côte d'Ivoire",
-            "count": 5
+            "count": 6
           },
           {
             "name": "Togo",
@@ -1452,7 +1460,7 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 12,
+        "total_count": 13,
         "countries": [
           {
             "name": "Burkina Faso",
@@ -1460,7 +1468,7 @@
           },
           {
             "name": "Côte d'Ivoire",
-            "count": 8
+            "count": 9
           }
         ]
       },
@@ -1812,7 +1820,7 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 3,
+        "total_count": 4,
         "countries": [
           {
             "name": "Benin",
@@ -1820,7 +1828,7 @@
           },
           {
             "name": "Burkina Faso",
-            "count": 2
+            "count": 3
           }
         ]
       },
@@ -2683,11 +2691,11 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 6,
+        "total_count": 7,
         "countries": [
           {
             "name": "Burkina Faso",
-            "count": 6
+            "count": 7
           }
         ]
       },
@@ -2776,11 +2784,19 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 4,
+        "total_count": 7,
         "countries": [
           {
+            "name": "Benin",
+            "count": 1
+          },
+          {
             "name": "Burkina Faso",
-            "count": 4
+            "count": 5
+          },
+          {
+            "name": "Côte d'Ivoire",
+            "count": 1
           }
         ]
       },
@@ -2982,8 +2998,13 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 1,
+        "countries": [
+          {
+            "name": "Côte d'Ivoire",
+            "count": 1
+          }
+        ]
       },
       {
         "keyword": "Fondamentalisme islamique",
@@ -3111,8 +3132,13 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 0,
-        "countries": []
+        "total_count": 2,
+        "countries": [
+          {
+            "name": "Togo",
+            "count": 2
+          }
+        ]
       },
       {
         "keyword": "Fondamentalisme islamique",
@@ -3253,11 +3279,11 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 6,
+        "total_count": 7,
         "countries": [
           {
             "name": "Benin",
-            "count": 2
+            "count": 3
           },
           {
             "name": "Burkina Faso",
@@ -3395,11 +3421,11 @@
     "keywords": [
       {
         "keyword": "Intégrisme",
-        "total_count": 1,
+        "total_count": 2,
         "countries": [
           {
             "name": "Burkina Faso",
-            "count": 1
+            "count": 2
           }
         ]
       },
