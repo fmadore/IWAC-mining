@@ -36,7 +36,7 @@ except Exception as e:
     exit()
 
 # Définition du modèle Gemini à utiliser
-MODEL_NAME = "gemini-2.5-flash-preview-04-17" # Updated model
+MODEL_NAME = "gemini-2.5-flash-preview-05-20" # Updated model
 
 # Configuration pour la génération de contenu en JSON
 # generation_config = { # Old config
